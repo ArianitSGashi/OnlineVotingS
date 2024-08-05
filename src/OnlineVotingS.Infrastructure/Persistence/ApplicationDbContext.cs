@@ -18,5 +18,4 @@ namespace OnlineVotingS.Infrastructure.Persistence
             base.OnModelCreating(modelBuilder);
         }
     }
-
 }
