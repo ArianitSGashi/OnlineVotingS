@@ -17,16 +17,13 @@ namespace OnlineVotingS.Domain.Entities
         /// <summary>
         /// Gets or sets the title of the election.
         /// </summary>
-        [Required]
-        [MaxLength(50)]
+        [Required] [MaxLength(50)]
         public string Title { get; set; } = null!;
         /// <summary>
         /// Gets or sets the description of the election.
         /// </summary>
         [MaxLength(100)]
-        public string?
-            Description
-        { get; set; }
+        public string?Description { get; set; }
         /// <summary>
         /// Gets or sets the start date and time of the election.
         /// </summary>

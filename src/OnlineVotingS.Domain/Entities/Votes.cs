@@ -33,7 +33,6 @@ namespace OnlineVotingS.Domain.Entities
         /// Date and time when the vote was cast.
         /// </summary>
         public DateTime VoteDate { get; set; }
-        // Foreign Key
         /// <summary>
         /// Candidate object associated with the vote, representing the candidate details.
         /// </summary>
