@@ -1,12 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using OnlineVotingS.Infrastructure.Persistence;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using OnlineVotingS.Infrastructure.Persistence.Context;
 
 namespace OnlineVotingS.Infrastructure
 {
@@ -16,7 +11,7 @@ namespace OnlineVotingS.Infrastructure
         {
             var connectionString = configuration.GetConnectionString("DefaultConnection");
             services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseSqlServer(connectionString, b => b.MigrationsAssembly("OnlineVotingSystem.Infrastructure")));
+                options.UseSqlServer(connectionString, b => b.MigrationsAssembly("OnlineVotingS.Infrastructure")));
         }
     }
 }

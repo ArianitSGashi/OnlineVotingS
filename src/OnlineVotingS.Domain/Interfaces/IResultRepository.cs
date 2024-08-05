@@ -1,5 +1,4 @@
 ﻿using OnlineVotingS.Domain.Entities;
-using OnlineVotingS.Domain.Entities;
 using OnlineVotingS.Domain.Interfaces;
 using System;
 using System.Collections.Generic;
