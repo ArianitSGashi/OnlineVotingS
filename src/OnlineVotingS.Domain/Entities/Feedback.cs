@@ -8,34 +8,34 @@ using System.Threading.Tasks;
 
 namespace OnlineVotingS.Domain.Entities
 {
-    public class Complaints
+    public class Feedback
     {
         /// <summary>
-        /// Gets or sets the unique identifier for the complaint.
+        /// Unique identifier for the feedback.
         /// </summary>
         [Key]
-        public int ComplaintID { get; set; }
+        public int FeedbackID { get; set; }
         /// <summary>
-        /// Gets or sets the unique identifier of the user who filed the complaint.
+        /// Unique identifier for the user providing the feedback.
         /// </summary>
-        public int UserID { get; set; }
+        public string UserID { get; set; } = null!;
         /// <summary>
-        /// Gets or sets the unique identifier of the election related to the complaint.
+        /// Unique identifier for the election associated with the feedback.
         /// </summary>
-        [ForeignKey("Elections")]
+        [ForeignKey("Election")]
         public int ElectionID { get; set; }
         /// <summary>
-        /// Gets or sets the text of the complaint.
+        /// Text content of the feedback provided by the user.
         /// </summary>
         [Required]
         [MaxLength(200)]
-        public string ComplaintText { get; set; } = null!;
+        public string FeedbackText { get; set; } = null!;
         /// <summary>
-        /// Gets or sets the date the complaint was filed.
+        /// Date and time when the feedback was provided.
         /// </summary>
-        public DateTime ComplaintDate { get; set; }
+        public DateTime FeedbackDate { get; set; } = DateTime.UtcNow;
         /// <summary>
-        /// Navigation property to the associated Election entity.
+        /// Election object associated with the feedback, representing the election details.
         /// </summary>
         public Elections Elections { get; set; } = null!;
     }
