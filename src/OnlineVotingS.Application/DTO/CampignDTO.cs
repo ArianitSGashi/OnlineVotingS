@@ -15,8 +15,8 @@ namespace OnlineVotingS.Application.DTO
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
         public DateTime CreatedAt { get; set; }
-        public DateTime UpdatedAt { get; set; }
-        public string ElectionName { get; set; }
-        public string CandidateName { get; set; }
+       // public DateTime UpdatedAt { get; set; }
+       // public string ElectionName { get; set; }
+       // public string CandidateName { get; set; }
     }
 }
