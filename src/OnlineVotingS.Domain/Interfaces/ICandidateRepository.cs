@@ -5,16 +5,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace OnlineVotingS.Domain.Interfaces
+namespace OnlineVotingS.Domain.Interfaces;
+
+public interface ICandidateRepository : IGenericRepository<Candidates>
 {
-    public interface ICandidateRepository : IGenericRepository<Candidates>
-    {
-        Task<IEnumerable<Candidates>> GetByElectionIdAsync(int electionId);
+    Task<IEnumerable<Candidates>> GetByElectionIdAsync(int electionId);
 
-        Task<IEnumerable<Candidates>> GetByPartyAsync(string party);
+    Task<IEnumerable<Candidates>> GetByPartyAsync(string party);
 
-        Task<IEnumerable<Candidates>> GetByMinIncomeAsync(decimal minIncome);
+    Task<IEnumerable<Candidates>> GetByMinIncomeAsync(decimal minIncome);
 
-        Task<IEnumerable<Candidates>> GetByNameAsync(string name);
-    }
+    Task<IEnumerable<Candidates>> GetByNameAsync(string name);
 }

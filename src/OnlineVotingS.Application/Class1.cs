@@ -1,7 +1,6 @@
-﻿namespace OnlineVotingS.Application
-{
-    public class Class1
-    {
+﻿namespace OnlineVotingS.Application;
 
-    }
+public class Class1
+{
+
 }
