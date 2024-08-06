@@ -13,5 +13,13 @@ namespace OnlineVotingS.Infrastructure
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(connectionString, b => b.MigrationsAssembly("OnlineVotingS.Infrastructure")));
         }
+
+        public static void ConfigureServices(IServiceCollection services)
+        {
+
+            // Other service registrations...
+        }
+
     }
+
 }

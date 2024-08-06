@@ -6,8 +6,6 @@ using System.Threading.Tasks;
 
 namespace OnlineVotingS.Application.DTO
 {
-    namespace OnlineVotingS.Application.DTO
-    {
         public class ElectionDTO
         {
             public int ElectionID { get; set; }
@@ -20,4 +18,3 @@ namespace OnlineVotingS.Application.DTO
 
         }
     }
-}
