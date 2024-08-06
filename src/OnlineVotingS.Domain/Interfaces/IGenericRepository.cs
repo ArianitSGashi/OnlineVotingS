@@ -5,20 +5,19 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace OnlineVotingS.Domain.Interfaces
+namespace OnlineVotingS.Domain.Interfaces;
+
+public interface IGenericRepository<T> where T : class
 {
-    public interface IGenericRepository<T> where T : class
-    {
-        Task<T> GetByIdAsync(int id);
+    Task<T> GetByIdAsync(int id);
 
-        Task<IEnumerable<T>> GetAllAsync();
+    Task<IEnumerable<T>> GetAllAsync();
 
-        Task AddAsync(T entity);
+    Task AddAsync(T entity);
 
-        Task UpdateAsync(T entity);
+    Task UpdateAsync(T entity);
 
-        Task DeleteAsync(int id);
+    Task DeleteAsync(int id);
 
-        Task<bool> ExistsAsync(int id);
-    }
+    Task<bool> ExistsAsync(int id);
 }

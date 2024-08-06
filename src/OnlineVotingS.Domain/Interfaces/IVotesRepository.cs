@@ -5,16 +5,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace OnlineVotingS.Domain.Interfaces
+namespace OnlineVotingS.Domain.Interfaces;
+
+public interface IVotesRepository : IGenericRepository<Votes>
 {
-    public interface IVotesRepository : IGenericRepository<Votes>
-    {
-        Task<IEnumerable<Votes>> GetByUserIDAsync(int userID);
+    Task<IEnumerable<Votes>> GetByUserIDAsync(int userID);
 
-        Task<IEnumerable<Votes>> GetByElectionIDAsync(int electionID);
+    Task<IEnumerable<Votes>> GetByElectionIDAsync(int electionID);
 
-        Task<IEnumerable<Votes>> GetByCandidateIDAsync(int candidateID);
+    Task<IEnumerable<Votes>> GetByCandidateIDAsync(int candidateID);
 
-        Task<IEnumerable<Votes>> GetRecentVotesAsync(DateTime date);
-    }
+    Task<IEnumerable<Votes>> GetRecentVotesAsync(DateTime date);
 }
