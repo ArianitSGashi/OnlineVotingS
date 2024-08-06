@@ -1,57 +1,54 @@
 using Microsoft.EntityFrameworkCore;
-using OnlineVotingS.Domain.Entities;
 using OnlineVotingS.Domain.Interfaces;
+using OnlineVotingS.Infrastructure.Persistence.Context;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace OnlineVotingS.Persistence.Repositories
+namespace OnlineVotingS.Infrastructure.Repositories
 {
     public class GenericRepository<T> : IGenericRepository<T> where T : class
     {
-        private readonly ApplicationDbContext _dbContext;
+        protected readonly ApplicationDbContext _context;
+        protected readonly DbSet<T> _dbSet;
 
-        public GenericRepository(ApplicationDbContext dbContext)
+        public GenericRepository(ApplicationDbContext context)
         {
-            _dbContext = dbContext;
+            _context = context;
+            _dbSet = _context.Set<T>();
         }
 
         public async Task<T> GetByIdAsync(int id)
         {
-            return await _dbContext.Set<T>().FindAsync(id);
+            return await _dbSet.FindAsync(id);
         }
 
         public async Task<IEnumerable<T>> GetAllAsync()
         {
-            return await _dbContext.Set<T>().ToListAsync();
+            return await _dbSet.ToListAsync();
         }
 
         public async Task AddAsync(T entity)
         {
-            await _dbContext.Set<T>().AddAsync(entity);
-            await _dbContext.SaveChangesAsync();
-            return entity;
+            await _dbSet.AddAsync(entity);
+            await _context.SaveChangesAsync();
         }
 
         public async Task UpdateAsync(T entity)
         {
-            _dbContext.Entry(entity).State = EntityState.Modified;
-            await _dbContext.SaveChangesAsync();
+            _dbSet.Update(entity);
+            await _context.SaveChangesAsync();
         }
 
         public async Task DeleteAsync(int id)
         {
-            var entity = await GetByIdAsync(id);
-            if (entity != null)
-            {
-                _dbContext.Set<T>().Remove(entity);
-                await _dbContext.SaveChangesAsync();
-            }
+            var entity = await _dbSet.FindAsync(id);
+            _dbSet.Remove(entity);
+            await _context.SaveChangesAsync();
         }
 
         public async Task<bool> ExistsAsync(int id)
         {
-            var entity = await GetByIdAsync(id);
-            return entity != null;
+            return await _dbSet.FindAsync(id) != null;
         }
     }
 }

@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace OnlineVotingSystem.Domain.Interfaces
+namespace OnlineVotingS.Domain.Interfaces
 {
     public interface IResultRepository : IGenericRepository<Result>
     {

@@ -1,7 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using OnlineVotingS.Domain.Interfaces;
 using OnlineVotingS.Infrastructure.Persistence.Context;
+using OnlineVotingS.Infrastructure.Repositories;
 
 namespace OnlineVotingS.Infrastructure
 {
@@ -12,6 +14,18 @@ namespace OnlineVotingS.Infrastructure
             var connectionString = configuration.GetConnectionString("DefaultConnection");
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(connectionString, b => b.MigrationsAssembly("OnlineVotingS.Infrastructure")));
+            
+            // Register the generic repository
+            services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
+
+            // Register repository interfaces and their implementations
+            services.AddScoped<ICandidateRepository, CandidateRepository>();
+            services.AddScoped<IElectionRepository, ElectionRepository>();
+            services.AddScoped<IComplaintRepository, ComplaintRepository>();
+            services.AddScoped<IFeedbackRepository, FeedbackRepository>();
+            services.AddScoped<IResultRepository, ResultRepository>();
+            services.AddScoped<IVotesRepository, VotesRepository>();
+            services.AddScoped<ICampaignRepository, CampaignRepository>();
         }
     }
 }
