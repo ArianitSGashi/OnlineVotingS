@@ -40,7 +40,7 @@ public class Candidates
     /// Gets or sets the declared income of the candidate.
     /// </summary>
     [Column(TypeName = "decimal(10,2)")]
-    public decimal Income { get; set; }
+    public decimal? Income { get; set; }
     /// <summary>
     /// Gets or sets the works and achievements of the candidate.
     /// </summary>

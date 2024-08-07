@@ -4,15 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace OnlineVotingS.Application.DTO
-{
-    public class ComplaintDTO
+namespace OnlineVotingS.Application.DTO.PostDTO;
+
+    public class ComplaintsPostDTO
     {
-        public int ComplaintID { get; set; }
         public int UserID { get; set; }
         public int ElectionID { get; set; }
-        public string ComplaintText { get; set; }
+        public string ComplaintText { get; set; } = null!;
         public DateTime ComplaintDate { get; set; }
-        public string ElectionName { get; set; }
     }
-}
