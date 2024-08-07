@@ -23,7 +23,7 @@ public class Elections
     /// Gets or sets the description of the election.
     /// </summary>
     [MaxLength(100)]
-    public string?Description { get; set; }
+    public string? Description { get; set; }
     /// <summary>
     /// Gets or sets the start date and time of the election.
     /// </summary>
