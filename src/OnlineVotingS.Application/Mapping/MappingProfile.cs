@@ -2,13 +2,12 @@
 using OnlineVotingS.Application.DTO;
 using OnlineVotingS.Domain.Entities;
 
-
 namespace OnlineVotingS.Application.Mapping;
+
     public class MappingProfile : Profile
     {
         public MappingProfile()
         {
-
             //CreateMap<Source, Destination>();
             CreateMap<Candidates, CandidateDTO>().ReverseMap();
             CreateMap<Elections, ElectionDTO>().ReverseMap();
@@ -17,7 +16,5 @@ namespace OnlineVotingS.Application.Mapping;
             CreateMap<Complaints, ComplaintDTO>().ReverseMap();
             CreateMap<Campaign, CampaignDTO>().ReverseMap();
             CreateMap<Feedback, FeedbackDTO>().ReverseMap();
-
         }
-
     }
