@@ -4,10 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace OnlineVotingS.Application.DTO
-{
-    namespace OnlineVotingS.Application.DTO
-    {
+namespace OnlineVotingS.Application.DTO;
+  
         public class ElectionDTO
         {
             public int ElectionID { get; set; }
@@ -19,5 +17,4 @@ namespace OnlineVotingS.Application.DTO
             // TODO: Add properties for:The date and time of the election's creation,the date and time of the last update to the election.
 
         }
-    }
-}
+   

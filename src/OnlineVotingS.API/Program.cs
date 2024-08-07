@@ -1,3 +1,4 @@
+using OnlineVotingS.Application.Mapping;
 using OnlineVotingS.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -5,6 +6,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 builder.Services.ConfigureService(builder.Configuration);
+builder.Services.AddAutoMapper(typeof(MappingProfile));
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
