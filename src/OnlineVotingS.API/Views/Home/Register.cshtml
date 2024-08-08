@@ -31,10 +31,16 @@
             </div>
 
             <div class="input-field">
-                @Html.DropDownListFor(model => model.Gender, 
-                    new SelectList(new[] { "Male", "Female" }, "Gender"), 
-                    "Select Gender", 
-                    new { @class = "input-field", required = true })
+                @Html.DropDownListFor(
+                         model => model.Gender,
+                         new SelectList(
+                         Enum.GetValues(typeof(Gender)).Cast<Gender>().Select(e => new { Value = e, Text = e.ToString() }),
+                         "Value",
+                         "Text"
+                         ),
+                         "Select Gender",
+                         new { @class = "input-field", required = true }
+                         )
             </div>
 
             <div class="input-field">
@@ -48,8 +54,8 @@
             </div>
 
             <div class="input-field">
-                @Html.TextBoxFor(model => model.MobileNo, new { @class = "input-field", required = true })
-                @Html.LabelFor(model => model.MobileNo)
+                @Html.TextBoxFor(model => model.MobileNumber, new { @class = "input-field", required = true })
+                @Html.LabelFor(model => model.MobileNumber)
             </div>
 
             <div class="input-field">
