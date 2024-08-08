@@ -14,7 +14,7 @@ public class VotesRepository : GenericRepository<Votes>, IVotesRepository
     {
     }
 
-    public async Task<IEnumerable<Votes>> GetByUserIDAsync(int userID)
+    public async Task<IEnumerable<Votes>> GetByUserIDAsync(string userID)
     {
         return await _dbSet.Where(v => v.UserID == userID).ToListAsync();
     }

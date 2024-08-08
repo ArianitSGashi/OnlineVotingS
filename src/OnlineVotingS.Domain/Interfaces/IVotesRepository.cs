@@ -9,7 +9,7 @@ namespace OnlineVotingS.Domain.Interfaces;
 
 public interface IVotesRepository : IGenericRepository<Votes>
 {
-    Task<IEnumerable<Votes>> GetByUserIDAsync(int userID);
+    Task<IEnumerable<Votes>> GetByUserIDAsync(string userID);
 
     Task<IEnumerable<Votes>> GetByElectionIDAsync(int electionID);
 

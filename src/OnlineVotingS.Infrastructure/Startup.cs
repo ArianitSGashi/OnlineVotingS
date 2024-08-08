@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using OnlineVotingS.Domain.Interfaces;
@@ -12,9 +13,17 @@ public static class Startup
     public static void ConfigureService(this IServiceCollection services, IConfiguration configuration)
     {
         var connectionString = configuration.GetConnectionString("DefaultConnection");
+
         services.AddDbContext<ApplicationDbContext>(options =>
             options.UseSqlServer(connectionString, b => b.MigrationsAssembly("OnlineVotingS.Infrastructure")));
-        
+
+        // Setting Up Identity
+        services.AddIdentityCore<IdentityUser>()
+            .AddRoles<IdentityRole>()
+            .AddTokenProvider<DataProtectorTokenProvider<IdentityUser>>("OnlineVotingS")
+            .AddEntityFrameworkStores<ApplicationDbContext>()
+            .AddDefaultTokenProviders();
+
         // Register the generic repository
         services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
 

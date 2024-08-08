@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Identity;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -18,7 +19,7 @@ public class Complaints
     /// <summary>
     /// Gets or sets the unique identifier of the user who filed the complaint.
     /// </summary>
-    public int UserID { get; set; }
+    public string UserID { get; set; } = null!;
     /// <summary>
     /// Gets or sets the unique identifier of the election related to the complaint.
     /// </summary>
@@ -38,4 +39,7 @@ public class Complaints
     /// Navigation property to the associated Election entity.
     /// </summary>
     public Elections Elections { get; set; } = null!;
+
+    // Navigation property for IdentityUser
+    public IdentityUser User { get; set; } = null!;
 }
