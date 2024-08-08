@@ -1,0 +1,79 @@
+﻿@using OnlineVotingS.API.Models.Enums
+@model RegisterViewModel
+@{ 
+    Layout = null;
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register</title>
+    <link rel="stylesheet" href="/css/login.css">
+</head>
+<body>
+    <div class="wrapper">
+        <form asp-action="Register" method="post">
+            <h2>Register</h2>
+
+            <div class="input-field">
+                @Html.TextBoxFor(model => model.VoterId, new { @class = "input-field", required = true })
+                @Html.LabelFor(model => model.VoterId)
+            </div>
+
+            <div class="input-field">
+                @Html.TextBoxFor(model => model.Name, new { @class = "input-field", required = true })
+                @Html.LabelFor(model => model.Name)
+            </div>
+
+            <div class="input-field">
+                @Html.TextBoxFor(model => model.FathersName, new { @class = "input-field", required = true })
+                @Html.LabelFor(model => model.FathersName)
+            </div>
+
+            <div class="input-field">
+                @Html.DropDownListFor(
+                         model => model.Gender,
+                         new SelectList(
+                         Enum.GetValues(typeof(Gender)).Cast<Gender>().Select(e => new { Value = e, Text = e.ToString() }),
+                         "Value",
+                         "Text"
+                         ),
+                         "Select Gender",
+                         new { @class = "input-field", required = true }
+                         )
+            </div>
+
+            <div class="input-field">
+                @Html.TextBoxFor(model => model.DateOfBirth, new { @class = "input-field", type = "date", required = true })
+                @Html.LabelFor(model => model.DateOfBirth)
+            </div>
+
+            <div class="input-field">
+                @Html.TextBoxFor(model => model.Address, new { @class = "input-field", required = true })
+                @Html.LabelFor(model => model.Address)
+            </div>
+
+            <div class="input-field">
+                @Html.TextBoxFor(model => model.MobileNumber, new { @class = "input-field", required = true })
+                @Html.LabelFor(model => model.MobileNumber)
+            </div>
+
+            <div class="input-field">
+                @Html.PasswordFor(model => model.Password, new { @class = "input-field", required = true })
+                @Html.LabelFor(model => model.Password)
+            </div>
+
+            <div class="input-field">
+                @Html.PasswordFor(model => model.ConfirmPassowrd, new { @class = "input-field", required = true })
+                @Html.LabelFor(model => model.ConfirmPassowrd)
+            </div>
+
+            <button type="submit">Register</button>
+            <div class="register">
+                <p>Have an account? @Html.ActionLink("Login", "Login", "Home")</p>
+            </div>
+        </form>
+    </div>
+</body>
+</html>
