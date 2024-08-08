@@ -1,5 +1,6 @@
-﻿namespace OnlineVotingS.API.Models;
+﻿using OnlineVotingS.API.Models.Enums;
 
+namespace OnlineVotingS.API.Models;
 public class RegisterViewModel
 {
     public string VoterId { get; set; }
@@ -11,11 +12,5 @@ public class RegisterViewModel
     public string MobileNumber { get; set; }
     public string Password { get; set; }
     public string ConfirmPassowrd { get; set; }
-}
-
-public enum Gender
-{
-    Male,
-    Female
 }
 
