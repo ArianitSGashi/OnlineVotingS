@@ -1,6 +1,7 @@
 ﻿using OnlineVotingS.API.Models.Enums;
 
 namespace OnlineVotingS.API.Models;
+
 public class RegisterViewModel
 {
     public string VoterId { get; set; }
