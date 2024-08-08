@@ -1,0 +1,45 @@
+﻿#sidebar {
+    top: 0;
+    left: -250px;
+    width: 250px;
+    height: 100vh;
+    background-color: #343a40;
+    transition: all 0.3s ease-in-out;
+    position: fixed;
+    z-index: 1000;
+    padding-top: 60px;
+}
+
+    #sidebar.active {
+        left: 0;
+    }
+
+    #sidebar ul {
+        list-style: none;
+        padding: 0;
+    }
+
+        #sidebar ul li {
+            padding: 15px 10px;
+            border-bottom: 1px solid #474f57;
+        }
+
+            #sidebar ul li a {
+                color: #fff;
+                text-decoration: none;
+                display: block;
+            }
+
+                #sidebar ul li a:hover {
+                    background-color: #495057;
+                    border-radius: 4px;
+                }
+
+    #sidebar h5 {
+        color: #fff;
+    }
+
+body.overlay {
+    overflow: hidden;
+    position: relative;
+}
