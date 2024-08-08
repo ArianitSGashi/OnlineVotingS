@@ -13,9 +13,9 @@
         {
             title: 'VOTER',
             actions: [
-                { label: 'Add Voter', url: 'https://localhost:7098/Admin/voter', onClick: () => navigateTo('https://localhost:7098/Admin/voter') },
-                { label: 'Edit/Delete Voter', url: '@Url.Action("voter", "Admin")', onClick: toggleSidebar },
-                { label: 'View Voter', url: '@Url.Action("voter", "Admin")', onClick: toggleSidebar }
+                { label: 'Add Voter', url: 'https://localhost:7098/Admin/Voter', onClick: () => navigateTo('https://localhost:7098/Admin/Voter') },
+                { label: 'Edit/Delete Voter', url: '@Url.Action("Voter", "Admin")', onClick: toggleSidebar },
+                { label: 'View Voter', url: '@Url.Action("Voter", "Admin")', onClick: toggleSidebar }
             ],
             icon: 'fa-user',
         },
