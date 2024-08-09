@@ -39,7 +39,8 @@ public class Feedback
     /// Election object associated with the feedback, representing the election details.
     /// </summary>
     public Elections Elections { get; set; } = null!;
-
-    // Navigation property for IdentityUser
+    /// <summary>
+    /// Navigation property for IdentityUser
+    /// </summary>
     public IdentityUser User { get; set; } = null!;
 }
