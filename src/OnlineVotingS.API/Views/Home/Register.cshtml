@@ -1,4 +1,4 @@
-﻿@using OnlineVotingS.API.Models.Enums
+﻿@using OnlineVotingS.Domain.Enums;
 @model RegisterViewModel
 @{ 
     Layout = null;
@@ -65,8 +65,8 @@
             </div>
 
             <div class="input-field">
-                @Html.PasswordFor(model => model.ConfirmPassowrd, new { @class = "input-field", required = true })
-                @Html.LabelFor(model => model.ConfirmPassowrd)
+                @Html.PasswordFor(model => model.ConfirmPassword, new { @class = "input-field", required = true })
+                @Html.LabelFor(model => model.ConfirmPassword)
             </div>
 
             <button type="submit">Register</button>

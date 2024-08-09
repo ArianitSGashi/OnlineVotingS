@@ -32,6 +32,13 @@ namespace OnlineVotingS.Infrastructure.Migrations
                 columns: table => new
                 {
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    VoterId = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    FathersName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    Gender = table.Column<int>(type: "int", nullable: false),
+                    DateOfBirth = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Address = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
+                    MobileNumber = table.Column<string>(type: "nvarchar(15)", maxLength: 15, nullable: false),
                     UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     Email = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
@@ -353,8 +360,8 @@ namespace OnlineVotingS.Infrastructure.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "91d19ccb-dbf8-47a5-9867-f3d6ac776f38", "a3d1e9cd-30db-49e9-8e21-d3487f64ef45", "User", "USER" },
-                    { "fa1adb1b-47be-42df-80e2-a9bc9d6d0389", "99144141-11c8-46aa-94b7-d52291d77d63", "Admin", "ADMIN" }
+                    { "4839a2ff-9d0c-44de-b1f3-9f2ceb675b04", "5c6ce15a-b9a2-4e64-be66-8fe0c6d0147b", "Admin", "ADMIN" },
+                    { "7f22441e-7a66-4949-b46d-1052027e6f9f", "66654619-1056-40da-804a-5bba15dde883", "User", "USER" }
                 });
 
             migrationBuilder.CreateIndex(
