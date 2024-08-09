@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Identity;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -22,7 +23,7 @@ public class Feedback
     /// <summary>
     /// Unique identifier for the election associated with the feedback.
     /// </summary>
-    [ForeignKey("Election")]
+    [ForeignKey("Elections")]
     public int ElectionID { get; set; }
     /// <summary>
     /// Text content of the feedback provided by the user.
@@ -38,4 +39,8 @@ public class Feedback
     /// Election object associated with the feedback, representing the election details.
     /// </summary>
     public Elections Elections { get; set; } = null!;
+    /// <summary>
+    /// Navigation property for IdentityUser
+    /// </summary>
+    public IdentityUser User { get; set; } = null!;
 }

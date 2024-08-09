@@ -9,7 +9,7 @@ namespace OnlineVotingS.Domain.Interfaces;
 
 public interface IComplaintRepository : IGenericRepository<Complaints>
 {
-    Task<IEnumerable<Complaints>> GetByUserIdAsync(int userId);
+    Task<IEnumerable<Complaints>> GetByUserIdAsync(string userId);
 
     Task<IEnumerable<Complaints>> GetByElectionIdAsync(int electionId);
 

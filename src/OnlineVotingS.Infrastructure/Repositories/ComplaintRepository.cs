@@ -14,7 +14,7 @@ public class ComplaintRepository : GenericRepository<Complaints>, IComplaintRepo
     {
     }
 
-    public async Task<IEnumerable<Complaints>> GetByUserIdAsync(int userId)
+    public async Task<IEnumerable<Complaints>> GetByUserIdAsync(string userId)
     {
         return await _dbSet.Where(c => c.UserID == userId).ToListAsync();
     }

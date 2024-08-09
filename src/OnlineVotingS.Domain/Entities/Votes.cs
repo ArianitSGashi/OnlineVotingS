@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Identity;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -18,7 +19,7 @@ public class Votes
     /// <summary>
     /// Unique identifier for the user who cast the vote.
     /// </summary>
-    public int UserID { get; set; }
+    public string UserID { get; set; } = null!;
     /// <summary>
     /// Unique identifier for the election in which the vote was cast.
     /// </summary>
@@ -41,4 +42,8 @@ public class Votes
     /// Election object associated with the vote, representing the election details.
     /// </summary>
     public Elections Elections { get; set; } = null!;
+    /// <summary>
+    /// Navigation property for IdentityUser
+    /// </summary>
+    public IdentityUser User { get; set; } = null!;
 }
