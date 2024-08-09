@@ -51,15 +51,15 @@ namespace OnlineVotingS.Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "9a74490a-0871-4624-8034-9a6e0587b938",
-                            ConcurrencyStamp = "88af5bcc-ed35-47fa-aea0-18b1c4b378c2",
+                            Id = "fa1adb1b-47be-42df-80e2-a9bc9d6d0389",
+                            ConcurrencyStamp = "99144141-11c8-46aa-94b7-d52291d77d63",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "15893096-fc30-45e9-9acd-73672e69e7c4",
-                            ConcurrencyStamp = "40ef04ca-abdc-4298-8d4f-0dd994c0b923",
+                            Id = "91d19ccb-dbf8-47a5-9867-f3d6ac776f38",
+                            ConcurrencyStamp = "a3d1e9cd-30db-49e9-8e21-d3487f64ef45",
                             Name = "User",
                             NormalizedName = "USER"
                         });

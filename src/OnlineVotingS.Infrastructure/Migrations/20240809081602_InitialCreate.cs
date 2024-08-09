@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace OnlineVotingS.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialCreateApplicationDb : Migration
+    public partial class InitialCreate : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -353,8 +353,8 @@ namespace OnlineVotingS.Infrastructure.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "15893096-fc30-45e9-9acd-73672e69e7c4", "40ef04ca-abdc-4298-8d4f-0dd994c0b923", "User", "USER" },
-                    { "9a74490a-0871-4624-8034-9a6e0587b938", "88af5bcc-ed35-47fa-aea0-18b1c4b378c2", "Admin", "ADMIN" }
+                    { "91d19ccb-dbf8-47a5-9867-f3d6ac776f38", "a3d1e9cd-30db-49e9-8e21-d3487f64ef45", "User", "USER" },
+                    { "fa1adb1b-47be-42df-80e2-a9bc9d6d0389", "99144141-11c8-46aa-94b7-d52291d77d63", "Admin", "ADMIN" }
                 });
 
             migrationBuilder.CreateIndex(
