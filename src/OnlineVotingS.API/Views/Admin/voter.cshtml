@@ -10,7 +10,9 @@
 <body>
     <nav class="navbar navbar-dark bg-dark">
         <div class="container-fluid">
-            <a class="navbar-brand" href="#">DIGITAL VOT<span style="color:green;">ING</span></a>
+            <a class="navbar-brand" href="#">
+                DIGITAL VOT<span style="color:green;">ING</span>
+            </a>
             <div class="d-flex align-items-center">
                 <span class="text-white me-3">MIKASA</span>
                 <img src="https://via.placeholder.com/30" alt="Profile Image" class="rounded-circle">
@@ -18,40 +20,20 @@
         </div>
     </nav>
 
+
     <!-- Sidebar Menu -->
-    <div id="sidebar" class="d-none">
-        <h5 class="text-center py-3">Menu</h5>
-        <ul class="nav flex-column">
-            <li class="nav-item">
-                <a class="nav-link text-white" href="@Url.Action("Dashboard", "Admin")">Home</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link text-white" href="#">Profile</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link text-white" href="#">Forms</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link text-white" href="#">Election</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link text-white" href="#">Data</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link text-white" href="#">Result</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link text-white" href="#">Complain</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link text-white" href="#">Logout</a>
-            </li>
-        </ul>
+    @Html.Partial("_Sidebar")
+
+    <!-- Main content area -->
+    <div class="container my-5 flex-grow-1">
+
+        <p>HII</p>
+        <!-- Repeated content for testing -->
+        <!-- Content here -->
+        <h1>NO</h1>
     </div>
 
-    <div class="container my-5">
-        <h1>Hi</h1>
-    </div>
+    <!-- Footer -->
 
     <script src="~/js/Voter.js"></script>
 </body>

@@ -1,0 +1,78 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generate Election</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="~/css/voter.css">
+    <link rel="stylesheet" href="~/css/generateelection.css">
+
+</head>
+<body>
+    <nav class="navbar navbar-dark bg-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">
+                DIGITAL VOT<span style="color:green;">ING</span>
+            </a>
+            <div class="d-flex align-items-center">
+                <span class="text-white me-3">MIKASA</span>
+                <img src="https://via.placeholder.com/30" alt="Profile Image" class="rounded-circle">
+            </div>
+        </div>
+    </nav>
+
+    <!-- Sidebar Menu -->
+    @Html.Partial("_Sidebar")
+
+    <div class="form-container">
+        <h4>Election</h4>
+        <form>
+            <div class="form-group">
+                <label for="electionId">Election ID</label>
+                <input type="text" class="form-control" id="electionId" placeholder="Enter Election ID">
+            </div>
+            <div class="form-group">
+                <label for="electionType">Election Type</label>
+                <select class="form-control" id="electionType">
+                    <option>Select Election Type</option>
+                    <option>Presidential</option>
+                    <option>Parliamentary</option>
+                    <option>Local</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="state">State</label>
+                <select class="form-control" id="state">
+                    <option>Please select a State/UT</option>
+                    <option>State 1</option>
+                    <option>State 2</option>
+                    <option>State 3</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="startDate">Start Date</label>
+                <input type="date" class="form-control" id="startDate">
+            </div>
+            <div class="form-group">
+                <label for="startTime">Start Time</label>
+                <input type="time" class="form-control" id="startTime">
+            </div>
+            <div class="form-group">
+                <label for="endDate">End Date</label>
+                <input type="date" class="form-control" id="endDate">
+            </div>
+            <div class="form-group">
+                <label for="endTime">End Time</label>
+                <input type="time" class="form-control" id="endTime">
+            </div>
+            <button type="submit" class="btn btn-primary">Generate Election</button>
+            <button type="reset" class="btn btn-secondary">Reset</button>
+        </form>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/generateelection.js"></script>
+</body>
+</html>

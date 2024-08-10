@@ -1,0 +1,53 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Candidate</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="completeelection.css">
+    <link rel="stylesheet" href="~/css/voter.css">
+</head>
+<body>
+<nav class="navbar navbar-dark bg-dark">
+    <div class="container-fluid">
+            <a class="navbar-brand" href="#">DIGITAL VOT<span style="color:green;">ING</span>
+            </a>
+        <div class="d-flex align-items-center">
+            <span class="text-white me-3">MIKASA</span>
+            <img src="https://via.placeholder.com/30" alt="Profile Image" class="rounded-circle">
+        </div>
+    </div>
+</nav>
+
+    <!-- Sidebar Menu -->
+    @Html.Partial("_Sidebar")
+
+    <div class="container">
+        <div class="card mt-5">
+            <div class="card-header">
+                <h3>Edit Candidate</h3>
+            </div>
+            <div class="card-body">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="@Url.Action("Dashboard", "Admin")">Home</a></li>
+                        <li class="breadcrumb-item"><a href="#">Data</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">Edit Candidate</li>
+                    </ol>
+                </nav>
+                <div class="form-group">
+                    <label for="candidateId">Enter Candidate ID:</label>
+                    <input type="text" id="candidateId" class="form-control" placeholder="Enter Candidate ID">
+                </div>
+                <button class="btn btn-primary" onclick="viewDetail()">View Detail</button>
+                <button class="btn btn-danger" onclick="deleteCandidate()">Delete Candidate</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/completeelection.js"></script>
+</body>
+</html>
