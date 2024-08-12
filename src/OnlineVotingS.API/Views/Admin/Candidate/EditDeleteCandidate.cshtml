@@ -1,0 +1,15 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container mt-5">
+    <h2>Edit/Delete Candidate</h2>
+    <form method="post" action="@Url.Action("EditDeleteCandidate", "Admin")">
+        <div class="form-group">
+            <label for="candidateId">Enter Candidate ID</label>
+            <input type="text" class="form-control" id="candidateId" name="CandidateId" placeholder="Enter Candidate ID">
+        </div>
+        <button type="submit" name="action" value="view" class="btn btn-primary">View Detail</button>
+        <button type="submit" name="action" value="delete" class="btn btn-danger">Delete Candidate</button>
+    </form>
+</div>

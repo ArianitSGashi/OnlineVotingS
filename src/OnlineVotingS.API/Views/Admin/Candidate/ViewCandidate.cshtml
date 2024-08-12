@@ -1,0 +1,31 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container mt-5">
+    <h2>List of Candidates</h2>
+    <form method="post" action="@Url.Action("ViewCandidate", "Admin")">
+        <div class="form-group">
+            <label for="state">State</label>
+            <select class="form-control" id="state" name="State">
+                <option>Select State</option>
+                
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="parliamentaryConstituency">Parliamentary/Assembly Constituency</label>
+            <select class="form-control" id="parliamentaryConstituency" name="ParliamentaryConstituency">
+                <option>Select Parliamentary/Assembly Constituency</option>
+                
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="constituency">Constituency</label>
+            <select class="form-control" id="constituency" name="Constituency">
+                <option>Select Constituency</option>
+                
+            </select>
+        </div>
+        <button type="submit" class="btn btn-primary">Filter</button>
+    </form>
+</div>
