@@ -6,8 +6,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace OnlineVotingS.Domain.Models
-{
+namespace OnlineVotingS.Domain.Models;
+
     public class ApplicationUser :IdentityUser
     {
         public string VoterId { get; set; } = string.Empty;
@@ -18,4 +18,3 @@ namespace OnlineVotingS.Domain.Models
         public string Address { get; set; } = string.Empty;
         public string MobileNumber { get; set; } = string.Empty;
     }
-}

@@ -4,8 +4,8 @@ using Microsoft.EntityFrameworkCore;
 using OnlineVotingS.Domain.Entities;
 using OnlineVotingS.Domain.Models;
 
-namespace OnlineVotingS.Infrastructure.Persistence.Context
-{
+namespace OnlineVotingS.Infrastructure.Persistence.Context;
+
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options) { }
@@ -222,4 +222,3 @@ namespace OnlineVotingS.Infrastructure.Persistence.Context
             });
         }
     }
-}
