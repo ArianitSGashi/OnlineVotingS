@@ -58,9 +58,9 @@
         {
             title: 'COMPLAIN',
             actions: [
-                { label: 'View Complaints', url: 'javascript:void(0)', onClick: toggleSidebar },
+                { label: 'View Complaints', url: '/Complain/ViewComplain', onClick: () => navigateTo('/Complain/ViewComplain') },
                 { label: 'Add Complaint', url: 'javascript:void(0)', onClick: toggleSidebar },
-                { label: 'Resolve Complaint', url: 'javascript:void(0)', onClick: toggleSidebar }
+                { label: 'Resolve Complaint', url: '/Complain/ReplyComplain', onClick: () => navigateTo('/Complain/ReplyComplain') }
             ],
             icon: 'fa-envelope',
         },
