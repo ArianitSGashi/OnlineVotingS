@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Identity;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using OnlineVotingS.Domain.Models;
 
 namespace OnlineVotingS.Domain.Entities;
 
@@ -42,5 +43,5 @@ public class Feedback
     /// <summary>
     /// Navigation property for IdentityUser
     /// </summary>
-    public IdentityUser User { get; set; } = null!;
+    public ApplicationUser User { get; set; } = null!;
 }

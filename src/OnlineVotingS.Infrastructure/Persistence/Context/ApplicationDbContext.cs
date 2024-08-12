@@ -1,11 +1,12 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using OnlineVotingS.Domain.Entities;
-using Microsoft.AspNetCore.Identity;
+using OnlineVotingS.Domain.Models;
 
-namespace OnlineVotingS.Infrastructure.Persistence.Context
-{
-    public class ApplicationDbContext : IdentityDbContext<IdentityUser>
+namespace OnlineVotingS.Infrastructure.Persistence.Context;
+
+    public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options) { }
 
@@ -38,6 +39,19 @@ namespace OnlineVotingS.Infrastructure.Persistence.Context
                     ConcurrencyStamp = Guid.NewGuid().ToString()
                 }
             );
+
+            // Map ApplicationUser to AspNetUsers table
+            modelBuilder.Entity<ApplicationUser>(entity =>
+            {
+                entity.ToTable("AspNetUsers"); // Maps to the existing AspNetUsers table
+                entity.Property(e => e.VoterId).IsRequired().HasMaxLength(50);
+                entity.Property(e => e.Name).IsRequired().HasMaxLength(100);
+                entity.Property(e => e.FathersName).IsRequired().HasMaxLength(100);
+                entity.Property(e => e.Gender).IsRequired();
+                entity.Property(e => e.DateOfBirth).IsRequired();
+                entity.Property(e => e.Address).IsRequired().HasMaxLength(200);
+                entity.Property(e => e.MobileNumber).IsRequired().HasMaxLength(15);
+            });
 
             // Election entity
             modelBuilder.Entity<Elections>(entity =>
@@ -208,4 +222,3 @@ namespace OnlineVotingS.Infrastructure.Persistence.Context
             });
         }
     }
-}

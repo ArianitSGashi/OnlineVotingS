@@ -4,6 +4,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using OnlineVotingS.Domain.Interfaces;
 using OnlineVotingS.Infrastructure.Persistence.Context;
+using OnlineVotingS.Domain.Models;
 using OnlineVotingS.Infrastructure.Repositories;
 
 namespace OnlineVotingS.Infrastructure;
@@ -18,9 +19,9 @@ public static class Startup
             options.UseSqlServer(connectionString, b => b.MigrationsAssembly("OnlineVotingS.Infrastructure")));
 
         // Setting Up Identity
-        services.AddIdentityCore<IdentityUser>()
+        services.AddIdentityCore<ApplicationUser>()
             .AddRoles<IdentityRole>()
-            .AddTokenProvider<DataProtectorTokenProvider<IdentityUser>>("OnlineVotingS")
+            .AddTokenProvider<DataProtectorTokenProvider<ApplicationUser>>("OnlineVotingS")
             .AddEntityFrameworkStores<ApplicationDbContext>()
             .AddDefaultTokenProviders();
 
