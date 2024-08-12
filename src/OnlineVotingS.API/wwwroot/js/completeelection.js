@@ -11,5 +11,6 @@
     // Show sidebar initially
     toggleSidebar();
 
+    // Close sidebar if clicked outside
 
 });

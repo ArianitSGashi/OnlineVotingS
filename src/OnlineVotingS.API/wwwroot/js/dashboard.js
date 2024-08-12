@@ -13,7 +13,7 @@
         {
             title: 'VOTER',
             actions: [
-                { label: 'Add Voter', url: 'https://localhost:7098/Admin/Voter', onClick: () => navigateTo('https://localhost:7098/Admin/Voter') },
+                { label: 'Add Voter', url: '/Admin/Voter', onClick: () => navigateTo('/Admin/Voter') },
                 { label: 'Edit/Delete Voter', url: '@Url.Action("Voter", "Admin")', onClick: toggleSidebar },
                 { label: 'View Voter', url: '@Url.Action("Voter", "Admin")', onClick: toggleSidebar }
             ],
@@ -31,9 +31,9 @@
         {
             title: 'ELECTION',
             actions: [
-                { label: 'Generate Election', url: 'javascript:void(0)', onClick: toggleSidebar },
-                { label: 'Modify Election', url: 'javascript:void(0)', onClick: toggleSidebar },
-                { label: 'Complete Election', url: 'javascript:void(0)', onClick: toggleSidebar }
+                { label: 'Generate Election', url: '/Admin/GenerateElection', onClick: () => navigateTo('/Admin/GenerateElection') },
+                { label: 'Modify Election', url: '/Admin/GenerateElection', onClick: () => navigateTo('/Admin/GenerateElection') },
+                { label: 'Complete Election', url: '/Admin/CompleteElection', onClick: () => navigateTo('/Admin/CompleteElection') },
             ],
             icon: 'fa-check-to-slot',
         },

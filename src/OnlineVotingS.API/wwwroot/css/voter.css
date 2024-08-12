@@ -1,45 +1,56 @@
-﻿#sidebar {
+﻿/* Sidebar Styles */
+#sidebar {
     top: 0;
-    left: -250px;
+    left: -250px; /* Sidebar starts off-screen */
     width: 250px;
     height: 100vh;
-    background-color: #343a40;
-    transition: all 0.3s ease-in-out;
+    background-color: #232728; /* Solid color with no transparency */
     position: fixed;
     z-index: 1000;
     padding-top: 60px;
+    transition: all 0.3s ease-in-out;
 }
 
     #sidebar.active {
         left: 0;
     }
 
-    #sidebar ul {
-        list-style: none;
-        padding: 0;
-    }
-
-        #sidebar ul li {
-            padding: 15px 10px;
-            border-bottom: 1px solid #474f57;
-        }
-
-            #sidebar ul li a {
-                color: #fff;
-                text-decoration: none;
-                display: block;
-            }
-
-                #sidebar ul li a:hover {
-                    background-color: #495057;
-                    border-radius: 4px;
-                }
-
-    #sidebar h5 {
-        color: #fff;
-    }
-
+/* Sidebar-specific overlay handling */
 body.overlay {
-    overflow: hidden;
     position: relative;
+}
+
+/* Body and main content styles */
+body {
+    padding-left: 250px; /* Adjust this value to the sidebar width */
+    transition: padding-left 0.3s ease-in-out;
+    overflow-y: auto; /* Ensure vertical scrolling is enabled */
+}
+
+#sidebar.active ~ body {
+    padding-left: 0;
+}
+
+/* Adjust main content to account for the sidebar */
+.main-content {
+    margin-left: 250px; /* Default margin when sidebar is visible */
+    transition: margin-left 0.3s ease-in-out;
+    padding: 20px;
+}
+
+#sidebar.active ~ .main-content {
+    margin-left: 0; /* Adjust when sidebar is hidden */
+}
+
+/* Ensure scrolling works vertically */
+html, body {
+    height: 100%;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Main content should grow to fill the available space */
+.main-content {
+    flex: 1;
 }
