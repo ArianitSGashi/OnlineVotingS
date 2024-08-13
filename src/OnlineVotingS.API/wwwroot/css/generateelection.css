@@ -1,16 +1,28 @@
-﻿.form-control {
+﻿body {
+    background-color: #f8f9fa;
+}
+
+.form-control {
     margin-bottom: 20px;
+    font-size: 0.875rem;
+    padding: 8px 10px;
+    border-radius: 5px;
 }
 
 .form-container {
-    background-color: #f8f9fa;
+    background-color: #ffffff;
     padding: 30px;
     border-radius: 10px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    max-width: 800px;
-    margin: 0 auto;
+    max-width: 700px;
+    margin: 40px auto;
+    margin-left: auto;
+    margin-right: 400px; /* Moves the form to the right */
+    text-align: left;
 }
 
 .btn-primary {
+    padding: 8px 16px;
+    font-size: 0.875rem;
     margin-right: 10px;
 }
