@@ -31,9 +31,9 @@
         {
             title: 'ELECTION',
             actions: [
-                { label: 'Generate Election', url: '/Admin/GenerateElection', onClick: () => navigateTo('/Admin/GenerateElection') },
-                { label: 'Modify Election', url: '/Admin/GenerateElection', onClick: () => navigateTo('/Admin/GenerateElection') },
-                { label: 'Complete Election', url: '/Admin/CompleteElection', onClick: () => navigateTo('/Admin/CompleteElection') },
+                { label: 'Generate Election', url: '/Election/GenerateElection', onClick: () => navigateTo('/Election/GenerateElection') },
+                { label: 'Modify Election', url: '/Election/GenerateElection', onClick: () => navigateTo('/Election/GenerateElection') },
+                { label: 'Complete Election', url: '/Election/CompleteElection', onClick: () => navigateTo('/Election/CompleteElection') },
             ],
             icon: 'fa-check-to-slot',
         },
@@ -49,7 +49,7 @@
         {
             title: 'RESULT',
             actions: [
-                { label: 'Show Results', url: 'javascript:void(0)', onClick: toggleSidebar },
+                { label: 'Show Results', url: '/Result/ShowResult', onClick: () => navigateTo('/Result/ShowResult') },
                 { label: 'Publish Results', url: 'javascript:void(0)', onClick: toggleSidebar },
                 { label: 'Download Report', url: 'javascript:void(0)', onClick: toggleSidebar }
             ],

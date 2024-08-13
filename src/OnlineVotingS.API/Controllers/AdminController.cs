@@ -1,23 +1,19 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 
-namespace OnlineVotingS.API.Controllers;
-
-public class AdminController : Controller
+namespace OnlineVotingS.API.Controllers
 {
-    public IActionResult Dashboard()
+    public class AdminController : Controller
     {
-        return View();
-    }
-    public IActionResult Voter()
-    {
-        return View();
-    }
-    public IActionResult GenerateElection()
-    {
-        return View("Election/GenerateElection");
-    }
-    public IActionResult CompleteElection()
-    {
-        return View("Election/CompleteElection");
+        public IActionResult Dashboard()
+        {
+            return View();
+        }
+
+        public IActionResult Voter()
+        {
+            return View();
+        }
+
+        // Removed GenerateElection and CompleteElection methods
     }
 }
