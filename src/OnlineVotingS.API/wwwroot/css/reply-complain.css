@@ -1,0 +1,34 @@
+﻿.container-with-sidebar {
+    margin-left: 250px; /* Space for the sidebar */
+    padding: 20px;
+    max-width: 90%;
+}
+
+.form-container {
+    margin-top: 20px; /* Space between the breadcrumb and the form */
+}
+
+button.btn-primary {
+    background-color: #007bff;
+    border-color: #007bff;
+}
+
+    button.btn-primary:hover {
+        background-color: #0056b3;
+        border-color: #004085;
+    }
+
+label.form-label {
+    font-weight: bold;
+}
+
+textarea.form-control {
+    resize: none; /* Prevent resizing of the textarea */
+}
+
+form {
+    padding: 15px;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+}

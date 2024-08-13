@@ -1,0 +1,37 @@
+﻿@model OnlineVotingS.API.Models.ComplaintViewModels.ReplyComplaintViewModel
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reply to Complaint</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet"> <!-- Bootstrap CSS -->
+    <link href="~/css/new-sidebar.css" rel="stylesheet"> <!-- Link to the sidebar CSS file -->
+    <link href="~/css/reply-complain.css" rel="stylesheet"> <!-- Link to the new CSS file -->
+</head>
+<body>
+    <!-- Sidebar Menu -->
+    @Html.Partial("_NewSidebar")
+
+    <div class="container-with-sidebar bg-light p-4 rounded">
+        <h4 class="mb-4">Reply to Complaint</h4>
+        <form method="post" action="/Complain/ReplyComplain" class="form-container">
+            <div class="mb-3">
+                <label for="complaintId" class="form-label">Complaint</label>
+                @Html.DropDownListFor(m => m.ComplaintID, Model.Complaints, "Select complaint no.", new { @class = "form-select" })
+                @Html.ValidationMessageFor(m => m.ComplaintID, "", new { @class = "text-danger" })
+            </div>
+            <div class="mb-3">
+                <label for="replyText" class="form-label">Reply</label>
+                @Html.TextAreaFor(m => m.ReplyText, new { @class = "form-control", placeholder = "Reply", rows = "4" })
+                @Html.ValidationMessageFor(m => m.ReplyText, "", new { @class = "text-danger" })
+            </div>
+            <button type="submit" class="btn btn-primary">Reply</button>
+        </form>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

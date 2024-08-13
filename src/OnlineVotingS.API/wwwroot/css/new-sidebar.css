@@ -1,0 +1,34 @@
+﻿/* Sidebar styles */
+.sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 250px;
+    height: 100%;
+    background-color: #343a40; /* Dark background */
+    z-index: 1000;
+    padding-top: 20px;
+}
+
+.sidebar-header {
+    padding: 15px;
+    background-color: #212529; /* Slightly darker background for the header */
+    color: white;
+    text-align: center;
+}
+
+.nav-link {
+    padding: 10px 20px;
+    color: #ffffff;
+    display: block;
+}
+
+    .nav-link:hover {
+        background-color: #495057;
+        text-decoration: none;
+    }
+
+.container-with-sidebar {
+    margin-left: 250px; /* Make space for the sidebar */
+    padding: 20px;
+}
