@@ -1,0 +1,85 @@
+﻿body {
+    background-image: url('/images/Election.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    color: white;
+    margin: 0;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+.navbar {
+    top: 0;
+    width: 100%;
+    background-color: #404040;
+    padding: 0 15px;
+    z-index: 1000;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.btn-action{
+    background-color: transparent;
+    border-radius: 15px;
+    color: white;
+    border-color: darkred;
+}
+.navbar-nav {
+    flex-direction: row;
+    margin: 0 auto;
+    width: auto;
+}
+.navbar-nav .nav-item {
+    margin: 0 10px;
+}
+.navbar-brand {
+    color: white;
+}
+.navbar-nav .nav-link {
+    color: white !important;
+}
+.navbar-end {
+    display: flex;
+    align-items: center;
+}
+.btn-primary {
+    color: white;
+    background-color: #007bff;
+    border-color: #007bff;
+}
+.btn-primary:hover {
+    color: white;
+    background-color: #0056b3;
+    border-color: #004085;
+}
+.dropdown-menu {
+    background-color: #404040;
+}
+.dropdown-item {
+    color: white;
+}
+.dropdown-item:hover {
+    background-color: #333333;
+}
+.main-content {
+    margin-top: 70px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: calc(100vh - 70px);
+    text-align: center;
+}
+.main-content h1 {
+    margin-bottom: 20px;
+}
+.main-content p {
+    margin-bottom: 20px;
+    font-size: 1.2rem;
+}
+.main-content button {
+    font-size: 1rem;
+}
