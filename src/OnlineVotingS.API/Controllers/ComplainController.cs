@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using OnlineVotingS.API.Models.ComplaintViewModels;
 using OnlineVotingS.Domain.Entities;
 
-namespace OnlineVotingS.API.Controllers
-{
+namespace OnlineVotingS.API.Controllers;
+
     public class ComplainController : Controller
     {
         [HttpGet]
@@ -23,4 +23,3 @@ namespace OnlineVotingS.API.Controllers
             return View("~/Views/Admin/Complain/ReplyComplain.cshtml", model);
         }
     }
-}
