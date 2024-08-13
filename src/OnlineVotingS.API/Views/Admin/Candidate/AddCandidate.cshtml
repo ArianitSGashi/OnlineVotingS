@@ -1,0 +1,66 @@
+﻿@using OnlineVotingS.Domain.Enums;
+@model OnlineVotingS.API.Models.CandidateViewModels.AddCandidateViewModel
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Candidate</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet"> <!-- Bootstrap CSS -->
+    <link href="~/css/new-sidebar.css" rel="stylesheet"> <!-- Link to the sidebar CSS file -->
+    <link href="~/css/add-candidate.css" rel="stylesheet"> <!-- Link to the new CSS file -->
+</head>
+<body>
+    <!-- Sidebar Menu -->
+    @Html.Partial("_NewSidebar")
+
+    <div class="container-with-sidebar bg-light p-4 rounded">
+        <h4 class="mb-4">Add Candidate</h4>
+        <form method="post" action="/AdminCandidate/AddCandidate" class="form-container">
+            <div class="mb-3">
+                <label for="candidateId" class="form-label">Candidate ID</label>
+                @Html.TextBoxFor(m => m.CandidateID, new { @class = "form-control", required = true })
+                @Html.ValidationMessageFor(m => m.CandidateID, "", new { @class = "text-danger" })
+            </div>
+            <div class="form-group">
+                <label for="electionId" class="form-label">Election ID</label>
+                @Html.DropDownListFor(m => m.ElectionID, Model.Elections, "Select Election", new { @class = "form-control select-dropdown", required = true })
+                @Html.ValidationMessageFor(m => m.ElectionID, "", new { @class = "text-danger" })
+            </div>
+            <div class="mb-3">
+                <label for="fullName" class="form-label">Full Name</label>
+                @Html.TextBoxFor(m => m.FullName, new { @class = "form-control", required = true })
+                @Html.ValidationMessageFor(m => m.FullName, "", new { @class = "text-danger" })
+            </div>
+            <div class="mb-3">
+                <label for="party" class="form-label">Party</label>
+                @Html.TextBoxFor(m => m.Party, new { @class = "form-control", required = true })
+                @Html.ValidationMessageFor(m => m.Party, "", new { @class = "text-danger" })
+            </div>
+            <div class="mb-3">
+                <label for="description" class="form-label">Description</label>
+                @Html.TextBoxFor(m => m.Description, new { @class = "form-control", required = true })
+                @Html.ValidationMessageFor(m => m.Description, "", new { @class = "text-danger" })
+            </div>
+            <div class="mb-3">
+                <label for="income" class="form-label">Income</label>
+                @Html.TextBoxFor(m => m.Income, new { @class = "form-control", required = true })
+                @Html.ValidationMessageFor(m => m.Income, "", new { @class = "text-danger" })
+            </div>
+            <div class="mb-3">
+                <label for="works" class="form-label">Works</label>
+                @Html.TextBoxFor(m => m.Works, new { @class = "form-control", required = true })
+                @Html.ValidationMessageFor(m => m.Works, "", new { @class = "text-danger" })
+            </div>
+            <button type="submit" class="btn btn-primary">Add Candidate</button>
+        </form>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
