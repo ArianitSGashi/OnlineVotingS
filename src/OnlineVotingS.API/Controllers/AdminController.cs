@@ -12,12 +12,4 @@ public class AdminController : Controller
     {
         return View();
     }
-    public IActionResult GenerateElection()
-    {
-        return View("Election/GenerateElection");
-    }
-    public IActionResult CompleteElection()
-    {
-        return View("Election/CompleteElection");
-    }
 }
