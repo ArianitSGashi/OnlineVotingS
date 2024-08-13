@@ -9,14 +9,17 @@ public class AdminVoterController : Controller
     {
         return View("~/Views/Admin/AdminVoter/AddVoter.cshtml");
     }
+    
     public IActionResult DeleteVoter()
     {
         return View("~/Views/Admin/AdminVoter/DeleteVoter.cshtml");
     }
+    
     public IActionResult EditVoter()
     {
         return View("~/Views/Admin/AdminVoter/EditVoter.cshtml");
     }
+    
     public IActionResult ViewVoters()
     {
         var model = new List<ViewVoterViewModel>();
