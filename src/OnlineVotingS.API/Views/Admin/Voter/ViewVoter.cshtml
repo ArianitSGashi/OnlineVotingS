@@ -1,0 +1,65 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View Voters</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="~/css/viewvoter.css">
+</head>
+<body>
+    <nav class="navbar navbar-dark bg-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">DIGITAL VOT<span style="color:green;">ING</span></a>
+            <div class="d-flex align-items-center">
+                <span class="text-white me-3">MIKASA</span>
+                <img src="https://via.placeholder.com/30" alt="Profile Image" class="rounded-circle">
+            </div>
+        </div>
+    </nav>
+
+    @Html.Partial("_Sidebar")
+
+    <div class="container mt-5">
+        <div class="card">
+            <div class="card-header">
+                <h3>View Voters</h3>
+            </div>
+            <div class="card-body">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="@Url.Action("Dashboard", "Admin")">Home</a></li>
+                        <li class="breadcrumb-item"><a href="#">Data</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">View Voters</li>
+                    </ol>
+                </nav>
+                <div class="form-group">
+                    <label for="search">Search Voters:</label>
+                    <input type="text" id="search" class="form-control" placeholder="Search by Voter ID, Name, etc.">
+                </div>
+
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Photo</th>
+                            <th>Voter ID</th>
+                            <th>Full Name</th>
+                            <th>Gender</th>
+                            <th>Date of Birth</th>
+                            <th>State</th>
+                            <th>Parliamentary</th>
+                            <th>Assembly</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/viewvoter.js"></script>
+</body>
+</html>
