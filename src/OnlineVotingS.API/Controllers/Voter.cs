@@ -16,7 +16,6 @@ namespace OnlineVotingS.API.Controllers
         {
             if (ModelState.IsValid)
             {
-
                 return RedirectToAction("ViewVoter");
             }
             return View(model);
@@ -33,7 +32,6 @@ namespace OnlineVotingS.API.Controllers
             {
                 VoterId = id
             };
-
             return View("Voter/EditDeleteVoter", viewModel);
         }
 
@@ -42,7 +40,6 @@ namespace OnlineVotingS.API.Controllers
         {
             if (ModelState.IsValid)
             {
-
                 return RedirectToAction("ViewVoter");
             }
             return View("EditDeleteVoter", model);
@@ -61,12 +58,10 @@ namespace OnlineVotingS.API.Controllers
         [HttpGet]
         public IActionResult ViewVoter(string searchQuery)
         {
-
             var viewModel = new ViewVoterViewModel
             {
                 SearchQuery = searchQuery,
             };
-
             return View("Voter/ViewVoter", viewModel);
         }
     }
