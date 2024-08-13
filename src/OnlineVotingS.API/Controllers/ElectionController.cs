@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using OnlineVotingS.API.Models;
-namespace YourNamespace.Controllers;
+
+namespace OnlineVotingS.API.Controllers;
+
 public class ElectionController : Controller
 {
     public IActionResult GenerateElection()

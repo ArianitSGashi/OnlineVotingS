@@ -1,0 +1,76 @@
+﻿@using OnlineVotingS.Domain.Enums;
+@model OnlineVotingS.API.Models.AdminVoterViewModels.AddVoterViewModel
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Voter</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet"> <!-- Bootstrap CSS -->
+    <link href="~/css/new-sidebar.css" rel="stylesheet"> <!-- Link to the sidebar CSS file -->
+    <link href="~/css/add-voter.css" rel="stylesheet"> <!-- Link to the new CSS file -->
+</head>
+<body>
+    <!-- Sidebar Menu -->
+    @Html.Partial("_NewSidebar")
+
+    <div class="container-with-sidebar bg-light p-4 rounded">
+        <h4 class="mb-4">Add Voter</h4>
+        <form method="post" action="/AdminVoter/AddVoter" class="form-container">
+            <div class="mb-3">
+                <label for="voterId" class="form-label">Voter ID</label>
+                @Html.TextBoxFor(m => m.VoterId, new { @class = "form-control", required = true })
+                @Html.ValidationMessageFor(m => m.VoterId, "", new { @class = "text-danger" })
+            </div>
+            <div class="mb-3">
+                <label for="name" class="form-label">Name</label>
+                @Html.TextBoxFor(m => m.Name, new { @class = "form-control", required = true })
+                @Html.ValidationMessageFor(m => m.Name, "", new { @class = "text-danger" })
+            </div>
+            <div class="mb-3">
+                <label for="fathersName" class="form-label">Father's Name</label>
+                @Html.TextBoxFor(m => m.FathersName, new { @class = "form-control", required = true })
+                @Html.ValidationMessageFor(m => m.FathersName, "", new { @class = "text-danger" })
+            </div>
+            <div class="mb-3">
+                <label for="gender" class="form-label">Gender</label>
+                @Html.DropDownListFor(m => m.Gender, Enum.GetValues(typeof(Gender)).Cast<Gender>().Select(e => new SelectListItem { Value = e.ToString(), Text = e.ToString() }), "Select Gender", new { @class = "form-control", required = true })
+                @Html.ValidationMessageFor(m => m.Gender, "", new { @class = "text-danger" })
+            </div>
+            <div class="mb-3">
+                <label for="dateOfBirth" class="form-label">Date of Birth</label>
+                @Html.TextBoxFor(m => m.DateOfBirth, "{0:yyyy-MM-dd}", new { @class = "form-control", type = "date", required = true })
+                @Html.ValidationMessageFor(m => m.DateOfBirth, "", new { @class = "text-danger" })
+            </div>
+            <div class="mb-3">
+                <label for="address" class="form-label">Address</label>
+                @Html.TextBoxFor(m => m.Address, new { @class = "form-control", required = true })
+                @Html.ValidationMessageFor(m => m.Address, "", new { @class = "text-danger" })
+            </div>
+            <div class="mb-3">
+                <label for="mobileNumber" class="form-label">Mobile Number</label>
+                @Html.TextBoxFor(m => m.MobileNumber, new { @class = "form-control", required = true })
+                @Html.ValidationMessageFor(m => m.MobileNumber, "", new { @class = "text-danger" })
+            </div>
+            <div class="mb-3">
+                <label for="password" class="form-label">Password</label>
+                @Html.PasswordFor(m => m.Password, new { @class = "form-control", required = true })
+                @Html.ValidationMessageFor(m => m.Password, "", new { @class = "text-danger" })
+            </div>
+            <div class="mb-3">
+                <label for="confirmPassword" class="form-label">Confirm Password</label>
+                @Html.PasswordFor(m => m.ConfirmPassword, new { @class = "form-control", required = true })
+                @Html.ValidationMessageFor(m => m.ConfirmPassword, "", new { @class = "text-danger" })
+            </div>
+            <button type="submit" class="btn btn-primary">Add Voter</button>
+        </form>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
