@@ -5,16 +5,32 @@
     max-width: 90%;
 }
 
-/* Container for the table */
-.table-container {
-    margin-top: 20px; /* Space between the breadcrumb and the table */
-    background-color: #f8f9fa; /* Light gray background */
-    padding: 15px;
-    border-radius: 8px; /* Rounded corners for the container */
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+/* Breadcrumb Navigation */
+.breadcrumb {
+    background-color: #f8f9fa; /* Light gray background for breadcrumb */
+    border-radius: 0.25rem; /* Rounded corners */
 }
 
-/* General table styles */
+/* Search Bar */
+.input-group.mb-4 {
+    margin-bottom: 20px;
+}
+
+.input-group .form-control {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+}
+
+.input-group .btn-primary {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+}
+
+/* Complaints Table */
+.table-responsive {
+    margin-top: 20px; /* Space between search bar and table */
+}
+
 table.table {
     width: 100%; /* Ensure table takes full width of the container */
     margin-bottom: 1rem;
@@ -25,37 +41,20 @@ table.table {
     overflow: hidden; /* Hide overflow */
 }
 
+    table.table th, table.table td {
+        padding: 12px;
+        vertical-align: middle; /* Align content vertically in the middle */
+        text-align: center; /* Center align text in cells */
+        white-space: nowrap; /* Prevent text from wrapping */
+    }
+
     /* Table header styles */
     table.table th {
         font-weight: 600;
         color: #ffffff; /* Set text color to white */
         background-color: #343a40; /* Darker background for headers */
         border-bottom: 2px solid #dee2e6;
-        padding: 12px;
-        text-align: center; /* Center align text in headers */
-        border-left: 1px solid #dee2e6; /* Light borders between columns */
-        white-space: nowrap; /* Prevent text from wrapping */
     }
-
-        /* Remove left border from first header cell */
-        table.table th:first-child {
-            border-left: none;
-        }
-
-    /* Table cell styles */
-    table.table td {
-        padding: 12px;
-        vertical-align: middle; /* Align content vertically in the middle */
-        border-top: 1px solid #dee2e6;
-        text-align: center; /* Center align text in cells */
-        border-left: 1px solid #dee2e6; /* Light borders between columns */
-        white-space: nowrap; /* Prevent text from wrapping */
-    }
-
-        /* Remove left border from first cell in each row */
-        table.table td:first-child {
-            border-left: none;
-        }
 
 /* Row striping */
 .table-striped tbody tr:nth-of-type(odd) td {
@@ -68,11 +67,11 @@ th:nth-child(1), td:nth-child(1) {
 }
 
 th:nth-child(2), td:nth-child(2) {
-    width: 20%; /* Adjust width for User ID */
+    width: 15%; /* Adjust width for User ID */
 }
 
 th:nth-child(3), td:nth-child(3) {
-    width: 15%; /* Adjust width for Election ID */
+    width: 10%; /* Adjust width for Election ID */
 }
 
 th:nth-child(4), td:nth-child(4) {
@@ -84,5 +83,5 @@ th:nth-child(5), td:nth-child(5) {
 }
 
 th:nth-child(6), td:nth-child(6) {
-    width: 15%; /* Adjust width for Complaint Date */
+    width: 20%; /* Adjust width for Complaint Date */
 }

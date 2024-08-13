@@ -13,9 +13,10 @@
         {
             title: 'VOTER',
             actions: [
-                { label: 'Add Voter', url: '/Admin/Voter', onClick: () => navigateTo('/Admin/Voter') },
-                { label: 'Edit/Delete Voter', url: '@Url.Action("Voter", "Admin")', onClick: toggleSidebar },
-                { label: 'View Voter', url: '@Url.Action("Voter", "Admin")', onClick: toggleSidebar }
+                { label: 'Add Voter', url: '/AdminVoter/AddVoter', onClick: () => navigateTo('/AdminVoter/AddVoter') },
+                { label: 'Edit Voter', url: '/AdminVoter/EditVoter', onClick: () => navigateTo('/AdminVoter/EditVoter') },
+                { label: 'Delete Voter', url: '/AdminVoter/DeleteVoter', onClick: () => navigateTo('/AdminVoter/DeleteVoter') },
+                { label: 'View Voters', url: '/AdminVoter/ViewVoters', onClick: () => navigateTo('/AdminVoter/ViewVoters') }
             ],
             icon: 'fa-user',
         },
@@ -60,7 +61,7 @@
             actions: [
                 { label: 'View Complaints', url: '/Complain/ViewComplain', onClick: () => navigateTo('/Complain/ViewComplain') },
                 { label: 'Add Complaint', url: 'javascript:void(0)', onClick: toggleSidebar },
-                { label: 'Resolve Complaint', url: '/Complain/ReplyComplain', onClick: () => navigateTo('/Complain/ReplyComplain') }
+                { label: 'Reply Complaint', url: '/Complain/ReplyComplain', onClick: () => navigateTo('/Complain/ReplyComplain') }
             ],
             icon: 'fa-envelope',
         },

@@ -1,0 +1,35 @@
+﻿@model OnlineVotingS.API.Models.AdminVoterViewModels.DeleteVoterViewModel
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Delete Voter</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet"> <!-- Bootstrap CSS -->
+    <link href="~/css/new-sidebar.css" rel="stylesheet"> <!-- Link to the sidebar CSS file -->
+    <link href="~/css/delete-voter.css" rel="stylesheet"> <!-- Link to the new CSS file -->
+</head>
+<body>
+    <!-- Sidebar Menu -->
+    @Html.Partial("_NewSidebar")
+
+    <div class="container-with-sidebar bg-light p-4 rounded">
+        <h4 class="mb-4">Delete Voter</h4>
+        <form method="post" action="/AdminVoter/DeleteVoter" class="form-container">
+            <div class="mb-3">
+                <label for="voterId" class="form-label">Voter ID</label>
+                @Html.TextBoxFor(m => m.VoterId, new { @class = "form-control", required = true })
+                @Html.ValidationMessageFor(m => m.VoterId, "", new { @class = "text-danger" })
+            </div>
+            <button type="submit" class="btn btn-danger">Delete Voter</button>
+        </form>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
