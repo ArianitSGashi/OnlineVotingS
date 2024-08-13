@@ -11,8 +11,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Generate Election</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="wwwroot/css/completeelection.css">
-    <link rel="stylesheet" href="~/css/voter.css">
+    <link rel="stylesheet" href="~/css/generateelection.css">
+    <link href="~/css/new-sidebar.css" rel="stylesheet"> <!-- Link to the sidebar CSS file -->
 </head>
 <body>
     <nav class="navbar navbar-dark bg-dark">
@@ -28,26 +28,26 @@
     </nav>
 
     <!-- Sidebar Menu -->
-    @Html.Partial("_Sidebar")
+    @Html.Partial("_NewSidebar")
 
     <div class="form-container">
         <h4>Generate Election</h4>
         @using (Html.BeginForm("GenerateElection", "Election", FormMethod.Post))
         {
             <div class="form-group">
-                @Html.LabelFor(model => model.Title)
+                @Html.LabelFor(model => model.Title, "Election Title:")
                 @Html.TextBoxFor(model => model.Title, new { @class = "form-control", placeholder = "Enter Title" })
             </div>
             <div class="form-group">
-                @Html.LabelFor(model => model.Description)
+                @Html.LabelFor(model => model.Description, "Election Description:")
                 @Html.TextBoxFor(model => model.Description, new { @class = "form-control", placeholder = "Enter Description" })
             </div>
             <div class="form-group">
-                @Html.LabelFor(model => model.StartDate)
+                @Html.LabelFor(model => model.StartDate, "Start Date:")
                 @Html.TextBoxFor(model => model.StartDate, "{0:yyyy-MM-dd}", new { @class = "form-control", @type = "date" })
             </div>
             <div class="form-group">
-                @Html.LabelFor(model => model.EndDate)
+                @Html.LabelFor(model => model.EndDate, "End Date:")
                 @Html.TextBoxFor(model => model.EndDate, "{0:yyyy-MM-dd}", new { @class = "form-control", @type = "date" })
             </div>
             <button type="submit" class="btn btn-primary">Generate Election</button>
@@ -57,6 +57,5 @@
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/generateelection.js"></script>
 </body>
 </html>

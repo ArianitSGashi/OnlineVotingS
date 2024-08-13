@@ -3,7 +3,6 @@
 @{
     Layout = null;
 }
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -11,10 +10,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Complete Election</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="wwwroot/css/completeelection.css">
-    <link rel="stylesheet" href="~/css/voter.css">
-
+    <link rel="stylesheet" href="~/css/completeelection.css" />
+    <link href="~/css/new-sidebar.css" rel="stylesheet"> <!-- Link to the sidebar CSS file -->
 </head>
+
 <body>
     <nav class="navbar navbar-dark bg-dark">
         <div class="container-fluid">
@@ -29,28 +28,21 @@
     </nav>
 
     <!-- Sidebar Menu -->
-    @Html.Partial("_Sidebar")
+    @Html.Partial("_NewSidebar")
 
-    <div class="container">
-        <div class="card mt-5">
-            <div class="card-header">
-                <h3>Complete Election</h3>
+    <div class="form-container">
+        <h4>Complete Election</h4>
+        @using (Html.BeginForm("CompleteElection", "Election", FormMethod.Post))
+        {
+            <div class="form-group">
+                @Html.LabelFor(model => model.SelectedElectionID, "Select Election to Complete:")
+                @Html.DropDownListFor(model => model.SelectedElectionID, Model.OngoingElections, "Select an election", new { @class = "form-control" })
             </div>
-            <div class="card-body">
-                @using (Html.BeginForm("CompleteElection", "Election", FormMethod.Post))
-                {
-                    <div class="form-group">
-                        @Html.LabelFor(model => model.SelectedElectionID, "Select Election to Complete:")
-                        @Html.DropDownListFor(model => model.SelectedElectionID, Model.OngoingElections, "Select an election", new { @class = "form-control" })
-                    </div>
-                    <button type="submit" class="btn btn-primary">Complete Election</button>
-                }
-            </div>
-        </div>
+            <button type="submit" class="btn btn-primary">Complete Election</button>
+        }
     </div>
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/completeelection.js"></script>
 </body>
 </html>

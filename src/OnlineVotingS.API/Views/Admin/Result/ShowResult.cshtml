@@ -12,7 +12,7 @@
     <title>Show Result</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="~/css/showresult.css">
-    <link rel="stylesheet" href="~/css/voter.css">
+    <link href="~/css/new-sidebar.css" rel="stylesheet"> <!-- Link to the sidebar CSS file -->
 
 </head>
 <body>
@@ -29,7 +29,7 @@
     </nav>
 
     <!-- Sidebar Menu -->
-    @await Html.PartialAsync("_Sidebar")
+    @Html.Partial("_NewSidebar")
 
     <div class="form-container">
         <h4>Show Result</h4>
