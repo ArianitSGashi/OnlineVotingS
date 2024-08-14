@@ -23,9 +23,10 @@
         {
             title: 'CANDIDATE',
             actions: [
-                { label: 'Add Candidate', url: 'javascript:void(0)', onClick: toggleSidebar },
-                { label: 'Edit/Delete Candidate', url: 'javascript:void(0)', onClick: toggleSidebar },
-                { label: 'View Candidate', url: 'javascript:void(0)', onClick: toggleSidebar }
+                { label: 'Add Candidate', url: '/Candidate/AddCandidate', onClick: () => navigateTo('/Candidate/AddCandidate') },
+                { label: 'Edit Candidate', url: '/Candidate/EditCandidate', onClick: () => navigateTo('/Candidate/EditCandidate') },
+                { label: 'Delete Candidate', url: '/Candidate/DeleteCandidate', onClick: () => navigateTo('/Candidate/DeleteCandidate') },
+                { label: 'View Candidats', url: '/Candidate/ViewCandidates', onClick: () => navigateTo('/Candidate/ViewCandidates') }
             ],
             icon: 'fa-hand-paper',
         },
