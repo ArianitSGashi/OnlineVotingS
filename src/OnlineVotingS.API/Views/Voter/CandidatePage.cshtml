@@ -1,0 +1,55 @@
+﻿@model IEnumerable<OnlineVotingS.API.Models.CandidateViewModel>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Candidates</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="~/css/candidate.css" rel="stylesheet">
+    <link href="~/css/footer.css" rel="stylesheet">
+</head>
+<body>
+    @Html.Partial("_NavbarVoter");
+    <div class="container">
+        <h2 class="mt-4">Candidates</h2>
+        <div class="search-bar mt-4">
+            <input type="text" id="candidateSearch" placeholder="Search by Candidate ID, Full Name, or Party" class="form-control">
+            <button class="btn btn-primary mt-2">Search</button>
+        </div>
+        <table class="table table-hover mt-4">
+            <thead class="thead-dark">
+                <tr>
+                    <th>Candidate ID</th>
+                    <th>Election ID</th>
+                    <th>Full Name</th>
+                    <th>Party</th>
+                    <th>Description</th>
+                    <th>Income</th>
+                    <th>Works</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var candidate in Model)
+                {
+                    <tr>
+                        <td>@candidate.CandidateID</td>
+                        <td>@candidate.ElectionID</td>
+                        <td>@candidate.FullName</td>
+                        <td>@candidate.Party</td>
+                        <td>@candidate.Description</td>
+                        <td>@candidate.Income</td>
+                        <td>@candidate.Works</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    @Html.Partial("_Footer")
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
