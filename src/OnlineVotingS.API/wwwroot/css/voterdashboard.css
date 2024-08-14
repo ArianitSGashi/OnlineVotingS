@@ -1,0 +1,139 @@
+﻿/* Body Style */
+body {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+    color: #fff;
+    background-color: #0c0e1c;
+}
+
+/* Navbar */
+.navbar {
+    background-color: #0c0e1c;
+    padding: 1rem 2rem;
+}
+
+.navbar-brand {
+    color: #fff;
+    font-weight: bold;
+    font-size: 1.5rem;
+}
+
+.navbar-nav .nav-link {
+    color: #fff;
+    margin-left: 1rem;
+    font-size: 1.1rem;
+}
+
+.navbar-dark .navbar-toggler-icon {
+    background-image: url("data:image/svg+xml;charset=utf8,%3Csvg viewBox='0 0 30 30' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath stroke='rgba%2899, 100, 99, 0.5%29' stroke-width='2' linecap='round' linejoin='round' d='M4 7h22M4 15h22M4 23h22'/%3E%3C/svg%3E");
+}
+
+/* Hero Section */
+.hero-section {
+    background-image: url('/images/Election.jpg'); /* Replace with your image path */
+    background-size: cover;
+    background-position: center;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+    .hero-section .text-highlight {
+        color: #d71921; /* Red color for emphasis */
+    }
+
+    .hero-section h1 {
+        font-size: 3rem;
+        font-weight: bold;
+        margin-bottom: 1rem;
+    }
+
+    .hero-section .lead {
+        font-size: 1.5rem;
+        margin-bottom: 2rem;
+    }
+
+    .hero-section .btn-outline-light {
+        border: 2px solid #fff;
+        padding: 10px 30px;
+        font-size: 1.2rem;
+        color: #fff;
+        text-transform: uppercase;
+        transition: background-color 0.3s, color 0.3s;
+    }
+
+        .hero-section .btn-outline-light:hover {
+            background-color: #d71921;
+            border-color: #d71921;
+            color: #fff;
+        }
+
+/* Dropdown Menu */
+.dropdown-menu {
+    background-color: #0c0e1c;
+    border: none;
+}
+
+.dropdown-item {
+    color: #fff;
+}
+
+    .dropdown-item:hover {
+        background-color: #2a2d39;
+    }
+
+/* Footer Style */
+.footer {
+    background-color: #0c0e1c;
+    padding: 1rem 0; /* Reduced padding to make the footer smaller */
+    color: #ffffff;
+    text-align: center;
+    width: 100%;
+}
+
+    .footer h5 {
+        font-weight: 600;
+        margin-bottom: 10px; /* Reduced margin */
+        font-size: 1.1rem; /* Smaller font size */
+    }
+
+    .footer ul {
+        list-style: none;
+        padding-left: 0;
+    }
+
+        .footer ul li {
+            margin-bottom: 5px; /* Reduced margin between list items */
+        }
+
+            .footer ul li a {
+                color: #ffffff;
+                text-decoration: none;
+                transition: color 0.2s;
+                font-size: 0.9rem; /* Smaller font size */
+            }
+
+                .footer ul li a:hover {
+                    color: #d71921;
+                }
+
+        .footer ul.list-inline {
+            padding-left: 0;
+        }
+
+            .footer ul.list-inline li {
+                display: inline;
+                margin-right: 8px; /* Slightly reduced margin between social icons */
+            }
+
+                .footer ul.list-inline li a {
+                    color: #ffffff;
+                    font-size: 18px; /* Smaller icon size */
+                }
+
+                    .footer ul.list-inline li a:hover {
+                        color: #d71921;
+                    }
