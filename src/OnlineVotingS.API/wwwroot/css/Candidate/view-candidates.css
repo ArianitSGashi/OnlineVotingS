@@ -1,88 +1,68 @@
-﻿/* view-voters.css */
-
-/* General container styling */
-.container-with-sidebar {
-    margin-left: 250px; /* Space for the sidebar */
+﻿.container-with-sidebar {
+    margin-left: 250px; 
     padding: 20px;
-    max-width: calc(100% - 250px); /* Adjust the max-width to fit within the remaining space */
+    max-width: calc(100% - 250px); 
 }
-
-/* Headings */
 h4 {
     font-size: 1.75rem;
     color: #343a40;
     margin-bottom: 20px;
     text-align: center;
 }
-
-/* Search bar styling */
 .input-group {
     max-width: 500px;
     margin: 0 auto 30px auto;
 }
-
-    .input-group .form-control {
+.input-group .form-control {
         border-radius: 0.25rem;
         box-shadow: none;
         border: 1px solid #ced4da;
         padding: 0.5rem 1rem;
-    }
-
-    .input-group .btn {
+}
+.input-group .btn {
         border-radius: 0.25rem;
         background-color: #007bff;
         border: none;
         padding: 0.5rem 1.25rem;
-    }
 
-        .input-group .btn:hover {
-            background-color: #0056b3;
-        }
-
-/* Table styling */
+}
+.input-group .btn:hover {
+       background-color: #0056b3;
+}
 table.table {
     width: 100%;
     margin-top: 20px;
     border-collapse: collapse;
 }
-
-    table.table th, table.table td {
+table.table th, table.table td {
         padding: 10px;
         text-align: center;
         vertical-align: middle;
         border: 1px solid #dee2e6;
-    }
-
-    table.table th {
+}
+table.table th {
         background-color: #343a40;
         color: white;
-    }
-
+}
 .table-striped tbody tr:nth-of-type(odd) {
     background-color: #f9f9f9;
 }
-
 .table-striped tbody tr:nth-of-type(even) {
     background-color: #ffffff;
 }
-
 table.table td {
     word-wrap: break-word;
-    max-width: 150px; /* Limit column width */
+    max-width: 150px; 
 }
-
-/* Responsiveness */
 @media (max-width: 768px) {
     .input-group {
         max-width: 100%;
     }
-
-    table.table th, table.table td {
+table.table th, table.table td {
         font-size: 0.875rem;
         padding: 8px;
-    }
-
-    h4 {
+}
+h4 {
         font-size: 1.5rem;
-    }
+}
 }

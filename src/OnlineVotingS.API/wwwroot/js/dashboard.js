@@ -26,7 +26,7 @@
                 { label: 'Add Candidate', url: '/Candidate/AddCandidate', onClick: () => navigateTo('/Candidate/AddCandidate') },
                 { label: 'Edit Candidate', url: '/Candidate/EditCandidate', onClick: () => navigateTo('/Candidate/EditCandidate') },
                 { label: 'Delete Candidate', url: '/Candidate/DeleteCandidate', onClick: () => navigateTo('/Candidate/DeleteCandidate') },
-                { label: 'View Candidats', url: '/Candidate/ViewCandidates', onClick: () => navigateTo('/Candidate/ViewCandidates') }
+                { label: 'View Candidates', url: '/Candidate/ViewCandidates', onClick: () => navigateTo('/Candidate/ViewCandidates') }
             ],
             icon: 'fa-hand-paper',
         },
@@ -34,8 +34,10 @@
             title: 'ELECTION',
             actions: [
                 { label: 'Generate Election', url: '/Election/GenerateElection', onClick: () => navigateTo('/Election/GenerateElection') },
-                { label: 'Modify Election', url: '/Election/GenerateElection', onClick: () => navigateTo('/Election/GenerateElection') },
+                { label: 'Modify Election', url: '/Election/ModifyElection', onClick: () => navigateTo('/Election/ModifyElection') },
                 { label: 'Complete Election', url: '/Election/CompleteElection', onClick: () => navigateTo('/Election/CompleteElection') },
+                { label: 'Delete Election', url: '/Election/DeleteElection', onClick: () => navigateTo('/Election/DeleteElection') },
+                { label: 'View Election', url: '/Election/ViewElection', onClick: () => navigateTo('/Election/ViewElection') },
             ],
             icon: 'fa-check-to-slot',
         },

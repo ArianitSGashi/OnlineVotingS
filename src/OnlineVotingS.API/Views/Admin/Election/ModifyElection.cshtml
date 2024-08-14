@@ -4,16 +4,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Generate Election</title>
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet"> 
-    <link href="~/css/new-sidebar.css" rel="stylesheet"> 
-    <link href="~/css/Election/generateelection.css" rel="stylesheet"> 
+    <title>Modify Election</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="~/css/new-sidebar.css" rel="stylesheet">
+    <link href="~/css/Election/generateelection.css" rel="stylesheet">
 </head>
 <body>
     <!-- Sidebar Menu -->
     @Html.Partial("_NewSidebar")
     <div class="container-with-sidebar bg-light p-4 rounded">
-        <h4 class="mb-4">Generate Election</h4>
+        <h4 class="mb-4">Modify Election</h4>
         <form method="post" action="/AdminElection/AddElection" class="form-container">
             <div class="mb-3">
                 <label for="title" class="form-label">Election Title</label>
