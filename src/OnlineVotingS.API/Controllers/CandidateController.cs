@@ -2,15 +2,12 @@
 using Microsoft.AspNetCore.Mvc.Rendering;
 using OnlineVotingS.API.Models.AdminVoterViewModels;
 using OnlineVotingS.API.Models.CandidateViewModels;
-
 namespace OnlineVotingS.API.Controllers;
-
 public class CandidateController : Controller
 {
     [HttpGet]
     public IActionResult AddCandidate()
     {
-        // Example data for dropdown
         var model = new AddCandidateViewModel
         {
             Elections = new List<SelectListItem>
@@ -20,7 +17,6 @@ public class CandidateController : Controller
                     new SelectListItem { Value = "3", Text = "." }
                 }
         };
-
         return View("~/Views/Admin/Candidate/AddCandidate.cshtml", model);
     }
     public IActionResult EditCandidate()
@@ -34,8 +30,6 @@ public class CandidateController : Controller
     public IActionResult ViewCandidates()
     {
         var model = new List<ViewCandidatesViewModel>();
-        // You would normally get this data from your database
-
         return View("~/Views/Admin/Candidate/ViewCandidates.cshtml", model);
     }
-};
+}

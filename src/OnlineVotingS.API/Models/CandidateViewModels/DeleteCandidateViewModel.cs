@@ -1,10 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace OnlineVotingS.API.Models.AdminCandidateViewModels
+namespace OnlineVotingS.API.Models.AdminCandidateViewModels;
+public class DeleteCandidateViewModel
 {
-    public class DeleteCandidateViewModel
-    {
-        [Required]
-        public string CandidateID { get; set; } = string.Empty;
-    }
+    [Required]
+    public string CandidateID { get; set; } = string.Empty;
 }
