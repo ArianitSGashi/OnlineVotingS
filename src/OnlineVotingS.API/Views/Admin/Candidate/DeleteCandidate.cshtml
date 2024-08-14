@@ -8,14 +8,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Delete Candidate</title>
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet"> <!-- Bootstrap CSS -->
-    <link href="~/css/new-sidebar.css" rel="stylesheet"> <!-- Link to the sidebar CSS file -->
-    <link href="~/css/delete-candidate.css" rel="stylesheet"> <!-- Link to the new CSS file -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="~/css/new-sidebar.css" rel="stylesheet"> 
+    <link href="~/css/Candidate/delete-candidate.css" rel="stylesheet"> 
 </head>
 <body>
     <!-- Sidebar Menu -->
     @Html.Partial("_NewSidebar")
-
     <div class="container-with-sidebar bg-light p-4 rounded">
         <h4 class="mb-4">Delete Candidate</h4>
         <form method="post" action="/AdminCandidate/DeleteCandidate" class="form-container">
