@@ -89,6 +89,4 @@ public class VoterController : Controller
         // Pass the candidates to the view
         return View(candidates);
     }
-
-
 }
