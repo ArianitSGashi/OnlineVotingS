@@ -74,5 +74,4 @@ public class VoterController : Controller
 
         return View(repliedComplaints);
     }
-
 }
