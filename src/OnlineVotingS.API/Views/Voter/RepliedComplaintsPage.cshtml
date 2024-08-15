@@ -1,4 +1,5 @@
-﻿@{
+﻿@model IEnumerable<OnlineVotingS.API.Models.RepliedComplaintsViewModel>
+@{
     Layout = null;
 }
 <!DOCTYPE html>
@@ -6,14 +7,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Voter Dashboard</title>
+    <title>Replied Complaints</title>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-    <link href="~/css/voterdashboard.css" rel="stylesheet">
+    <link href="~/css/voter-repliedcomplaints.css" rel="stylesheet">
 </head>
 <body>
     <!-- Navbar -->
     <nav class="navbar navbar-expand-lg navbar-dark">
-        <a class="navbar-brand" href="@Url.Action("VoterDashboard", "Voter")">Online Voting System</a>
+        <a class="navbar-brand" href="#">Online Voting System</a>
         <div class="collapse navbar-collapse">
             <ul class="navbar-nav ml-auto">
                 <li class="nav-item">
@@ -38,7 +39,7 @@
             <button class="btn btn-danger ml-2">Logout</button>
             <div class="dropdown ml-3">
                 <button class="btn btn-dark dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-expanded="false">
-                    <i class="fas fa-user"></i> OnlineVotingSystem
+                    <i class="fas fa-user"></i> OVS
                 </button>
                 <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                     <a class="dropdown-item" href="#">Profile</a>
@@ -49,30 +50,52 @@
         </div>
     </nav>
 
-    <!-- Hero Section -->
+    <!-- Replied Complaints Table Section -->
     <div class="hero-section text-center">
         <div class="container">
-            <h1 class="display-4">Welcome to <span class="text-highlight">Digital Voting</span></h1>
-            <p class="lead">The new way to change world</p>
-            <a href="#" class="btn btn-lg btn-outline-light mt-3">About The Election</a>
+            <h1 class="display-4">Replied Complaints</h1>
+            <input type="text" id="repliedComplaintSearch" placeholder="Search by Complaint ID, Complaint Text, or Reply Text" class="form-control">
+            <button id="searchButton" class="btn btn-primary mt-2">Search</button>
+
+            <table class="table table-hover mt-4" id="repliedComplaintsTable">
+                <thead class="thead-dark">
+                    <tr>
+                        <th>Complaint ID</th>
+                        <th>Complaint Text</th>
+                        <th>Admin Reply</th>
+                        <th>Reply Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var reply in Model)
+                    {
+                        <tr>
+                            <td>@reply.ComplaintID</td>
+                            <td>@reply.ComplaintText</td>
+                            <td>@reply.ReplyText</td>
+                            <td>@reply.ReplyDate.ToString("g")</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
         </div>
     </div>
 
     <!-- Footer -->
-    <footer class="footer">
+    <div class="footer">
         <div class="container">
             <div class="row">
-                <div class="col-md-6">
+                <div class="col-lg-6 col-md-6">
                     <h5>Useful Links</h5>
                     <ul class="list-unstyled">
-                        <li><a href="#">Home</a></li>
+                        <li><a href="/">Home</a></li>
                         <li><a href="#">About Us</a></li>
                         <li><a href="#">Services</a></li>
                         <li><a href="#">Terms of Service</a></li>
                         <li><a href="#">Privacy Policy</a></li>
                     </ul>
                 </div>
-                <div class="col-md-6">
+                <div class="col-lg-6 col-md-6">
                     <h5>Contact Us</h5>
                     <p>Email: info@example.com</p>
                     <ul class="list-inline">
@@ -85,9 +108,27 @@
                 </div>
             </div>
         </div>
-    </footer>
+    </div>
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Search Script -->
+    <script>
+        $(document).ready(function () {
+            $("#searchButton").on("click", function () {
+                var value = $("#repliedComplaintSearch").val().toLowerCase();
+                $("#repliedComplaintsTable tbody tr").filter(function () {
+                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+                });
+            });
+
+            $("#repliedComplaintSearch").on("keyup", function (event) {
+                if (event.keyCode === 13) { // 13 is the Enter key
+                    $("#searchButton").click();
+                }
+            });
+        });
+    </script>
 </body>
 </html>

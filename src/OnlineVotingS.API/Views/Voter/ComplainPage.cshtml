@@ -1,4 +1,5 @@
-﻿@{
+﻿@model OnlineVotingS.API.Models.ComplainViewModel
+@{
     Layout = null;
 }
 <!DOCTYPE html>
@@ -6,9 +7,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Voter Dashboard</title>
+    <title>Submit Your Complain</title>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-    <link href="~/css/voterdashboard.css" rel="stylesheet">
+    <link href="~/css/voter-complain.css" rel="stylesheet">
 </head>
 <body>
     <!-- Navbar -->
@@ -38,7 +39,7 @@
             <button class="btn btn-danger ml-2">Logout</button>
             <div class="dropdown ml-3">
                 <button class="btn btn-dark dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-expanded="false">
-                    <i class="fas fa-user"></i> OnlineVotingSystem
+                    <i class="fas fa-user"></i> OVS
                 </button>
                 <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                     <a class="dropdown-item" href="#">Profile</a>
@@ -49,30 +50,43 @@
         </div>
     </nav>
 
-    <!-- Hero Section -->
+    <!-- Complain Form Section -->
     <div class="hero-section text-center">
         <div class="container">
-            <h1 class="display-4">Welcome to <span class="text-highlight">Digital Voting</span></h1>
-            <p class="lead">The new way to change world</p>
-            <a href="#" class="btn btn-lg btn-outline-light mt-3">About The Election</a>
+            <h1 class="display-4">Submit Your Complain</h1>
+            <div class="form-container mt-4">
+                <form method="post" action="@Url.Action("SubmitComplain", "Voter")">
+                    <div class="form-group">
+                        <label for="electionId">Election ID</label>
+                        @Html.TextBoxFor(m => m.ElectionID, new { @class = "form-control", placeholder = "Enter Election ID", required = true })
+                        @Html.ValidationMessageFor(m => m.ElectionID, "", new { @class = "text-danger" })
+                    </div>
+                    <div class="form-group">
+                        <label for="complaintText">Complain</label>
+                        @Html.TextAreaFor(m => m.ComplaintText, new { @class = "form-control", placeholder = "Enter your complaint", required = true, rows = 5 })
+                        @Html.ValidationMessageFor(m => m.ComplaintText, "", new { @class = "text-danger" })
+                    </div>
+                    <button type="submit" class="btn btn-primary mt-3">Submit Complain</button>
+                </form>
+            </div>
         </div>
     </div>
 
     <!-- Footer -->
-    <footer class="footer">
+    <div class="footer">
         <div class="container">
             <div class="row">
-                <div class="col-md-6">
+                <div class="col-lg-6 col-md-6">
                     <h5>Useful Links</h5>
                     <ul class="list-unstyled">
-                        <li><a href="#">Home</a></li>
+                        <li><a href="/">Home</a></li>
                         <li><a href="#">About Us</a></li>
                         <li><a href="#">Services</a></li>
                         <li><a href="#">Terms of Service</a></li>
                         <li><a href="#">Privacy Policy</a></li>
                     </ul>
                 </div>
-                <div class="col-md-6">
+                <div class="col-lg-6 col-md-6">
                     <h5>Contact Us</h5>
                     <p>Email: info@example.com</p>
                     <ul class="list-inline">
@@ -85,7 +99,7 @@
                 </div>
             </div>
         </div>
-    </footer>
+    </div>
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
