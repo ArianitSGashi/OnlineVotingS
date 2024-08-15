@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using OnlineVotingS.API.Models;
+using OnlineVotingS.Infrastructure.Persistence.Context;
 
 namespace OnlineVotingS.API.Controllers;
 
@@ -73,5 +75,18 @@ public class VoterController : Controller
     };
 
         return View(repliedComplaints);
+    }
+
+    public IActionResult VotePage(int electionId)
+    {
+        // Mock data for candidates belonging to the specific election
+        var candidates = new List<CandidateViewModel>
+    {
+        new CandidateViewModel { CandidateID = 1, ElectionID = electionId, FullName = "John Doe", Party = "Independent", Description = "Lorem ipsum dolor sit amet.", Income = 50000, Works = "Public services" },
+        new CandidateViewModel { CandidateID = 2, ElectionID = electionId, FullName = "Jane Smith", Party = "Democrat", Description = "Consectetur adipiscing elit.", Income = 70000, Works = "Health care" }
+    };
+
+        // Pass the candidates to the view
+        return View(candidates);
     }
 }

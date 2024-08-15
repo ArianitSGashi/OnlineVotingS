@@ -7,22 +7,22 @@
             <a class="nav-link text-white" href="@Url.Action("Dashboard", "Admin")">Home</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link text-white" href="#">Profile</a>
+            <a class="nav-link text-white" href="@Url.Action("AddVoter", "AdminVoter")">Voter</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link text-white" href="#">Forms</a>
+            <a class="nav-link text-white" href="@Url.Action("AddCandidate", "Candidate")">Candidate</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link text-white" href="@Url.Action("Dashboard", "Admin")">Election</a>
+            <a class="nav-link text-white" href="@Url.Action("GenerateElection", "Election")">Election</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link text-white" href="#">Data</a>
+            <a class="nav-link text-white" href="#">Voting</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link text-white" href="#">Result</a>
+            <a class="nav-link text-white" href="@Url.Action("ShowResult", "Result")">Results</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link text-white" href="#">Complain</a>
+            <a class="nav-link text-white" href="@Url.Action("ReplyComplain", "Complain")">Complain</a>
         </li>
         <li class="nav-item">
             <a class="nav-link text-white" href="#">Logout</a>
