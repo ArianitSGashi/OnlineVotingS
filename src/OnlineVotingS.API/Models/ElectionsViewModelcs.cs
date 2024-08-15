@@ -1,7 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
 namespace OnlineVotingS.API.Models;
-    public class ElectionsViewModel
+
+   public class ElectionsViewModel
     {
      public int ElectionID { get; set; }
      public string Title { get; set; } = string.Empty;
