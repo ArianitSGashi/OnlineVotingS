@@ -1,17 +1,16 @@
-﻿@model IEnumerable<OnlineVotingS.API.Models.ElectionsViewModel>
+﻿@model IEnumerable<OnlineVotingS.API.Models.CandidateViewModel>
 
 @{
     Layout = null;
 }
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Election Page</title>
+    <title>Vote Page</title>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-    <link href="~/css/voter-election.css" rel="stylesheet">
+    <link href="~/css/voter-vote.css" rel="stylesheet">
 </head>
 <body>
     <!-- Navbar -->
@@ -52,54 +51,48 @@
         </div>
     </nav>
 
-    <!-- Election Table Section -->
+    <!-- Vote Section -->
     <div class="hero-section text-center">
         <div class="container">
-            <h1 class="display-4">Elections</h1>
-            <input type="text" id="electionSearch" placeholder="Search by Election ID, Title, or Description" class="form-control">
+            <h1 class="display-4">Vote for Your Candidate</h1>
+            <input type="text" id="candidateSearch" placeholder="Search by Candidate ID, Full Name, or Party" class="form-control">
             <button id="searchButton" class="btn btn-primary mt-2">Search</button>
 
-            <table class="table table-hover mt-4" id="electionTable">
+            <table class="table table-hover mt-4" id="candidateTable">
                 <thead class="thead-dark">
                     <tr>
+                        <th>Candidate ID</th>
                         <th>Election ID</th>
-                        <th>Title</th>
+                        <th>Full Name</th>
+                        <th>Party</th>
                         <th>Description</th>
-                        <th>Start Date</th>
-                        <th>End Date</th>
-                        <th>Action</th>
+                        <th>Income</th>
+                        <th>Works</th>
+                        <th>Vote</th>
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach (var election in Model)
+                    @foreach (var candidate in Model)
                     {
-                        var hasVoted = election.UserHasVoted; // Property indicating if the user has voted in this election
-                        var isCompleted = election.IsCompleted; // Property indicating if the election is completed
                         <tr>
-                            <td>@election.ElectionID</td>
-                            <td>@election.Title</td>
-                            <td>@election.Description</td>
-                            <td>@election.StartDate.ToString("g")</td>
-                            <td>@election.EndDate.ToString("g")</td>
+                            <td>@candidate.CandidateID</td>
+                            <td>@candidate.ElectionID</td>
+                            <td>@candidate.FullName</td>
+                            <td>@candidate.Party</td>
+                            <td>@candidate.Description</td>
+                            <td>@candidate.Income</td>
+                            <td>@candidate.Works</td>
                             <td>
-                                @if (isCompleted)
-                                {
-                                    <button class="btn btn-danger" disabled>Completed</button>
-                                }
-                                else if (hasVoted)
-                                {
-                                    <button class="btn btn-secondary" disabled>Voted</button>
-                                }
-                                else
-                                {
-                                    <a href="@Url.Action("VotePage", "Voter", new { electionId = election.ElectionID })" class="btn btn-primary">Vote</a>
-                                }
+                                <form method="post" action="/Voter/CastVote">
+                                    <input type="hidden" name="CandidateID" value="@candidate.CandidateID" />
+                                    <input type="hidden" name="ElectionID" value="@candidate.ElectionID" />
+                                    <button type="submit" class="btn btn-success">Vote</button>
+                                </form>
                             </td>
                         </tr>
                     }
                 </tbody>
             </table>
-
         </div>
     </div>
 
@@ -139,13 +132,13 @@
     <script>
         $(document).ready(function () {
             $("#searchButton").on("click", function () {
-                var value = $("#electionSearch").val().toLowerCase();
-                $("#electionTable tbody tr").filter(function () {
+                var value = $("#candidateSearch").val().toLowerCase();
+                $("#candidateTable tbody tr").filter(function () {
                     $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
                 });
             });
 
-            $("#electionSearch").on("keyup", function (event) {
+            $("#candidateSearch").on("keyup", function (event) {
                 if (event.keyCode === 13) { // 13 is the Enter key
                     $("#searchButton").click();
                 }
