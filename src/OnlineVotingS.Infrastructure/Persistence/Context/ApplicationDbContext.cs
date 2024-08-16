@@ -17,6 +17,7 @@ namespace OnlineVotingS.Infrastructure.Persistence.Context;
         public DbSet<Complaints> Complaints { get; set; }
         public DbSet<Campaign> Campaigns { get; set; }
         public DbSet<Feedback> Feedbacks { get; set; }
+        public DbSet<RepliedComplaints> RepliedComplaints { get; set; }  // New entity
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -219,6 +220,20 @@ namespace OnlineVotingS.Infrastructure.Persistence.Context;
                       .WithMany()
                       .HasForeignKey(f => f.UserID)
                       .OnDelete(DeleteBehavior.Cascade);
+            });
+            
+            // RepliedComplaints entity configuration
+            modelBuilder.Entity<RepliedComplaints>(entity =>
+            {
+                entity.HasKey(rc => rc.RepliedComplaintID);
+                entity.Property(rc => rc.ComplaintID).IsRequired();
+                entity.Property(rc => rc.ReplyText).IsRequired().HasMaxLength(200);  // Set max length for ReplyText
+                entity.Property(rc => rc.ReplyDate).IsRequired();
+
+                entity.HasOne(rc => rc.Complaint)
+                  .WithMany(c => c.RepliedComplaints)
+                  .HasForeignKey(rc => rc.ComplaintID)
+                  .OnDelete(DeleteBehavior.Cascade);
             });
         }
     }
