@@ -44,7 +44,8 @@ public class Complaints
     /// Navigation property for IdentityUser
     /// </summary>
     public ApplicationUser User { get; set; } = null!;
-
-    // Navigation property to RepliedComplaints
+    /// <summary>
+    /// Navigation property to RepliedComplaints
+    /// <summary>
     public ICollection<RepliedComplaints> RepliedComplaints { get; set; } = new List<RepliedComplaints>();
 }

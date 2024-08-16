@@ -227,7 +227,7 @@ namespace OnlineVotingS.Infrastructure.Persistence.Context;
             {
                 entity.HasKey(rc => rc.RepliedComplaintID);
                 entity.Property(rc => rc.ComplaintID).IsRequired();
-                entity.Property(rc => rc.ReplyText).IsRequired().HasMaxLength(200);  // Set max length for ReplyText
+                entity.Property(rc => rc.ReplyText).IsRequired().HasMaxLength(200);
                 entity.Property(rc => rc.ReplyDate).IsRequired();
 
                 entity.HasOne(rc => rc.Complaint)
