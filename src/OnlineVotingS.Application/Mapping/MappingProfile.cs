@@ -25,5 +25,7 @@ namespace OnlineVotingS.Application.Mapping;
           CreateMap<Campaign, CampaignPutDTO>().ReverseMap();
           CreateMap<Feedback, FeedbackPostDTO>().ReverseMap();
           CreateMap<Feedback, FeedbackPutDTO>().ReverseMap();
+          CreateMap<RepliedComplaints, RepliedComplaintsPostDTO>().ReverseMap();
+          CreateMap<RepliedComplaints, RepliedComplaintsPutDTO>().ReverseMap();
        }
     }

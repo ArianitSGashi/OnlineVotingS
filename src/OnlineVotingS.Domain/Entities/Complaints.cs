@@ -35,7 +35,7 @@ public class Complaints
     /// <summary>
     /// Gets or sets the date the complaint was filed.
     /// </summary>
-    public DateTime ComplaintDate { get; set; }
+    public DateTime ComplaintDate { get; set; } = DateTime.UtcNow;
     /// <summary>
     /// Navigation property to the associated Election entity.
     /// </summary>
@@ -44,4 +44,8 @@ public class Complaints
     /// Navigation property for IdentityUser
     /// </summary>
     public ApplicationUser User { get; set; } = null!;
+    /// <summary>
+    /// Navigation property to RepliedComplaints
+    /// <summary>
+    public ICollection<RepliedComplaints> RepliedComplaints { get; set; } = new List<RepliedComplaints>();
 }
