@@ -6,20 +6,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Reply to Complaint</title>
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet"> <!-- Bootstrap CSS -->
-    <link href="~/css/new-sidebar.css" rel="stylesheet"> <!-- Link to the sidebar CSS file -->
-    <link href="~/css/reply-complain.css" rel="stylesheet"> <!-- Link to the new CSS file -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="~/css/new-sidebar.css" rel="stylesheet">
+    <link href="~/css/Complain/reply-complain.css" rel="stylesheet">
 </head>
 <body>
-    <!-- Sidebar Menu -->
     @Html.Partial("_NewSidebar")
 
-    <div class="container-with-sidebar bg-light p-4 rounded">
-        <h4 class="mb-4">Reply to Complaint</h4>
+    <div class="content-container p-4">
+        <h4 class="mb-4 text-center">Reply to Complaint</h4>
         <form method="post" action="/Complain/ReplyComplain" class="form-container">
             <div class="mb-3">
-                <label for="complaintId" class="form-label">Complaint</label>
-                @Html.DropDownListFor(m => m.ComplaintID, Model.Complaints, "Select complaint no.", new { @class = "form-select" })
+                <label for="complaintId" class="form-label">Complaint ID</label>
+                @Html.DropDownListFor(m => m.ComplaintID, Model.Complaints, "Select complaint no.", new { @class = "form-control" })
                 @Html.ValidationMessageFor(m => m.ComplaintID, "", new { @class = "text-danger" })
             </div>
             <div class="mb-3">
