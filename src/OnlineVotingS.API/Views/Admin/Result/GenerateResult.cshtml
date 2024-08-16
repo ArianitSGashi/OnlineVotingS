@@ -1,0 +1,60 @@
+﻿@model OnlineVotingS.API.Models.ResultViewModels.GenerateResultViewModel
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generate Results</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="~/css/new-sidebar.css" rel="stylesheet">
+    <link href="~/css/Result/generate-result.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Sidebar Menu -->
+    @Html.Partial("_NewSidebar")
+
+    <div class="container-with-sidebar bg-light p-4 rounded">
+        <h4 class="text-center mb-4">Generate Results</h4>
+
+        <form method="post" action="@Url.Action("GenerateResults", "Admin")" class="form-container">
+            <div class="mb-3">
+                <label for="SelectedElectionID" class="form-label">Select Election</label>
+                @Html.DropDownListFor(model => model.SelectedElectionID, Model.OngoingElections, "Select an election", new { @class = "form-control select-dropdown", id = "electionDropdown" })
+            </div>
+
+            <div class="mb-3">
+                <label for="SelectedCandidateID" class="form-label">Select Candidate</label>
+                @Html.DropDownListFor(model => model.SelectedCandidateID, new SelectList(Model.Candidates, "Value", "Text"), "Select a candidate", new { @class = "form-control select-dropdown", id = "candidateDropdown" })
+            </div>
+
+            <button type="submit" class="btn btn-primary">Generate Results</button>
+        </form>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('#electionDropdown').change(function () {
+                var electionId = $(this).val();
+                if (electionId) {
+                    $.getJSON('@Url.Action("GetCandidatesByElection", "Admin")', { electionId: electionId }, function (data) {
+                        var candidateDropdown = $('#candidateDropdown');
+                        candidateDropdown.empty();
+                        candidateDropdown.append('<option>Select a candidate</option>');
+                        $.each(data, function (index, item) {
+                            candidateDropdown.append('<option value="' + item.value + '">' + item.text + '</option>');
+                        });
+                    });
+                } else {
+                    $('#candidateDropdown').empty().append('<option>Select a candidate</option>');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

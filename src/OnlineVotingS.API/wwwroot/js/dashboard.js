@@ -53,9 +53,8 @@
         {
             title: 'RESULT',
             actions: [
-                { label: 'Show Results', url: '/Result/ShowResult', onClick: () => navigateTo('/Result/ShowResult') },
-                { label: 'Publish Results', url: 'javascript:void(0)', onClick: toggleSidebar },
-                { label: 'Download Report', url: 'javascript:void(0)', onClick: toggleSidebar }
+                { label: 'Generate Results', url: '/Result/GenerateResult', onClick: () => navigateTo('/Result/GenerateResult') },
+                { label: 'View Results', url: '/Result/ViewResult', onClick: () => navigateTo('/Result/ViewResult') },
             ],
             icon: 'fa-chart-bar',
         },

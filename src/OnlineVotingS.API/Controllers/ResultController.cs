@@ -1,23 +1,40 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using OnlineVotingS.API.Models.ResultViewModels;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using OnlineVotingS.API.Models;
+
 namespace OnlineVotingS.API.Controllers;
+
 public class ResultController : Controller
 {
-    public IActionResult ShowResult()
+    [HttpGet]
+    public IActionResult GenerateResult()
     {
-        var electionList = new List<SelectListItem>
+        var model = new GenerateResultViewModel
         {
-            new SelectListItem { Text = "Election 1", Value = "1" },
-            new SelectListItem { Text = "Election 2", Value = "2" }
+            OngoingElections = new List<SelectListItem>
+            {
+                new SelectListItem { Value = "1", Text = "Election 1" },
+                new SelectListItem { Value = "2", Text = "Election 2" }
+            }
         };
-        var candidateList = new List<SelectListItem>
+        return View("~/Views/Admin/Result/GenerateResult.cshtml", model);
+    }
+
+    [HttpGet]
+    public IActionResult ViewResult()
+    {
+        var model = new List<ViewResultViewModel>
         {
-            new SelectListItem { Text = "Candidate A", Value = "1" },
-            new SelectListItem { Text = "Candidate B", Value = "2" }
+            new ViewResultViewModel
+            {
+                ResultID = 1,
+                ElectionID = 1,
+                ElectionTitle = "Election 1",
+                CandidateID = 101,
+                CandidateName = "Candidate A",
+                TotalVotes = 5000
+            }
         };
-        ViewBag.ElectionList = new SelectList(electionList, "Value", "Text");
-        ViewBag.CandidateList = new SelectList(candidateList, "Value", "Text");
-        return View("~/Views/Admin/Result/ShowResult.cshtml"); 
+        return View("~/Views/Admin/Result/ViewResult.cshtml", model);
     }
 }

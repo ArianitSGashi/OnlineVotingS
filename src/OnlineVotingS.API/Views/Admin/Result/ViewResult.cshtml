@@ -1,0 +1,50 @@
+﻿@model IEnumerable<OnlineVotingS.API.Models.ResultViewModels.ViewResultViewModel>
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View Results</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="~/css/new-sidebar.css" rel="stylesheet">
+    <link href="~/css/Result/view-result.css" rel="stylesheet">
+</head>
+<body>
+    @Html.Partial("_NewSidebar")
+    <div class="container-with-sidebar bg-light p-4 rounded">
+        <h2 class="text-center">Election Results</h2>
+        <div class="table-container">
+            <table class="table table-striped">
+                <thead class="thead-dark">
+                    <tr>
+                        <th>Result ID</th>
+                        <th>Election ID</th>
+                        <th>Election Title</th>
+                        <th>Candidate ID</th>
+                        <th>Candidate Name</th>
+                        <th>Total Votes</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var result in Model)
+                    {
+                        <tr>
+                            <td>@result.ResultID</td>
+                            <td>@result.ElectionID</td>
+                            <td>@result.ElectionTitle</td>
+                            <td>@result.CandidateID</td>
+                            <td>@result.CandidateName</td>
+                            <td>@result.TotalVotes</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+</html>
