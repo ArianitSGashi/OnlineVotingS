@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace OnlineVotingS.API.Models.ResultViewModels;
+
 public class GenerateResultViewModel
 {
     public int SelectedElectionID { get; set; }

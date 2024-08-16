@@ -3,6 +3,7 @@ using OnlineVotingS.API.Models.ResultViewModels;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace OnlineVotingS.API.Controllers;
+
 public class ResultController : Controller
 {
     [HttpGet]
@@ -18,6 +19,7 @@ public class ResultController : Controller
         };
         return View("~/Views/Admin/Result/GenerateResult.cshtml", model);
     }
+
     [HttpGet]
     public IActionResult ViewResult()
     {
