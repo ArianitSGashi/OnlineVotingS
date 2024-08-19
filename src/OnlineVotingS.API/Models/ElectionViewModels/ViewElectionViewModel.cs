@@ -1,9 +1,11 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
+
 namespace OnlineVotingS.API.Models.ElectionViewModels;
+
 public class ViewElectionViewModel
 {
-    public int ElectionID { get; set; } 
+    public string ElectionID { get; set; } = string.Empty;
     [Required(ErrorMessage = "Title is required")]
     [MaxLength(50)]
     public string Title { get; set; } = string.Empty;

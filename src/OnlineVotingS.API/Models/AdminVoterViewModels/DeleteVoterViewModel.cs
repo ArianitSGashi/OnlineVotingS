@@ -8,5 +8,5 @@ namespace OnlineVotingS.API.Models.AdminVoterViewModels;
 public class DeleteVoterViewModel
 {
     [Required]
-    public string Id { get; set; } 
+    public string Id { get; set; } = string.Empty;
 }

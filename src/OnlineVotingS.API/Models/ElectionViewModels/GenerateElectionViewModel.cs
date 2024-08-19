@@ -1,6 +1,8 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
+
 namespace OnlineVotingS.API.Models.ElectionViewModels;
+
 public class GenerateElectionViewModel
 {
     public int ElectionID { get; set; } 

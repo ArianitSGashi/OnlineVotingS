@@ -6,7 +6,7 @@ namespace OnlineVotingS.API.Models.AdminVoterViewModels;
 public class EditVoterViewModel
 {
     [Required]
-    public string Id { get; set; }
+    public string Id { get; set; } = string.Empty;
     public string VoterId { get; set; } = string.Empty;
     public string Name { get; set; } = string.Empty;
     public string FathersName { get; set; } = string.Empty;

@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc.Rendering;
 using OnlineVotingS.Domain.Enums;
 using System.ComponentModel.DataAnnotations;
+
 namespace OnlineVotingS.API.Models.CandidateViewModels;
+
 public class AddCandidateViewModel
 {
     [Required]

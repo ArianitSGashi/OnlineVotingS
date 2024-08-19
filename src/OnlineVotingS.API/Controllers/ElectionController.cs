@@ -3,17 +3,21 @@ using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using OnlineVotingS.API.Models.CandidateViewModels;
 using OnlineVotingS.API.Models.ElectionViewModels;
+
 namespace OnlineVotingS.API.Controllers;
+
 public class ElectionController : Controller
 {
     public IActionResult GenerateElection()
     {
         return View("~/Views/Admin/Election/GenerateElection.cshtml");
     }
+
     public IActionResult ModifyElection()
     {
         return View("~/Views/Admin/Election/ModifyElection.cshtml");
     }
+
     public IActionResult CompleteElection()
     {
         var ongoingElections = new List<SelectListItem>
@@ -27,10 +31,12 @@ public class ElectionController : Controller
         };
         return View("~/Views/Admin/Election/CompleteElection.cshtml", model);
     }
+
     public IActionResult DeleteElection()
     {
         return View("~/Views/Admin/Election/DeleteElection.cshtml");
     }
+
     public IActionResult ViewElection()
     {
         var model = new List<ViewElectionViewModel>();

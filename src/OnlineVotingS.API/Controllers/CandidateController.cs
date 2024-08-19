@@ -2,7 +2,9 @@
 using Microsoft.AspNetCore.Mvc.Rendering;
 using OnlineVotingS.API.Models.AdminVoterViewModels;
 using OnlineVotingS.API.Models.CandidateViewModels;
+
 namespace OnlineVotingS.API.Controllers;
+
 public class CandidateController : Controller
 {
     [HttpGet]
@@ -19,14 +21,17 @@ public class CandidateController : Controller
         };
         return View("~/Views/Admin/Candidate/AddCandidate.cshtml", model);
     }
+
     public IActionResult EditCandidate()
     {
         return View("~/Views/Admin/Candidate/EditCandidate.cshtml");
     }
+
     public IActionResult DeleteCandidate()
     {
         return View("~/Views/Admin/Candidate/DeleteCandidate.cshtml");
     }
+
     public IActionResult ViewCandidates()
     {
         var model = new List<ViewCandidatesViewModel>();

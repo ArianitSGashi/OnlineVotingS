@@ -8,6 +8,7 @@ public class AdminController : Controller
     {
         return View();
     }
+
     public IActionResult Voter()
     {
         return View();

@@ -1,5 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
+
 namespace OnlineVotingS.API.Models.ElectionViewModels;
+
 public class DeleteElectionViewModel
 {
     [Required]
