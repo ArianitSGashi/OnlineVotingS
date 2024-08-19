@@ -13,7 +13,6 @@ public class ReplyComplaintViewModel
     [Required]
     [MaxLength(200, ErrorMessage = "The reply text cannot exceed 200 characters.")]
     public string ReplyText { get; set; } = string.Empty;
-
     public DateTime ReplyDate { get; set; } = DateTime.UtcNow;
 
 }
