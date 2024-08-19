@@ -1,4 +1,4 @@
-﻿@model IEnumerable<OnlineVotingS.API.Models.ResultViewModels.ViewResultViewModel>
+﻿@model IEnumerable<OnlineVotingS.API.Models.AdminViewModels.ResultViewModels.ViewResultViewModel>
 
 @{
     Layout = null;
@@ -15,7 +15,7 @@
     <link href="~/css/Result/view-result.css" rel="stylesheet">
 </head>
 <body>
-    @Html.Partial("_NewSidebar")
+    @await Html.PartialAsync("_NewSidebar")
     <div class="container-with-sidebar bg-light p-4 rounded">
         <h2 class="text-center">Election Results</h2>
         <div class="table-container">

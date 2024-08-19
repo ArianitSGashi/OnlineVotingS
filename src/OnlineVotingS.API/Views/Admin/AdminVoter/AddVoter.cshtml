@@ -1,5 +1,5 @@
 ﻿@using OnlineVotingS.Domain.Enums;
-@model OnlineVotingS.API.Models.AdminVoterViewModels.AddVoterViewModel
+@model OnlineVotingS.API.Models.AdminViewModels.AdminVoterViewModels.AddVoterViewModel
 @{
     Layout = null;
 }
@@ -16,7 +16,7 @@
 </head>
 <body>
     <!-- Sidebar Menu -->
-    @Html.Partial("_NewSidebar")
+    @await Html.PartialAsync("_NewSidebar")
 
     <div class="container-with-sidebar bg-light p-4 rounded">
         <h4 class="mb-4">Add Voter</h4>

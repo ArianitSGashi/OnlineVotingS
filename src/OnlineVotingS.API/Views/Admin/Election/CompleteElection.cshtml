@@ -1,4 +1,4 @@
-﻿@model OnlineVotingS.API.Models.ElectionViewModels.CompleteElectionViewModel
+﻿@model OnlineVotingS.API.Models.AdminViewModels.ElectionViewModels.CompleteElectionViewModel
 
 @{
     Layout = null;
@@ -14,7 +14,7 @@
     <link href="~/css/Election/completeelection.css" rel="stylesheet">
 </head>
 <body>
-    @Html.Partial("_NewSidebar")
+    @await Html.PartialAsync("_NewSidebar")
     <div class="text-center label-container">
         <h4 class="election-header">Complete Election</h4>
         @using (Html.BeginForm("CompleteElection", "Election", FormMethod.Post))

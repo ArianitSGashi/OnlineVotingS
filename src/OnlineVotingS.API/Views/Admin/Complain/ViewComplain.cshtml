@@ -1,4 +1,4 @@
-﻿@model IEnumerable<OnlineVotingS.API.Models.ComplaintViewModels.ComplaintViewModel>
+﻿@model IEnumerable<OnlineVotingS.API.Models.AdminViewModels.ComplaintViewModels.ComplaintViewModel>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -12,8 +12,7 @@
 </head>
 <body>
     <!-- Sidebar Menu -->
-
-    @Html.Partial("_NewSidebar")
+    @await Html.PartialAsync("_NewSidebar")
     <div class="container-with-sidebar bg-light p-4 rounded">
         <h4 class="mb-4">Candidates</h4>
         <div class="input-group mb-4">

@@ -1,4 +1,4 @@
-﻿@model OnlineVotingS.API.Models.ResultViewModels.GenerateResultViewModel
+﻿@model OnlineVotingS.API.Models.AdminViewModels.ResultViewModels.GenerateResultViewModel
 
 @{
     Layout = null;
@@ -16,7 +16,7 @@
 </head>
 <body>
     <!-- Sidebar Menu -->
-    @Html.Partial("_NewSidebar")
+    @await Html.PartialAsync("_NewSidebar")
 
     <div class="container-with-sidebar bg-light p-4 rounded">
         <h4 class="text-center mb-4">Generate Results</h4>

@@ -1,4 +1,5 @@
-﻿@model OnlineVotingS.API.Models.ElectionViewModels.GenerateElectionViewModel
+﻿@model OnlineVotingS.API.Models.AdminViewModels.ElectionViewModels.GenerateElectionViewModel
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -11,7 +12,7 @@
 </head>
 <body>
     <!-- Sidebar Menu -->
-    @Html.Partial("_NewSidebar")
+    @await Html.PartialAsync("_NewSidebar")
     <div class="container-with-sidebar bg-light p-4 rounded">
         <h4 class="mb-4">Generate Election</h4>
         <form method="post" action="/AdminElection/AddElection" class="form-container">

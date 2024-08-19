@@ -1,4 +1,4 @@
-﻿@model OnlineVotingS.API.Models.AdminCandidateViewModels.DeleteCandidateViewModel
+﻿@model OnlineVotingS.API.Models.AdminViewModels.CandidateViewModels.DeleteCandidateViewModel
 @{
     Layout = null;
 }
@@ -14,7 +14,7 @@
 </head>
 <body>
     <!-- Sidebar Menu -->
-    @Html.Partial("_NewSidebar")
+    @await Html.PartialAsync("_NewSidebar")
     <div class="container-with-sidebar bg-light p-4 rounded">
         <h4 class="mb-4">Delete Candidate</h4>
         <form method="post" action="/AdminCandidate/DeleteCandidate" class="form-container">
