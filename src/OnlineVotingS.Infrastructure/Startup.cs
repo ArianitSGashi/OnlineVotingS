@@ -36,5 +36,6 @@ public static class Startup
         services.AddScoped<IResultRepository, ResultRepository>();
         services.AddScoped<IVotesRepository, VotesRepository>();
         services.AddScoped<ICampaignRepository, CampaignRepository>();
+        services.AddScoped<IRepliedComplaintsRepository, RepliedComplaintsRepository>();
     }
 }
