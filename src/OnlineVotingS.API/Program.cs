@@ -21,6 +21,8 @@ builder.Services.AddAutoMapper(typeof(MappingProfile));
 
 // Register services
 builder.Services.AddScoped<ICampaignService, CampaignService>();
+builder.Services.AddScoped<ICandidateService, CandidateService>();
+
 
 
 builder.Services.Configure<IdentityOptions>(options =>
