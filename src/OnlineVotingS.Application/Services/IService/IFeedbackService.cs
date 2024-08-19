@@ -1,6 +1,7 @@
 ﻿using OnlineVotingS.Application.DTO.PostDTO;
 using OnlineVotingS.Application.DTO.PutDTO;
 using OnlineVotingS.Domain.Entities;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -14,5 +15,7 @@ namespace OnlineVotingS.Application.Services.IService
         Task<Feedback> GetFeedbackByIdAsync(int feedbackId);
         Task<IEnumerable<Feedback>> GetAllFeedbacksAsync();
         Task<IEnumerable<Feedback>> GetFeedbacksByUserIDAsync(string voterId);
+        Task<IEnumerable<Feedback>> GetByElectionIDAsync(int electionId);
+        Task<IEnumerable<Feedback>> GetRecentFeedbacksAsync(DateTime date);  
     }
 }

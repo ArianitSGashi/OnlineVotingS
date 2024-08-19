@@ -67,5 +67,15 @@ namespace OnlineVotingS.Application.Services.ImplService
         {
             return await _feedbackRepository.GetByUserIDAsync(voterId);
         }
+
+        public async Task<IEnumerable<Feedback>> GetByElectionIDAsync(int electionId)
+        {
+            return await _feedbackRepository.GetByElectionIDAsync(electionId);
+        }
+
+        public async Task<IEnumerable<Feedback>> GetRecentFeedbacksAsync(DateTime date)
+        {
+            return await _feedbackRepository.GetRecentFeedbacksAsync(date);
+        }
     }
 }
