@@ -22,6 +22,11 @@
         <h4 class="mb-4">Edit Voter</h4>
         <form method="post" action="/AdminVoter/EditVoter" class="form-container">
             <div class="mb-3">
+                <label for="Id" class="form-label">ID</label>
+                @Html.TextBoxFor(m => m.Id, new { @class = "form-control", required = true })
+                @Html.ValidationMessageFor(m => m.Id, "", new { @class = "text-danger" })
+            </div>
+            <div class="mb-3">
                 <label for="voterId" class="form-label">Voter ID</label>
                 @Html.TextBoxFor(m => m.VoterId, new { @class = "form-control", @readonly = "readonly" })
                 @Html.ValidationMessageFor(m => m.VoterId, "", new { @class = "text-danger" })
