@@ -69,4 +69,19 @@ public class CandidateService : ICandidateService
     {
         return await _candidateRepository.GetByElectionIdAsync(electionId);
     }
+
+    public async Task<IEnumerable<Candidates>> GetCandidatesByPartyAsync(string party)
+    {
+        return await _candidateRepository.GetByPartyAsync(party);
+    }
+
+    public async Task<IEnumerable<Candidates>> GetCandidatesByMinIncomeAsync(decimal minIncome)
+    {
+        return await _candidateRepository.GetByMinIncomeAsync(minIncome);
+    }
+
+    public async Task<IEnumerable<Candidates>> GetCandidatesByNameAsync(string name)
+    {
+        return await _candidateRepository.GetByNameAsync(name);
+    }
 }

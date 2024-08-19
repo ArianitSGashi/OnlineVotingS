@@ -17,4 +17,7 @@ public interface ICandidateService
     Task<Candidates> GetCandidateByIdAsync(int candidateId);
     Task<IEnumerable<Candidates>> GetAllCandidatesAsync();
     Task<IEnumerable<Candidates>> GetCandidatesByElectionIdAsync(int electionId);
+    Task<IEnumerable<Candidates>> GetCandidatesByPartyAsync(string party);
+    Task<IEnumerable<Candidates>> GetCandidatesByMinIncomeAsync(decimal minIncome);
+    Task<IEnumerable<Candidates>> GetCandidatesByNameAsync(string name);
 }
