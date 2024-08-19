@@ -20,11 +20,6 @@
     <div class="container-with-sidebar bg-light p-4 rounded">
         <h4 class="mb-4">Add Candidate</h4>
         <form method="post" action="/AdminCandidate/AddCandidate" class="form-container">
-            <div class="mb-3">
-                <label for="candidateId" class="form-label">Candidate ID</label>
-                @Html.TextBoxFor(m => m.CandidateID, new { @class = "form-control", required = true })
-                @Html.ValidationMessageFor(m => m.CandidateID, "", new { @class = "text-danger" })
-            </div>
             <div class="form-group">
                 <label for="electionId" class="form-label">Election ID</label>
                 @Html.DropDownListFor(m => m.ElectionID, Model.Elections, "Select Election", new { @class = "form-control select-dropdown", required = true })

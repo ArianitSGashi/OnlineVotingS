@@ -26,6 +26,7 @@
         <table class="table table-striped table-bordered">
             <thead class="table-dark">
                 <tr>
+                    <th>Election ID</th>
                     <th>Title</th>
                     <th>Description</th>
                     <th>Start Date</th>
@@ -36,6 +37,7 @@
                 @foreach (var election in Model)
                 {
                     <tr>
+                        <td>@election.ElectionID</td>
                         <td>@election.Title</td>
                         <td>@election.Description</td>
                         <td>@election.StartDate.ToString("MM/dd/yyyy")</td> 

@@ -1,10 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc.Rendering;
 using OnlineVotingS.Domain.Enums;
 using System.ComponentModel.DataAnnotations;
+
 namespace OnlineVotingS.API.Models.CandidateViewModels;
+
 public class AddCandidateViewModel
 {
-    public string CandidateID { get; set; }
     [Required]
     public string ElectionID { get; set; } = string.Empty;
     [Required]

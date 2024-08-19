@@ -1,4 +1,4 @@
-﻿@model OnlineVotingS.API.Models.ElectionViewModels.ElectionViewModel
+﻿@model OnlineVotingS.API.Models.ElectionViewModels.ModifyElectionViewModel
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -15,6 +15,11 @@
     <div class="container-with-sidebar bg-light p-4 rounded">
         <h4 class="mb-4">Modify Election</h4>
         <form method="post" action="/AdminElection/AddElection" class="form-container">
+            <div class="mb-3">
+                <label for="ElectionID" class="form-label">Election ID</label>
+                @Html.TextBoxFor(m => m.ElectionID, new { @class = "form-control", required = true })
+                @Html.ValidationMessageFor(m => m.ElectionID, "", new { @class = "text-danger" })
+            </div>
             <div class="mb-3">
                 <label for="title" class="form-label">Election Title</label>
                 @Html.TextBoxFor(m => m.Title, new { @class = "form-control", required = true })

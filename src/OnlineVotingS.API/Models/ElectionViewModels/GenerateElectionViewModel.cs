@@ -3,9 +3,9 @@ using System.ComponentModel.DataAnnotations;
 
 namespace OnlineVotingS.API.Models.ElectionViewModels;
 
-public class ViewElectionViewModel
+public class GenerateElectionViewModel
 {
-    public string ElectionID { get; set; } = string.Empty;
+    public int ElectionID { get; set; } 
     [Required(ErrorMessage = "Title is required")]
     [MaxLength(50)]
     public string Title { get; set; } = string.Empty;
