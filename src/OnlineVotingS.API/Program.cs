@@ -22,7 +22,6 @@ builder.Services.AddAutoMapper(typeof(MappingProfile));
 // Register services
 builder.Services.AddScoped<ICampaignService, CampaignService>();
 
-
 builder.Services.Configure<IdentityOptions>(options =>
 {
     options.Password.RequireDigit = false;

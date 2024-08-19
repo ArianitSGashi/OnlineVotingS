@@ -10,8 +10,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace OnlineVotingS.Application.Services.ImplService
-{
+namespace OnlineVotingS.Application.Services.ImplService;
+
     public class RepliedComplaintsService : IRepliedComplaintsService
     {
         private readonly IRepliedComplaintsRepository _repliedComplaintsRepository;
@@ -64,5 +64,19 @@ namespace OnlineVotingS.Application.Services.ImplService
         {
             return await _repliedComplaintsRepository.GetAllAsync();
         }
+
+        public async Task<IEnumerable<RepliedComplaints>> GetByComplaintIDAsync(int complaintID)
+        {
+            return await _repliedComplaintsRepository.GetByComplaintIDAsync(complaintID);
+        }
+
+        public async Task<IEnumerable<RepliedComplaints>> GetByReplyTextAsync(string replyText)
+        {
+            return await _repliedComplaintsRepository.GetByReplyTextAsync(replyText);
+        }
+
+        public async Task<IEnumerable<RepliedComplaints>> GetRecentRepliesAsync(DateTime date)
+        {
+            return await _repliedComplaintsRepository.GetRecentRepliesAsync(date);
+        }
     }
-}
