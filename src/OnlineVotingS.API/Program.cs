@@ -2,6 +2,8 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using OnlineVotingS.Application.Mapping;
+using OnlineVotingS.Application.Services.ImplService;
+using OnlineVotingS.Application.Services.IService;
 using OnlineVotingS.Infrastructure;
 using System.Text;
 
@@ -16,6 +18,10 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.ConfigureService(builder.Configuration);
 builder.Services.AddAutoMapper(typeof(MappingProfile));
+
+// Register services
+builder.Services.AddScoped<ICampaignService, CampaignService>();
+
 
 builder.Services.Configure<IdentityOptions>(options =>
 {
