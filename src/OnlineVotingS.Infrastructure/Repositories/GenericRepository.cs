@@ -19,7 +19,12 @@ public class GenericRepository<T> : IGenericRepository<T> where T : class
 
     public async Task<T> GetByIdAsync(int id)
     {
-        return await _dbSet.FindAsync(id);
+        var entity = await _dbSet.FindAsync(id);
+        if (entity == null)
+        {
+            throw new KeyNotFoundException($"Entity with id {id} was not found.");
+        }
+        return entity;
     }
 
     public async Task<IEnumerable<T>> GetAllAsync()
@@ -42,9 +47,17 @@ public class GenericRepository<T> : IGenericRepository<T> where T : class
     public async Task DeleteAsync(int id)
     {
         var entity = await _dbSet.FindAsync(id);
-        _dbSet.Remove(entity);
-        await _context.SaveChangesAsync();
+        if (entity != null)
+        {
+            _dbSet.Remove(entity);
+            await _context.SaveChangesAsync();
+        }
+        else
+        {
+            throw new KeyNotFoundException($"Entity with id {id} was not found.");
+        }
     }
+
 
     public async Task<bool> ExistsAsync(int id)
     {
