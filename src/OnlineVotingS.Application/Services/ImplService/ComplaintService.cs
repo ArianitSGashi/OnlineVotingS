@@ -112,15 +112,23 @@ public class ComplaintService : IComplaintService
 
     public async Task<Complaints> UpdateComplaintsAsync(ComplaintsPutDTO complaintDto)
     {
-        var complaint = await _complaintRepository.GetByIdAsync(complaintDto.ComplaintID);
-        if (complaint == null)
+        try
         {
-            _logger.LogWarning($"Complaint with ID {complaintDto.ComplaintID} not found.");
-        }
+            var complaint = await _complaintRepository.GetByIdAsync(complaintDto.ComplaintID);
+            if (complaint == null)
+            {
+                _logger.LogWarning($"Complaint with ID {complaintDto.ComplaintID} not found.");
+            }
 
-        _mapper.Map(complaintDto, complaint);
-        await _complaintRepository.UpdateAsync(complaint);
-        _logger.LogInformation($"Complaint with ID {complaintDto.ComplaintID} updated successfully.");
-        return complaint;
+            _mapper.Map(complaintDto, complaint);
+            await _complaintRepository.UpdateAsync(complaint);
+            _logger.LogInformation($"Complaint with ID {complaintDto.ComplaintID} updated successfully.");
+            return complaint;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError($"An error occurred while updating the complaint with ComplaintID: {complaintDto.ComplaintID}: {ex.Message}");
+            throw;
+        }
     }
 }
