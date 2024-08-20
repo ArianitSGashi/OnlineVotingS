@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace OnlineVotingS.Application.Services.IService;
 
-    public interface IElectionsService
+public interface IElectionsService
     {
         Task<Elections> CreateElectionAsync(ElectionsPostDTO electionDto);
         Task<Elections> UpdateElectionAsync(ElectionsPutDTO electionDto);

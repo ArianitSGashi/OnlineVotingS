@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace OnlineVotingS.Application.Services.ImplService;
 
-    public class ElectionsService : IElectionsService
+public class ElectionsService : IElectionsService
     {
         private readonly IElectionRepository _electionRepository;
         private readonly IMapper _mapper;
