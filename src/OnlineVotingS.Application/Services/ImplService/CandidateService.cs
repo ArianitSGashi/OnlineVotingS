@@ -30,8 +30,6 @@ public class CandidateService : ICandidateService
         {
             var candidate = _mapper.Map<Candidates>(candidateDto);
             await _candidateRepository.AddAsync(candidate);
-
-            _logger.LogInformation("Candidate created successfully with ID {CandidateId}.", candidate.CandidateID);
             return candidate;
         }
         catch (Exception ex)
@@ -54,8 +52,6 @@ public class CandidateService : ICandidateService
 
             _mapper.Map(candidateDto, candidate);
             await _candidateRepository.UpdateAsync(candidate);
-
-            _logger.LogInformation("Candidate with ID {CandidateId} updated successfully.", candidateDto.CandidateID);
             return candidate;
         }
         catch (Exception ex)
@@ -77,8 +73,6 @@ public class CandidateService : ICandidateService
             }
 
             await _candidateRepository.DeleteAsync(candidateId);
-
-            _logger.LogInformation("Candidate with ID {CandidateId} deleted successfully.", candidateId);
             return true;
         }
         catch (Exception ex)
