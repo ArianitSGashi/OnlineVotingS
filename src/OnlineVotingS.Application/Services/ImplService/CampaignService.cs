@@ -28,8 +28,6 @@ public class CampaignService : ICampaignService
 
     public async Task<Campaign> CreateCampaignAsync(CampaignPostDTO campaignDto)
     {
-        _logger.LogInformation("Creating a new campaign.");
-
         try
         {
             var campaign = _mapper.Map<Campaign>(campaignDto);
@@ -40,15 +38,13 @@ public class CampaignService : ICampaignService
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "An error occurred while creating a campaign.");
+            _logger.LogError("An error occurred while creating a campaign: {ErrorMessage}", ex.Message);
             throw;
         }
     }
 
     public async Task<Campaign> UpdateCampaignAsync(CampaignPutDTO campaignDto)
     {
-        _logger.LogInformation("Updating campaign with ID {CampaignId}.", campaignDto.CampaignID);
-
         try
         {
             var campaign = await _campaignRepository.GetByIdAsync(campaignDto.CampaignID);
@@ -66,15 +62,13 @@ public class CampaignService : ICampaignService
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "An error occurred while updating the campaign with ID {CampaignId}.", campaignDto.CampaignID);
+            _logger.LogError("An error occurred while updating the campaign with ID {CampaignId}: {ErrorMessage}", campaignDto.CampaignID, ex.Message);
             throw;
         }
     }
 
     public async Task<bool> DeleteCampaignAsync(int campaignId)
     {
-        _logger.LogInformation("Deleting campaign with ID {CampaignId}.", campaignId);
-
         try
         {
             var exists = await _campaignRepository.ExistsAsync(campaignId);
@@ -91,15 +85,13 @@ public class CampaignService : ICampaignService
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "An error occurred while deleting the campaign with ID {CampaignId}.", campaignId);
+            _logger.LogError("An error occurred while deleting the campaign with ID {CampaignId}: {ErrorMessage}", campaignId, ex.Message);
             throw;
         }
     }
 
     public async Task<Campaign> GetCampaignByIdAsync(int campaignId)
     {
-        _logger.LogInformation("Fetching campaign with ID {CampaignId}.", campaignId);
-
         try
         {
             var campaign = await _campaignRepository.GetByIdAsync(campaignId);
@@ -113,75 +105,63 @@ public class CampaignService : ICampaignService
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "An error occurred while fetching the campaign with ID {CampaignId}.", campaignId);
+            _logger.LogError("An error occurred while fetching the campaign with ID {CampaignId}: {ErrorMessage}", campaignId, ex.Message);
             throw;
         }
     }
 
     public async Task<IEnumerable<Campaign>> GetAllCampaignsAsync()
     {
-        _logger.LogInformation("Fetching all campaigns.");
-
         try
         {
             var campaigns = await _campaignRepository.GetAllAsync();
-            _logger.LogInformation("Fetched {Count} campaigns.", campaigns.Count());
             return campaigns;
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "An error occurred while fetching all campaigns.");
+            _logger.LogError("An error occurred while fetching all campaigns: {ErrorMessage}", ex.Message);
             throw;
         }
     }
 
     public async Task<IEnumerable<Campaign>> GetCampaignsByElectionIdAsync(int electionId)
     {
-        _logger.LogInformation("Fetching campaigns for election ID {ElectionId}.", electionId);
-
         try
         {
             var campaigns = await _campaignRepository.GetByElectionIdAsync(electionId);
-            _logger.LogInformation("Fetched {Count} campaigns for election ID {ElectionId}.", campaigns.Count(), electionId);
             return campaigns;
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "An error occurred while fetching campaigns for election ID {ElectionId}.", electionId);
+            _logger.LogError("An error occurred while fetching campaigns for election ID {ElectionId}: {ErrorMessage}", electionId, ex.Message);
             throw;
         }
     }
 
     public async Task<IEnumerable<Campaign>> GetCampaignsByCandidateIdAsync(int candidateId)
     {
-        _logger.LogInformation("Fetching campaigns for candidate ID {CandidateId}.", candidateId);
-
         try
         {
             var campaigns = await _campaignRepository.GetByCandidateIdAsync(candidateId);
-            _logger.LogInformation("Fetched {Count} campaigns for candidate ID {CandidateId}.", campaigns.Count(), candidateId);
             return campaigns;
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "An error occurred while fetching campaigns for candidate ID {CandidateId}.", candidateId);
+            _logger.LogError("An error occurred while fetching campaigns for candidate ID {CandidateId}: {ErrorMessage}", candidateId, ex.Message);
             throw;
         }
     }
 
     public async Task<IEnumerable<Campaign>> GetActiveCampaignsAsync()
     {
-        _logger.LogInformation("Fetching all active campaigns.");
-
         try
         {
             var activeCampaigns = await _campaignRepository.GetActiveCampaignsAsync();
-            _logger.LogInformation("Fetched {Count} active campaigns.", activeCampaigns.Count());
             return activeCampaigns;
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "An error occurred while fetching active campaigns.");
+            _logger.LogError("An error occurred while fetching active campaigns: {ErrorMessage}", ex.Message);
             throw;
         }
     }
