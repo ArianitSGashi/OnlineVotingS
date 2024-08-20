@@ -9,14 +9,14 @@ using System.Threading.Tasks;
 
 namespace OnlineVotingS.Application.Services.IService;
 
-    public interface ICampaignService
-    {
-        Task<Campaign> CreateCampaignAsync(CampaignPostDTO campaignDto);
-        Task<Campaign> UpdateCampaignAsync(CampaignPutDTO campaignDto);
-        Task<bool> DeleteCampaignAsync(int campaignId);
-        Task<Campaign> GetCampaignByIdAsync(int campaignId);
-        Task<IEnumerable<Campaign>> GetAllCampaignsAsync();
-        Task<IEnumerable<Campaign>> GetCampaignsByElectionIdAsync(int electionId);
-        Task<IEnumerable<Campaign>> GetCampaignsByCandidateIdAsync(int candidateId);
-        Task<IEnumerable<Campaign>> GetActiveCampaignsAsync();
-    }
+public interface ICampaignService
+{
+    Task<Campaign> CreateCampaignAsync(CampaignPostDTO campaignDto);
+    Task<Campaign> UpdateCampaignAsync(CampaignPutDTO campaignDto);
+    Task<bool> DeleteCampaignAsync(int campaignId);
+    Task<Campaign> GetCampaignByIdAsync(int campaignId);
+    Task<IEnumerable<Campaign>> GetAllCampaignsAsync();
+    Task<IEnumerable<Campaign>> GetCampaignsByElectionIdAsync(int electionId);
+    Task<IEnumerable<Campaign>> GetCampaignsByCandidateIdAsync(int candidateId);
+    Task<IEnumerable<Campaign>> GetActiveCampaignsAsync();
+}

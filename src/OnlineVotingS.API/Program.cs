@@ -33,6 +33,10 @@ builder.Services.Configure<IdentityOptions>(options =>
     options.Password.RequiredUniqueChars = 1;
 });
 
+// Configure Logging
+builder.Logging.AddConsole();
+builder.Logging.AddDebug();
+
 var key = builder.Configuration["Jwt:Key"];
 
 if (string.IsNullOrEmpty(key))
