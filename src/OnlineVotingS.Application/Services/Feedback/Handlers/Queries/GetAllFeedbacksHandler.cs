@@ -34,5 +34,3 @@ public class GetAllFeedbacksHandler : IRequestHandler<GetAllFeedbacksQuery, IEnu
         }
     }
 }
-
-}
