@@ -34,7 +34,7 @@ public class DeleteComplaintCommandHandler : IRequestHandler<DeleteComplaintComm
         }
         catch (Exception ex)
         {
-            _logger.LogError($"An error occurred while deleting the complaint with ComplaintID : {complaintId}: {ex.Message}");
+            _logger.LogError($"An error occurred while deleting the complaint with ComplaintID : {request.ComplaintId}: {ex.Message}");
             throw;
         }
     }
