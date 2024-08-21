@@ -2,9 +2,11 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using OnlineVotingS.Application.Mapping;
+using OnlineVotingS.Application.Services.Campaigns.Handlers.Commands;
 using OnlineVotingS.Application.Services.ImplService;
 using OnlineVotingS.Application.Services.IService;
 using OnlineVotingS.Infrastructure;
+using System.Reflection;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -18,6 +20,9 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.ConfigureService(builder.Configuration);
 builder.Services.AddAutoMapper(typeof(MappingProfile));
+
+// Register MediatR and scan for handlers in the assembly
+builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(CreateCampaignHandler).Assembly));
 
 // Register services
 builder.Services.AddScoped<ICampaignService, CampaignService>();
