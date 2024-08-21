@@ -3,10 +3,6 @@ using Microsoft.Extensions.Logging;
 using OnlineVotingS.Application.Services.Feedbacks.Requests.Queries;
 using OnlineVotingS.Domain.Entities;
 using OnlineVotingS.Domain.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace OnlineVotingS.Application.Services.Feedbacks.Handlers.Queries;
 
@@ -25,12 +21,11 @@ public class GetFeedbacksByUserIdHandler : IRequestHandler<GetFeedbacksByUserIdQ
     {
         try
         {
-            var feedbacks = await _feedbackRepository.GetByUserIdAsync(request.UserID);
-            return feedbacks;
+            return await _feedbackRepository.GetByUserIDAsync(request.UserId);
         }
         catch (Exception ex)
         {
-            _logger.LogError("An error occurred while fetching feedbacks for user ID {UserId}: {ErrorMessage}", request.UserID, ex.Message);
+            _logger.LogError("An error occurred while fetching feedbacks for user ID {UserId}: {ErrorMessage}", request.UserId, ex.Message);
             throw;
         }
     }

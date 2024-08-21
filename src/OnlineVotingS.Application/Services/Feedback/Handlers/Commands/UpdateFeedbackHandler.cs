@@ -4,9 +4,6 @@ using Microsoft.Extensions.Logging;
 using OnlineVotingS.Application.Services.Feedbacks.Requests.Commands;
 using OnlineVotingS.Domain.Entities;
 using OnlineVotingS.Domain.Interfaces;
-using System;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace OnlineVotingS.Application.Services.Feedbacks.Handlers.Commands;
 
@@ -36,7 +33,6 @@ public class UpdateFeedbackHandler : IRequestHandler<UpdateFeedbackCommand, Feed
 
             _mapper.Map(request.FeedbackDto, feedback);
             await _feedbackRepository.UpdateAsync(feedback);
-
             _logger.LogInformation("Feedback with ID {FeedbackId} updated successfully.", request.FeedbackDto.FeedbackID);
             return feedback;
         }

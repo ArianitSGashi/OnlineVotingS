@@ -3,10 +3,6 @@ using Microsoft.Extensions.Logging;
 using OnlineVotingS.Application.Services.Feedbacks.Requests.Queries;
 using OnlineVotingS.Domain.Entities;
 using OnlineVotingS.Domain.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace OnlineVotingS.Application.Services.Feedbacks.Handlers.Queries;
 
@@ -25,8 +21,7 @@ public class GetRecentFeedbacksHandler : IRequestHandler<GetRecentFeedbacksQuery
     {
         try
         {
-            var feedbacks = await _feedbackRepository.GetRecentFeedbacksAsync(request.Date);
-            return feedbacks;
+            return await _feedbackRepository.GetRecentFeedbacksAsync(request.Date);
         }
         catch (Exception ex)
         {
@@ -35,4 +30,3 @@ public class GetRecentFeedbacksHandler : IRequestHandler<GetRecentFeedbacksQuery
         }
     }
 }
-

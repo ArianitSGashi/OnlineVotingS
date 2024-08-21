@@ -1,10 +1,8 @@
 ﻿using MediatR;
 using Microsoft.Extensions.Logging;
 using OnlineVotingS.Application.Services.Feedbacks.Requests.Commands;
+using OnlineVotingS.Domain.Entities;
 using OnlineVotingS.Domain.Interfaces;
-using System;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace OnlineVotingS.Application.Services.Feedbacks.Handlers.Commands;
 
@@ -31,7 +29,6 @@ public class DeleteFeedbackHandler : IRequestHandler<DeleteFeedbackCommand, bool
             }
 
             await _feedbackRepository.DeleteAsync(request.FeedbackId);
-
             _logger.LogInformation("Feedback with ID {FeedbackId} deleted successfully.", request.FeedbackId);
             return true;
         }

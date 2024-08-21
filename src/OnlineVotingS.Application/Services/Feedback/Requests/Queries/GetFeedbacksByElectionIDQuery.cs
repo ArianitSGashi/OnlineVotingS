@@ -4,11 +4,11 @@ using System.Collections.Generic;
 
 namespace OnlineVotingS.Application.Services.Feedbacks.Requests.Queries;
 
-public class GetFeedbackByElectionIdQuery : IRequest<List<Feedback>>
+public class GetFeedbacksByElectionIdQuery : IRequest<IEnumerable<Feedback>>
 {
     public int ElectionId { get; }
 
-    public GetFeedbackByElectionIdQuery(int electionId)
+    public GetFeedbacksByElectionIdQuery(int electionId)
     {
         ElectionId = electionId;
     }

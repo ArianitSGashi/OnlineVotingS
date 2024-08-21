@@ -3,9 +3,6 @@ using Microsoft.Extensions.Logging;
 using OnlineVotingS.Application.Services.Feedbacks.Requests.Queries;
 using OnlineVotingS.Domain.Entities;
 using OnlineVotingS.Domain.Interfaces;
-using System;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace OnlineVotingS.Application.Services.Feedbacks.Handlers.Queries;
 
@@ -24,20 +21,19 @@ public class GetFeedbackByIdHandler : IRequestHandler<GetFeedbackByIdQuery, Feed
     {
         try
         {
-            var feedback = await _feedbackRepository.GetByIdAsync(request.FeedbackID);
+            var feedback = await _feedbackRepository.GetByIdAsync(request.FeedbackId);
             if (feedback == null)
             {
-                _logger.LogWarning("Feedback with ID {FeedbackId} not found.", request.FeedbackID);
-                throw new KeyNotFoundException($"Feedback with ID {request.FeedbackID} not found.");
+                _logger.LogWarning("Feedback with ID {FeedbackId} not found.", request.FeedbackId);
+                throw new KeyNotFoundException($"Feedback with ID {request.FeedbackId} not found.");
             }
 
             return feedback;
         }
         catch (Exception ex)
         {
-            _logger.LogError("An error occurred while fetching the feedback with ID {FeedbackId}: {ErrorMessage}", request.FeedbackID, ex.Message);
+            _logger.LogError("An error occurred while fetching the feedback with ID {FeedbackId}: {ErrorMessage}", request.FeedbackId, ex.Message);
             throw;
         }
     }
 }
-

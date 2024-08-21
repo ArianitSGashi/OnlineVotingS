@@ -11,4 +11,3 @@ public class DeleteFeedbackCommand : IRequest<bool>
         FeedbackId = feedbackId;
     }
 }
-

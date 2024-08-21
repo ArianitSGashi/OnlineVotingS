@@ -1,80 +1,164 @@
 ﻿using AutoMapper;
+using Microsoft.Extensions.Logging;
 using OnlineVotingS.Application.DTO.PostDTO;
 using OnlineVotingS.Application.DTO.PutDTO;
 using OnlineVotingS.Application.Services.IService;
 using OnlineVotingS.Domain.Entities;
 using OnlineVotingS.Domain.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
-namespace OnlineVotingS.Application.Services.ImplService;
-
-public class FeedbackService : IFeedbackService
+namespace OnlineVotingS.Application.Services.ImplService
 {
-    private readonly IFeedbackRepository _feedbackRepository;
-    private readonly IMapper _mapper;
-
-    public FeedbackService(IFeedbackRepository feedbackRepository, IMapper mapper)
+    public class FeedbackService : IFeedbackService
     {
-        _feedbackRepository = feedbackRepository;
-        _mapper = mapper;
-    }
+        private readonly IFeedbackRepository _feedbackRepository;
+        private readonly IMapper _mapper;
+        private readonly ILogger<FeedbackService> _logger;
 
-    public async Task<Feedback> CreateFeedbackAsync(FeedbackPostDTO feedbackDto)
-    {
-        var feedback = _mapper.Map<Feedback>(feedbackDto);
-        await _feedbackRepository.AddAsync(feedback);
-        return feedback;
-    }
-
-    public async Task<Feedback> UpdateFeedbackAsync(FeedbackPutDTO feedbackDto)
-    {
-        var feedback = await _feedbackRepository.GetByIdAsync(feedbackDto.FeedbackID);
-        if (feedback == null)
+        public FeedbackService(IFeedbackRepository feedbackRepository, IMapper mapper, ILogger<FeedbackService> logger)
         {
-            throw new KeyNotFoundException($"Feedback with ID {feedbackDto.FeedbackID} not found.");
+            _feedbackRepository = feedbackRepository;
+            _mapper = mapper;
+            _logger = logger;
         }
 
-        _mapper.Map(feedbackDto, feedback);
-        await _feedbackRepository.UpdateAsync(feedback);
-        return feedback;
-    }
-
-    public async Task<bool> DeleteFeedbackAsync(int feedbackId)
-    {
-        var exists = await _feedbackRepository.ExistsAsync(feedbackId);
-        if (!exists)
+        public async Task<Feedback> CreateFeedbackAsync(FeedbackPostDTO feedbackDto)
         {
-            throw new KeyNotFoundException($"Feedback with ID {feedbackId} not found.");
+            try
+            {
+                var feedback = _mapper.Map<Feedback>(feedbackDto);
+                await _feedbackRepository.AddAsync(feedback);
+
+                _logger.LogInformation("Feedback created successfully with ID {FeedbackId}.", feedback.FeedbackID);
+                return feedback;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("An error occurred while creating feedback: {ErrorMessage}", ex.Message);
+                throw;
+            }
         }
 
-        await _feedbackRepository.DeleteAsync(feedbackId);
-        return true;
-    }
+        public async Task<Feedback> UpdateFeedbackAsync(FeedbackPutDTO feedbackDto)
+        {
+            try
+            {
+                var feedback = await _feedbackRepository.GetByIdAsync(feedbackDto.FeedbackID);
+                if (feedback == null)
+                {
+                    _logger.LogWarning("Feedback with ID {FeedbackId} not found.", feedbackDto.FeedbackID);
+                    throw new KeyNotFoundException($"Feedback with ID {feedbackDto.FeedbackID} not found.");
+                }
 
-    public async Task<Feedback> GetFeedbackByIdAsync(int feedbackId)
-    {
-        return await _feedbackRepository.GetByIdAsync(feedbackId);
-    }
+                _mapper.Map(feedbackDto, feedback);
+                await _feedbackRepository.UpdateAsync(feedback);
 
-    public async Task<IEnumerable<Feedback>> GetAllFeedbacksAsync()
-    {
-        return await _feedbackRepository.GetAllAsync();
-    }
+                _logger.LogInformation("Feedback with ID {FeedbackId} updated successfully.", feedbackDto.FeedbackID);
+                return feedback;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("An error occurred while updating the feedback with ID {FeedbackId}: {ErrorMessage}", feedbackDto.FeedbackID, ex.Message);
+                throw;
+            }
+        }
 
-    public async Task<IEnumerable<Feedback>> GetFeedbacksByUserIDAsync(string voterId)
-    {
-        return await _feedbackRepository.GetByUserIDAsync(voterId);
-    }
+        public async Task<bool> DeleteFeedbackAsync(int feedbackId)
+        {
+            try
+            {
+                var exists = await _feedbackRepository.ExistsAsync(feedbackId);
+                if (!exists)
+                {
+                    _logger.LogWarning("Feedback with ID {FeedbackId} not found.", feedbackId);
+                    throw new KeyNotFoundException($"Feedback with ID {feedbackId} not found.");
+                }
 
-    public async Task<IEnumerable<Feedback>> GetFeedbacksByElectionIDAsync(int electionId)
-    {
-        return await _feedbackRepository.GetByElectionIDAsync(electionId);
-    }
+                await _feedbackRepository.DeleteAsync(feedbackId);
 
-    public async Task<IEnumerable<Feedback>> GetRecentFeedbacksAsync(DateTime date)
-    {
-        return await _feedbackRepository.GetRecentFeedbacksAsync(date);
+                _logger.LogInformation("Feedback with ID {FeedbackId} deleted successfully.", feedbackId);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("An error occurred while deleting the feedback with ID {FeedbackId}: {ErrorMessage}", feedbackId, ex.Message);
+                throw;
+            }
+        }
+
+        public async Task<Feedback> GetFeedbackByIdAsync(int feedbackId)
+        {
+            try
+            {
+                var feedback = await _feedbackRepository.GetByIdAsync(feedbackId);
+                if (feedback == null)
+                {
+                    _logger.LogWarning("Feedback with ID {FeedbackId} not found.", feedbackId);
+                    throw new KeyNotFoundException($"Feedback with ID {feedbackId} not found.");
+                }
+
+                return feedback;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("An error occurred while fetching the feedback with ID {FeedbackId}: {ErrorMessage}", feedbackId, ex.Message);
+                throw;
+            }
+        }
+
+        public async Task<IEnumerable<Feedback>> GetAllFeedbacksAsync()
+        {
+            try
+            {
+                var feedbacks = await _feedbackRepository.GetAllAsync();
+                return feedbacks;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("An error occurred while fetching all feedbacks: {ErrorMessage}", ex.Message);
+                throw;
+            }
+        }
+
+        public async Task<IEnumerable<Feedback>> GetFeedbacksByUserIdAsync(string userId)
+        {
+            try
+            {
+                var feedbacks = await _feedbackRepository.GetByUserIDAsync(userId);
+                return feedbacks;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("An error occurred while fetching feedbacks for user ID {UserId}: {ErrorMessage}", userId, ex.Message);
+                throw;
+            }
+        }
+
+        public async Task<IEnumerable<Feedback>> GetFeedbacksByElectionIdAsync(int electionId)
+        {
+            try
+            {
+                var feedbacks = await _feedbackRepository.GetByElectionIDAsync(electionId);
+                return feedbacks;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("An error occurred while fetching feedbacks for election ID {ElectionId}: {ErrorMessage}", electionId, ex.Message);
+                throw;
+            }
+        }
+
+        public async Task<IEnumerable<Feedback>> GetRecentFeedbacksAsync(DateTime date)
+        {
+            try
+            {
+                var feedbacks = await _feedbackRepository.GetRecentFeedbacksAsync(date);
+                return feedbacks;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("An error occurred while fetching recent feedbacks: {ErrorMessage}", ex.Message);
+                throw;
+            }
+        }
     }
 }

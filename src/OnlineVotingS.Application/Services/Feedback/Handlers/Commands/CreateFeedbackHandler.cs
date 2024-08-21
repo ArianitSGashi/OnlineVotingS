@@ -26,7 +26,6 @@ public class CreateFeedbackHandler : IRequestHandler<CreateFeedbackCommand, Feed
         {
             var feedback = _mapper.Map<Feedback>(request.FeedbackDto);
             await _feedbackRepository.AddAsync(feedback);
-
             _logger.LogInformation("Feedback created successfully with ID {FeedbackId}.", feedback.FeedbackID);
             return feedback;
         }
@@ -37,4 +36,3 @@ public class CreateFeedbackHandler : IRequestHandler<CreateFeedbackCommand, Feed
         }
     }
 }
-
