@@ -68,7 +68,7 @@ public class FeedbackService : IFeedbackService
         return await _feedbackRepository.GetByUserIDAsync(voterId);
     }
 
-    public async Task<IEnumerable<Feedback>> GetByElectionIDAsync(int electionId)
+    public async Task<IEnumerable<Feedback>> GetFeedbacksByElectionIDAsync(int electionId)
     {
         return await _feedbackRepository.GetByElectionIDAsync(electionId);
     }

@@ -15,6 +15,6 @@ public interface IFeedbackService
     Task<Feedback> GetFeedbackByIdAsync(int feedbackId);
     Task<IEnumerable<Feedback>> GetAllFeedbacksAsync();
     Task<IEnumerable<Feedback>> GetFeedbacksByUserIDAsync(string voterId);
-    Task<IEnumerable<Feedback>> GetByElectionIDAsync(int electionId);
+    Task<IEnumerable<Feedback>> GetFeedbacksByElectionIDAsync(int electionId);
     Task<IEnumerable<Feedback>> GetRecentFeedbacksAsync(DateTime date);  
 }
