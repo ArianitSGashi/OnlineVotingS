@@ -2,8 +2,7 @@
 using OnlineVotingS.Application.DTO;
 using OnlineVotingS.Application.DTO.PostDTO;
 using OnlineVotingS.Application.DTO.PutDTO;
-using OnlineVotingS.Application.Services.Complaint.CreateComplaint;
-using OnlineVotingS.Application.Services.Complaint.UpdateComplaints;
+using OnlineVotingS.Application.Services.Complaint.Requests.Commands;
 using OnlineVotingS.Domain.Entities;
 
 namespace OnlineVotingS.Application.Mapping;
@@ -30,6 +29,6 @@ public class MappingProfile : Profile
           CreateMap<RepliedComplaints, RepliedComplaintsPostDTO>().ReverseMap();
           CreateMap<RepliedComplaints, RepliedComplaintsPutDTO>().ReverseMap();
           CreateMap<Complaints, CreateComplaintCommand>().ReverseMap();
-          CreateMap<Complaints, UpdateComplaintsCommand>().ReverseMap();
+          CreateMap<Complaints, UpdateComplaintCommand>().ReverseMap();
        }
     }
