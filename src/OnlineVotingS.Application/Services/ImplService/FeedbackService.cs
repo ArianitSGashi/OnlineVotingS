@@ -6,8 +6,8 @@ using OnlineVotingS.Application.Services.IService;
 using OnlineVotingS.Domain.Entities;
 using OnlineVotingS.Domain.Interfaces;
 
-namespace OnlineVotingS.Application.Services.ImplService
-{
+namespace OnlineVotingS.Application.Services.ImplService;
+
     public class FeedbackService : IFeedbackService
     {
         private readonly IFeedbackRepository _feedbackRepository;
@@ -159,6 +159,6 @@ namespace OnlineVotingS.Application.Services.ImplService
                 _logger.LogError("An error occurred while fetching recent feedbacks: {ErrorMessage}", ex.Message);
                 throw;
             }
+
         }
     }
-}
