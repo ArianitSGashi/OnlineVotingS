@@ -8,7 +8,7 @@ using OnlineVotingS.Domain.Interfaces;
 
 namespace OnlineVotingS.Application.Services.Complaint.Handlers.Queries;
 
-public class GetAllComplaintHandler : IRequestHandler<GetAllComplaintCommand, IEnumerable<Complaints>
+public class GetAllComplaintHandler : IRequestHandler<GetAllComplaintCommand, IEnumerable<Complaints>>
 {
     private readonly IComplaintRepository _complaintRepository;
     private readonly IMapper _mapper;
