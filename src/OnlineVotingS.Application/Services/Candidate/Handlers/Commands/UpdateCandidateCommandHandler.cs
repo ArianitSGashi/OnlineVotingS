@@ -1,18 +1,24 @@
-using AutoMapper;
+﻿using AutoMapper;
 using MediatR;
 using Microsoft.Extensions.Logging;
+using OnlineVotingS.Application.Services.Candidate.Requests.Commands;
 using OnlineVotingS.Domain.Entities;
 using OnlineVotingS.Domain.Interfaces;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace OnlineVotingS.Application.Services.Candidates.Handlers.Commands;
+namespace OnlineVotingS.Application.Services.Candidate.Handlers.Commands;
 
-public class UpdateCandidateHandler : IRequestHandler<UpdateCandidateCommand, Candidates>
+public class UpdateCandidateCommandHandler : IRequestHandler<UpdateCandidateCommand, Candidates>
 {
     private readonly ICandidateRepository _candidateRepository;
     private readonly IMapper _mapper;
-    private readonly ILogger<UpdateCandidateHandler> _logger;
+    private readonly ILogger<UpdateCandidateCommandHandler> _logger;
 
-    public UpdateCandidateHandler(ICandidateRepository candidateRepository, IMapper mapper, ILogger<UpdateCandidateHandler> logger)
+    public UpdateCandidateCommandHandler(ICandidateRepository candidateRepository, IMapper mapper, ILogger<UpdateCandidateCommandHandler> logger)
     {
         _candidateRepository = candidateRepository;
         _mapper = mapper;

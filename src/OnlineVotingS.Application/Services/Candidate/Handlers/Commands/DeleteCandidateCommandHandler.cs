@@ -1,15 +1,21 @@
-using MediatR;
+﻿using MediatR;
 using Microsoft.Extensions.Logging;
+using OnlineVotingS.Application.Services.Candidate.Requests.Commands;
 using OnlineVotingS.Domain.Interfaces;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace OnlineVotingS.Application.Services.Candidates.Handlers.Commands;
+namespace OnlineVotingS.Application.Services.Candidate.Handlers.Commands;
 
-public class DeleteCandidateHandler : IRequestHandler<DeleteCandidateCommand, bool>
+public class DeleteCandidateCommandHandler : IRequestHandler<DeleteCandidateCommand, bool>
 {
     private readonly ICandidateRepository _candidateRepository;
-    private readonly ILogger<DeleteCandidateHandler> _logger;
+    private readonly ILogger<DeleteCandidateCommandHandler> _logger;
 
-    public DeleteCandidateHandler(ICandidateRepository candidateRepository, ILogger<DeleteCandidateHandler> logger)
+    public DeleteCandidateCommandHandler(ICandidateRepository candidateRepository, ILogger<DeleteCandidateCommandHandler> logger)
     {
         _candidateRepository = candidateRepository;
         _logger = logger;
@@ -25,7 +31,6 @@ public class DeleteCandidateHandler : IRequestHandler<DeleteCandidateCommand, bo
                 _logger.LogWarning("Candidate with ID {CandidateId} not found.", request.CandidateId);
                 throw new KeyNotFoundException($"Candidate with ID {request.CandidateId} not found.");
             }
-
             await _candidateRepository.DeleteAsync(request.CandidateId);
 
             _logger.LogInformation("Candidate with ID {CandidateId} deleted successfully.", request.CandidateId);
@@ -38,3 +43,4 @@ public class DeleteCandidateHandler : IRequestHandler<DeleteCandidateCommand, bo
         }
     }
 }
+

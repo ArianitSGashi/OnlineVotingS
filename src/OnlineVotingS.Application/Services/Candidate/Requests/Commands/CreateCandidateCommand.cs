@@ -1,8 +1,13 @@
-using MediatR;
+﻿using MediatR;
 using OnlineVotingS.Application.DTO.PostDTO;
 using OnlineVotingS.Domain.Entities;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace OnlineVotingS.Application.Services.Candidates.Requests.Commands;
+namespace OnlineVotingS.Application.Services.Candidate.Requests.Commands;
 
 public class CreateCandidateCommand : IRequest<Candidates>
 {
