@@ -10,34 +10,34 @@ using System.Threading.Tasks;
 
 namespace OnlineVotingS.Application.Services.RepliedComplaint.Handlers.Commands;
 
-    public class DeleteRepliedComplaintCommandHandler : IRequestHandler<DeleteRepliedComplaintCommand, bool>
+public class DeleteRepliedComplaintCommandHandler : IRequestHandler<DeleteRepliedComplaintCommand, bool>
+{
+    private readonly IRepliedComplaintsRepository _repliedComplaintsRepository;
+    private readonly ILogger<DeleteRepliedComplaintCommandHandler> _logger;
+
+    public DeleteRepliedComplaintCommandHandler(IRepliedComplaintsRepository repliedComplaintsRepository, ILogger<DeleteRepliedComplaintCommandHandler> logger)
     {
-        private readonly IRepliedComplaintsRepository _repliedComplaintsRepository;
-        private readonly ILogger<DeleteRepliedComplaintCommandHandler> _logger;
+        _repliedComplaintsRepository = repliedComplaintsRepository;
+        _logger = logger;
+    }
 
-        public DeleteRepliedComplaintCommandHandler(IRepliedComplaintsRepository repliedComplaintsRepository, ILogger<DeleteRepliedComplaintCommandHandler> logger)
+    public async Task<bool> Handle(DeleteRepliedComplaintCommand request, CancellationToken cancellationToken)
+    {
+        try
         {
-            _repliedComplaintsRepository = repliedComplaintsRepository;
-            _logger = logger;
+            var exists = await _repliedComplaintsRepository.ExistsAsync(request.RepliedComplaintId);
+            if (!exists)
+            {
+                throw new KeyNotFoundException($"Replied complaint with ID {request.RepliedComplaintId} not found.");
+            }
+
+            await _repliedComplaintsRepository.DeleteAsync(request.RepliedComplaintId);
+            return true;
         }
-
-        public async Task<bool> Handle(DeleteRepliedComplaintCommand request, CancellationToken cancellationToken)
+        catch (Exception ex)
         {
-            try
-            {
-                var exists = await _repliedComplaintsRepository.ExistsAsync(request.RepliedComplaintId);
-                if (!exists)
-                {
-                    throw new KeyNotFoundException($"Replied complaint with ID {request.RepliedComplaintId} not found.");
-                }
-
-                await _repliedComplaintsRepository.DeleteAsync(request.RepliedComplaintId);
-                return true;
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError("An error occurred while deleting the replied complaint with ID {RepliedComplaintId}: {ErrorMessage}", request.RepliedComplaintId, ex.Message);
-                throw;
-            }
+            _logger.LogError("An error occurred while deleting the replied complaint with ID {RepliedComplaintId}: {ErrorMessage}", request.RepliedComplaintId, ex.Message);
+            throw;
         }
     }
+}
