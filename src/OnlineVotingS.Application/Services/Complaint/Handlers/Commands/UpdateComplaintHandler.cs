@@ -30,7 +30,7 @@ public class UpdateComplaintHandler : IRequestHandler<UpdateComplaintCommand, Co
             {
                 _logger.LogWarning($"Complaint with ID {request.ComplaintsPutDTO.ComplaintID} not found.");
             }
-            _mapper.Map(request, complaint);
+            _mapper.Map(request.ComplaintsPutDTO, complaint);
             await _complaintRepository.UpdateAsync(complaint);
             _logger.LogInformation($"Complaint with ID {request.ComplaintsPutDTO.ComplaintID} updated successfully.");
             return complaint;
