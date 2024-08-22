@@ -11,27 +11,27 @@ using System.Threading.Tasks;
 
 namespace OnlineVotingS.Application.Services.RepliedComplaint.Handlers.Queries;
 
-    public class GetAllRepliedComplaintsQueryHandler : IRequestHandler<GetAllRepliedComplaintsQuery, IEnumerable<RepliedComplaints>>
+public class GetAllRepliedComplaintsQueryHandler : IRequestHandler<GetAllRepliedComplaintsQuery, IEnumerable<RepliedComplaints>>
+{
+    private readonly IRepliedComplaintsRepository _repliedComplaintsRepository;
+    private readonly ILogger<GetAllRepliedComplaintsQueryHandler> _logger;
+
+    public GetAllRepliedComplaintsQueryHandler(IRepliedComplaintsRepository repliedComplaintsRepository, ILogger<GetAllRepliedComplaintsQueryHandler> logger)
     {
-        private readonly IRepliedComplaintsRepository _repliedComplaintsRepository;
-        private readonly ILogger<GetAllRepliedComplaintsQueryHandler> _logger;
+        _repliedComplaintsRepository = repliedComplaintsRepository;
+        _logger = logger;
+    }
 
-        public GetAllRepliedComplaintsQueryHandler(IRepliedComplaintsRepository repliedComplaintsRepository, ILogger<GetAllRepliedComplaintsQueryHandler> logger)
+    public async Task<IEnumerable<RepliedComplaints>> Handle(GetAllRepliedComplaintsQuery request, CancellationToken cancellationToken)
+    {
+        try
         {
-            _repliedComplaintsRepository = repliedComplaintsRepository;
-            _logger = logger;
+            return await _repliedComplaintsRepository.GetAllAsync();
         }
-
-        public async Task<IEnumerable<RepliedComplaints>> Handle(GetAllRepliedComplaintsQuery request, CancellationToken cancellationToken)
+        catch (Exception ex)
         {
-            try
-            {
-                return await _repliedComplaintsRepository.GetAllAsync();
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError("An error occurred while retrieving all replied complaints: {ErrorMessage}", ex.Message);
-                throw;
-            }
+            _logger.LogError("An error occurred while retrieving all replied complaints: {ErrorMessage}", ex.Message);
+            throw;
         }
     }
+}

@@ -8,6 +8,6 @@ using System.Threading.Tasks;
 
 namespace OnlineVotingS.Application.Services.RepliedComplaint.Requests.Queries;
 
-    public class GetAllRepliedComplaintsQuery : IRequest<IEnumerable<RepliedComplaints>>
-    {
-    }
+public class GetAllRepliedComplaintsQuery : IRequest<IEnumerable<RepliedComplaints>>
+{
+}

@@ -12,39 +12,37 @@ using System.Threading.Tasks;
 
 namespace OnlineVotingS.Application.Services.RepliedComplaint.Handlers.Commands;
 
-    public class UpdateRepliedComplaintCommandHandler : IRequestHandler<UpdateRepliedComplaintCommand, RepliedComplaints>
+public class UpdateRepliedComplaintCommandHandler : IRequestHandler<UpdateRepliedComplaintCommand, RepliedComplaints>
+{
+    private readonly IRepliedComplaintsRepository _repliedComplaintsRepository;
+    private readonly IMapper _mapper;
+    private readonly ILogger<UpdateRepliedComplaintCommandHandler> _logger;
+
+    public UpdateRepliedComplaintCommandHandler(IRepliedComplaintsRepository repliedComplaintsRepository, IMapper mapper, ILogger<UpdateRepliedComplaintCommandHandler> logger)
     {
-        private readonly IRepliedComplaintsRepository _repliedComplaintsRepository;
-        private readonly IMapper _mapper;
-        private readonly ILogger<UpdateRepliedComplaintCommandHandler> _logger;
+        _repliedComplaintsRepository = repliedComplaintsRepository;
+        _mapper = mapper;
+        _logger = logger;
+    }
 
-        public UpdateRepliedComplaintCommandHandler(IRepliedComplaintsRepository repliedComplaintsRepository, IMapper mapper, ILogger<UpdateRepliedComplaintCommandHandler> logger)
+    public async Task<RepliedComplaints> Handle(UpdateRepliedComplaintCommand request, CancellationToken cancellationToken)
+    {
+        try
         {
-            _repliedComplaintsRepository = repliedComplaintsRepository;
-            _mapper = mapper;
-            _logger = logger;
+            var repliedComplaint = await _repliedComplaintsRepository.GetByIdAsync(request.RepliedComplaint.RepliedComplaintID);
+            if (repliedComplaint == null)
+            {
+                throw new KeyNotFoundException($"Replied complaint with ID {request.RepliedComplaint.RepliedComplaintID} not found.");
+            }
+
+            _mapper.Map(request.RepliedComplaint, repliedComplaint);
+            await _repliedComplaintsRepository.UpdateAsync(repliedComplaint);
+            return repliedComplaint;
         }
-
-        public async Task<RepliedComplaints> Handle(UpdateRepliedComplaintCommand request, CancellationToken cancellationToken)
+        catch (Exception ex)
         {
-            try
-            {
-                var repliedComplaint = await _repliedComplaintsRepository.GetByIdAsync(request.RepliedComplaint.RepliedComplaintID);
-                if (repliedComplaint == null)
-                {
-                    _logger.LogWarning("Replied complaint with ID {RepliedComplaintId} not found.", request.RepliedComplaint.RepliedComplaintID);
-                    throw new KeyNotFoundException($"Replied complaint with ID {request.RepliedComplaint.RepliedComplaintID} not found.");
-                }
-
-                _mapper.Map(request.RepliedComplaint, repliedComplaint);
-                await _repliedComplaintsRepository.UpdateAsync(repliedComplaint);
-                _logger.LogInformation("Replied complaint with ID {RepliedComplaintId} updated successfully.", request.RepliedComplaint.RepliedComplaintID);
-                return repliedComplaint;
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError("An error occurred while updating the replied complaint with ID {RepliedComplaintId}: {ErrorMessage}", request.RepliedComplaint.RepliedComplaintID, ex.Message);
-                throw;
-            }
+            _logger.LogError("An error occurred while updating the replied complaint with ID {RepliedComplaintId}: {ErrorMessage}", request.RepliedComplaint.RepliedComplaintID, ex.Message);
+            throw;
         }
     }
+}

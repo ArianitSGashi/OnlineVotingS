@@ -8,12 +8,12 @@ using System.Threading.Tasks;
 
 namespace OnlineVotingS.Application.Services.RepliedComplaint.Requests.Queries;
 
-    public class GetByReplyTextQuery : IRequest<IEnumerable<RepliedComplaints>>
-    {
-        public string ReplyText { get; set; }
+public class GetByReplyTextQuery : IRequest<IEnumerable<RepliedComplaints>>
+{
+    public string ReplyText { get; set; }
 
-        public GetByReplyTextQuery(string replyText)
-        {
-            ReplyText = replyText;
-        }
+    public GetByReplyTextQuery(string replyText)
+    {
+        ReplyText = replyText;
     }
+}

@@ -11,27 +11,27 @@ using System.Threading.Tasks;
 
 namespace OnlineVotingS.Application.Services.RepliedComplaint.Handlers.Queries;
 
-    public class GetRecentRepliesQueryHandler : IRequestHandler<GetRecentRepliesQuery, IEnumerable<RepliedComplaints>>
+public class GetRecentRepliesQueryHandler : IRequestHandler<GetRecentRepliesQuery, IEnumerable<RepliedComplaints>>
+{
+    private readonly IRepliedComplaintsRepository _repliedComplaintsRepository;
+    private readonly ILogger<GetRecentRepliesQueryHandler> _logger;
+
+    public GetRecentRepliesQueryHandler(IRepliedComplaintsRepository repliedComplaintsRepository, ILogger<GetRecentRepliesQueryHandler> logger)
     {
-        private readonly IRepliedComplaintsRepository _repliedComplaintsRepository;
-        private readonly ILogger<GetRecentRepliesQueryHandler> _logger;
+        _repliedComplaintsRepository = repliedComplaintsRepository;
+        _logger = logger;
+    }
 
-        public GetRecentRepliesQueryHandler(IRepliedComplaintsRepository repliedComplaintsRepository, ILogger<GetRecentRepliesQueryHandler> logger)
+    public async Task<IEnumerable<RepliedComplaints>> Handle(GetRecentRepliesQuery request, CancellationToken cancellationToken)
+    {
+        try
         {
-            _repliedComplaintsRepository = repliedComplaintsRepository;
-            _logger = logger;
+            return await _repliedComplaintsRepository.GetRecentRepliesAsync(request.Date);
         }
-
-        public async Task<IEnumerable<RepliedComplaints>> Handle(GetRecentRepliesQuery request, CancellationToken cancellationToken)
+        catch (Exception ex)
         {
-            try
-            {
-                return await _repliedComplaintsRepository.GetRecentRepliesAsync(request.Date);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError("An error occurred while retrieving recent replied complaints from {Date}: {ErrorMessage}", request.Date, ex.Message);
-                throw;
-            }
+            _logger.LogError("An error occurred while retrieving recent replied complaints from {Date}: {ErrorMessage}", request.Date, ex.Message);
+            throw;
         }
     }
+}

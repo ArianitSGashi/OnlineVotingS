@@ -28,12 +28,10 @@ namespace OnlineVotingS.Application.Services.RepliedComplaint.Handlers.Commands;
                 var exists = await _repliedComplaintsRepository.ExistsAsync(request.RepliedComplaintId);
                 if (!exists)
                 {
-                    _logger.LogWarning("Replied complaint with ID {RepliedComplaintId} not found.", request.RepliedComplaintId);
                     throw new KeyNotFoundException($"Replied complaint with ID {request.RepliedComplaintId} not found.");
                 }
 
                 await _repliedComplaintsRepository.DeleteAsync(request.RepliedComplaintId);
-                _logger.LogInformation("Replied complaint with ID {RepliedComplaintId} deleted successfully.", request.RepliedComplaintId);
                 return true;
             }
             catch (Exception ex)

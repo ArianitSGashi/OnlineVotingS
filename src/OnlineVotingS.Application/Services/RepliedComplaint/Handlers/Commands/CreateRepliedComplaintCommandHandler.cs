@@ -12,32 +12,31 @@ using System.Threading.Tasks;
 
 namespace OnlineVotingS.Application.Services.RepliedComplaint.Handlers.Commands;
 
-    public class CreateRepliedComplaintCommandHandler : IRequestHandler<CreateRepliedComplaintCommand, RepliedComplaints>
+public class CreateRepliedComplaintCommandHandler : IRequestHandler<CreateRepliedComplaintCommand, RepliedComplaints>
+{
+    private readonly IRepliedComplaintsRepository _repliedComplaintsRepository;
+    private readonly IMapper _mapper;
+    private readonly ILogger<CreateRepliedComplaintCommandHandler> _logger;
+
+    public CreateRepliedComplaintCommandHandler(IRepliedComplaintsRepository repliedComplaintsRepository, IMapper mapper, ILogger<CreateRepliedComplaintCommandHandler> logger)
     {
-        private readonly IRepliedComplaintsRepository _repliedComplaintsRepository;
-        private readonly IMapper _mapper;
-        private readonly ILogger<CreateRepliedComplaintCommandHandler> _logger;
+        _repliedComplaintsRepository = repliedComplaintsRepository;
+        _mapper = mapper;
+        _logger = logger;
+    }
 
-        public CreateRepliedComplaintCommandHandler(IRepliedComplaintsRepository repliedComplaintsRepository, IMapper mapper, ILogger<CreateRepliedComplaintCommandHandler> logger)
+    public async Task<RepliedComplaints> Handle(CreateRepliedComplaintCommand request, CancellationToken cancellationToken)
+    {
+        try
         {
-            _repliedComplaintsRepository = repliedComplaintsRepository;
-            _mapper = mapper;
-            _logger = logger;
+            var repliedComplaint = _mapper.Map<RepliedComplaints>(request.RepliedComplaint);
+            await _repliedComplaintsRepository.AddAsync(repliedComplaint);
+            return repliedComplaint;
         }
-
-        public async Task<RepliedComplaints> Handle(CreateRepliedComplaintCommand request, CancellationToken cancellationToken)
+        catch (Exception ex)
         {
-            try
-            {
-                var repliedComplaint = _mapper.Map<RepliedComplaints>(request.RepliedComplaint);
-                await _repliedComplaintsRepository.AddAsync(repliedComplaint);
-                _logger.LogInformation("Replied complaint created successfully with ID {RepliedComplaintId}.", repliedComplaint.RepliedComplaintID);
-                return repliedComplaint;
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError("An error occurred while creating a replied complaint: {ErrorMessage}", ex.Message);
-                throw;
-            }
+            _logger.LogError("An error occurred while creating a replied complaint: {ErrorMessage}", ex.Message);
+            throw;
         }
     }
+}

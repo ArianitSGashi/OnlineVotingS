@@ -11,27 +11,27 @@ using System.Threading.Tasks;
 
 namespace OnlineVotingS.Application.Services.RepliedComplaint.Handlers.Queries;
 
-    public class GetByComplaintIDQueryHandler : IRequestHandler<GetByComplaintIDQuery, IEnumerable<RepliedComplaints>>
+public class GetByComplaintIDQueryHandler : IRequestHandler<GetByComplaintIDQuery, IEnumerable<RepliedComplaints>>
+{
+    private readonly IRepliedComplaintsRepository _repliedComplaintsRepository;
+    private readonly ILogger<GetByComplaintIDQueryHandler> _logger;
+
+    public GetByComplaintIDQueryHandler(IRepliedComplaintsRepository repliedComplaintsRepository, ILogger<GetByComplaintIDQueryHandler> logger)
     {
-        private readonly IRepliedComplaintsRepository _repliedComplaintsRepository;
-        private readonly ILogger<GetByComplaintIDQueryHandler> _logger;
+        _repliedComplaintsRepository = repliedComplaintsRepository;
+        _logger = logger;
+    }
 
-        public GetByComplaintIDQueryHandler(IRepliedComplaintsRepository repliedComplaintsRepository, ILogger<GetByComplaintIDQueryHandler> logger)
+    public async Task<IEnumerable<RepliedComplaints>> Handle(GetByComplaintIDQuery request, CancellationToken cancellationToken)
+    {
+        try
         {
-            _repliedComplaintsRepository = repliedComplaintsRepository;
-            _logger = logger;
+            return await _repliedComplaintsRepository.GetByComplaintIDAsync(request.ComplaintID);
         }
-
-        public async Task<IEnumerable<RepliedComplaints>> Handle(GetByComplaintIDQuery request, CancellationToken cancellationToken)
+        catch (Exception ex)
         {
-            try
-            {
-                return await _repliedComplaintsRepository.GetByComplaintIDAsync(request.ComplaintID);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError("An error occurred while retrieving replied complaints for complaint ID {ComplaintID}: {ErrorMessage}", request.ComplaintID, ex.Message);
-                throw;
-            }
+            _logger.LogError("An error occurred while retrieving replied complaints for complaint ID {ComplaintID}: {ErrorMessage}", request.ComplaintID, ex.Message);
+            throw;
         }
     }
+}

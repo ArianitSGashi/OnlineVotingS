@@ -9,12 +9,12 @@ using System.Threading.Tasks;
 
 namespace OnlineVotingS.Application.Services.RepliedComplaint.Requests.Commands;
 
-    public class UpdateRepliedComplaintCommand : IRequest<RepliedComplaints>
-    {
-        public RepliedComplaintsPutDTO RepliedComplaint { get; }
+public class UpdateRepliedComplaintCommand : IRequest<RepliedComplaints>
+{
+    public RepliedComplaintsPutDTO RepliedComplaint { get; }
 
-        public UpdateRepliedComplaintCommand(RepliedComplaintsPutDTO repliedComplaint)
-        {
-            RepliedComplaint = repliedComplaint;
-        }
+    public UpdateRepliedComplaintCommand(RepliedComplaintsPutDTO repliedComplaint)
+    {
+        RepliedComplaint = repliedComplaint;
     }
+}

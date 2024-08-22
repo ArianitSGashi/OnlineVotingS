@@ -8,12 +8,12 @@ using System.Threading.Tasks;
 
 namespace OnlineVotingS.Application.Services.RepliedComplaint.Requests.Queries;
 
-    public class GetByComplaintIDQuery : IRequest<IEnumerable<RepliedComplaints>>
-    {
-        public int ComplaintID { get; set; }
+public class GetByComplaintIDQuery : IRequest<IEnumerable<RepliedComplaints>>
+{
+    public int ComplaintID { get; set; }
 
-        public GetByComplaintIDQuery(int complaintID)
-        {
-            ComplaintID = complaintID;
-        }
+    public GetByComplaintIDQuery(int complaintID)
+    {
+        ComplaintID = complaintID;
     }
+}
