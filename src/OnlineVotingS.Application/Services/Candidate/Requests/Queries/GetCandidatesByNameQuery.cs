@@ -10,10 +10,10 @@ namespace OnlineVotingS.Application.Services.Candidate.Requests.Queries;
 
 public class GetCandidatesByNameQuery : IRequest<IEnumerable<Candidates>>
 {
-    public string Name { get; set; }
+    public string FullName { get; set; } 
 
     public GetCandidatesByNameQuery(string name)
     {
-        Name = name;
+        FullName = name;
     }
 }

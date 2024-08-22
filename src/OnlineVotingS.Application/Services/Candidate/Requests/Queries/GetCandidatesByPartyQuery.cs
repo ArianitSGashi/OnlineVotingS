@@ -10,10 +10,10 @@ namespace OnlineVotingS.Application.Services.Candidate.Requests.Queries;
 
 public class GetCandidatesByPartyQuery : IRequest<IEnumerable<Candidates>>
 {
-    public string Party { get; set; }
+    public string PartyName { get; set; } 
 
     public GetCandidatesByPartyQuery(string party)
     {
-        Party = party;
+        PartyName = party;
     }
 }
