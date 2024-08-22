@@ -28,17 +28,17 @@ public class UpdateComplaintHandler : IRequestHandler<UpdateComplaintCommand, Co
             var complaint = await _complaintRepository.GetByIdAsync(request.ComplaintsPutDTO.ComplaintID);
             if (complaint == null)
             {
-                _logger.LogWarning($"Complaint with ID {request.ComplaintsPutDTO.ComplaintID} not found.");
-                throw new KeyNotFoundException($"Complaint with ID : {request.ComplaintsPutDTO.ComplaintID} not found.");
+               throw new KeyNotFoundException($"Complaint with ID : {request.ComplaintsPutDTO.ComplaintID} not found.");
             }
+
             _mapper.Map(request.ComplaintsPutDTO, complaint);
             await _complaintRepository.UpdateAsync(complaint);
-            _logger.LogInformation($"Complaint with ID {request.ComplaintsPutDTO.ComplaintID} updated successfully.");
+            
             return complaint;
         }
         catch (Exception ex)
         {
-            _logger.LogError($"An error occurred while updating the complaint with ComplaintID: {request.ComplaintsPutDTO.ComplaintID}: {ex.Message}");
+            _logger.LogError("An error occurred while updating the complaint with ComplaintID: {ComplaintId}: {ErrorMessage}", request.ComplaintsPutDTO.ComplaintID, ex.Message);
             throw;
         }
     }

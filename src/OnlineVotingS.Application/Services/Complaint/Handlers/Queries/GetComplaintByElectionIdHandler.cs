@@ -29,7 +29,7 @@ public class GetComplaintByElectionIdHandler : IRequestHandler<GetComplaintByEle
         }
         catch (Exception ex)
         {
-            _logger.LogError($"An error occurred while fetching the complaints with ElectionID {request.ElectionId}: {ex.Message}");
+            _logger.LogError("An error occurred while fetching campaigns for ElectionID {ElectionId}: {ErrorMessage}", request.ElectionId, ex.Message);
             throw;
         }
     }

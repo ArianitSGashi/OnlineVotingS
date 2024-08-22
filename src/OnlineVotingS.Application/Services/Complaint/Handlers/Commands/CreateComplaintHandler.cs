@@ -27,12 +27,12 @@ public class CreateComplaintHandler : IRequestHandler<CreateComplaintCommand, Co
         {
             var complaint = _mapper.Map<Complaints>(request.ComplaintsPostDTO);
             await _complaintRepository.AddAsync(complaint);
-            _logger.LogInformation($"Complaint added successfully.");
+
             return complaint;
         }
         catch (Exception ex)
         {
-            _logger.LogError($"An error occurred while creating the complaint: {ex.Message}");
+            _logger.LogError("An error occurred while creating the complaint: {ErrorMessage}", ex.Message);
             throw;
         }
     }

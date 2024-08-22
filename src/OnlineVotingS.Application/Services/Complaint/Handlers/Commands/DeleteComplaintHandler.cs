@@ -27,16 +27,16 @@ public class DeleteComplaintHandler : IRequestHandler<DeleteCampaignCommand, boo
             var exists = await _complaintRepository.ExistsAsync(request.CampaignId);
             if (!exists)
             {
-                _logger.LogWarning($"Complaint with ID {request.CampaignId} not found.");
                 throw new KeyNotFoundException($"Complaint with ID : {request.CampaignId} not found.");
             }
+
             await _complaintRepository.DeleteAsync(request.CampaignId);
-            _logger.LogInformation($"Complaint with ID {request.CampaignId} deleted successfully.");
+
             return true;
         }
         catch (Exception ex)
         {
-            _logger.LogError($"An error occurred while deleting the complaint with ComplaintID : {request.CampaignId}: {ex.Message}");
+            _logger.LogError("An error occurred while delete of complaint with ComplaintID: {ComplaintId}: {ErrorMessage}", request.CampaignId, ex.Message);
             throw;
         }
     }

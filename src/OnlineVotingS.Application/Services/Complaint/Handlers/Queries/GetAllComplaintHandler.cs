@@ -29,7 +29,7 @@ public class GetAllComplaintHandler : IRequestHandler<GetAllComplaintCommand, IE
         }
         catch (Exception ex)
         {
-            _logger.LogError($"An error occurred while fetching the complaints: {ex.Message}");
+            _logger.LogError("An error occurred while fetching the complaints: {ErrorMessage}", ex.Message);
             throw;
         }
     }

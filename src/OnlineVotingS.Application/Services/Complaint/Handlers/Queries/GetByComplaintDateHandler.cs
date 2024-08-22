@@ -32,7 +32,7 @@ public class GetByComplaintDateHandler : IRequestHandler<GetByComplaintDateComma
         }
         catch (Exception ex)
         {
-            _logger.LogError($"An error occurred while fetching the complaints: {ex.Message}");
+            _logger.LogError("An error occurred while fetching campaigns with Date {Date}: {ErrorMessage}", request.Date.ToString(), ex.Message);
             throw;
         }
     }

@@ -29,7 +29,8 @@ public class GetComplaintsByUserIdHandler : IRequestHandler<GetComplaintsByUserI
         }
         catch (Exception ex)
         {
-            _logger.LogError($"An error occurred while fetching the complaints with UserID {request.UserId}: {ex.Message}");
+
+            _logger.LogError("An error occurred while fetching campaigns for UserId: {UserId}: {ErrorMessage}", request.UserId, ex.Message); 
             throw;
         }
     }

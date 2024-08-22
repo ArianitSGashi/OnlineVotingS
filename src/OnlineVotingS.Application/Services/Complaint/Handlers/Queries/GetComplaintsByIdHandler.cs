@@ -29,7 +29,7 @@ public class GetComplaintsByIdHandler : IRequestHandler<GetComplaintsByIdCommand
         }
         catch (Exception ex)
         {
-            _logger.LogError($"An error occurred while fetching the complaint with ComplaintID: {request.ComplaintId}: {ex.Message}");
+            _logger.LogError("An error occurred while fetching complaint with ComplaintId: {ComplaintId}: {ErrorMessage}", request.ComplaintId, ex.Message);
             throw;
         }
     }
