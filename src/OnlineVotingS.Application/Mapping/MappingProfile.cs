@@ -28,7 +28,5 @@ public class MappingProfile : Profile
           CreateMap<Feedback, FeedbackPutDTO>().ReverseMap();
           CreateMap<RepliedComplaints, RepliedComplaintsPostDTO>().ReverseMap();
           CreateMap<RepliedComplaints, RepliedComplaintsPutDTO>().ReverseMap();
-          CreateMap<Complaints, CreateComplaintCommand>().ReverseMap();
-          CreateMap<Complaints, UpdateComplaintCommand>().ReverseMap();
        }
     }
