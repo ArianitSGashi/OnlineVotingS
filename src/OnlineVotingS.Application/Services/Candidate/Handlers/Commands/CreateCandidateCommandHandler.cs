@@ -1,5 +1,4 @@
-﻿
-using AutoMapper;
+﻿using AutoMapper;
 using MediatR;
 using Microsoft.Extensions.Logging;
 using OnlineVotingS.Application.Services.Candidate.Requests.Commands;
