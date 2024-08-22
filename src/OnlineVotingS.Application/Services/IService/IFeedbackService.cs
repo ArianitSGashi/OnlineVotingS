@@ -7,14 +7,14 @@ using System.Threading.Tasks;
 
 namespace OnlineVotingS.Application.Services.IService;
 
-public interface IFeedbackService
-{
-    Task<Feedback> CreateFeedbackAsync(FeedbackPostDTO feedbackDto);
-    Task<Feedback> UpdateFeedbackAsync(FeedbackPutDTO feedbackDto);
-    Task<bool> DeleteFeedbackAsync(int feedbackId);
-    Task<Feedback> GetFeedbackByIdAsync(int feedbackId);
-    Task<IEnumerable<Feedback>> GetAllFeedbacksAsync();
-    Task<IEnumerable<Feedback>> GetFeedbacksByUserIDAsync(string voterId);
-    Task<IEnumerable<Feedback>> GetByElectionIDAsync(int electionId);
-    Task<IEnumerable<Feedback>> GetRecentFeedbacksAsync(DateTime date);  
-}
+    public interface IFeedbackService
+    {
+        Task<Feedback> CreateFeedbackAsync(FeedbackPostDTO feedbackDto);
+        Task<Feedback> UpdateFeedbackAsync(FeedbackPutDTO feedbackDto);
+        Task<bool> DeleteFeedbackAsync(int feedbackId);
+        Task<Feedback> GetFeedbackByIdAsync(int feedbackId);
+        Task<IEnumerable<Feedback>> GetAllFeedbacksAsync();
+        Task<IEnumerable<Feedback>> GetFeedbacksByUserIdAsync(string userId);
+        Task<IEnumerable<Feedback>> GetFeedbacksByElectionIdAsync(int electionId);
+        Task<IEnumerable<Feedback>> GetRecentFeedbacksAsync(DateTime date);
+    }
