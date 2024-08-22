@@ -11,12 +11,12 @@ namespace OnlineVotingS.Application.Services.IService;
 
 public interface IRepliedComplaintsService
 {
-    Task<RepliedComplaints> CreateRepliedComplaintAsync(RepliedComplaintsPostDTO repliedComplaintsDto);
-    Task<RepliedComplaints> UpdateRepliedComplaintAsync(RepliedComplaintsPutDTO repliedComplaintsDto);
+    Task<RepliedComplaints> CreateRepliedComplaintAsync(RepliedComplaintsPostDTO repliedComplaintDto);
+    Task<RepliedComplaints> UpdateRepliedComplaintAsync(RepliedComplaintsPutDTO repliedComplaintDto);
     Task<bool> DeleteRepliedComplaintAsync(int repliedComplaintId);
     Task<RepliedComplaints> GetRepliedComplaintByIdAsync(int repliedComplaintId);
     Task<IEnumerable<RepliedComplaints>> GetAllRepliedComplaintsAsync();
-    Task<IEnumerable<RepliedComplaints>> GetByComplaintIDAsync(int complaintID);
-    Task<IEnumerable<RepliedComplaints>> GetByReplyTextAsync(string replyText);
-    Task<IEnumerable<RepliedComplaints>> GetRecentRepliesAsync(DateTime date);
+    Task<IEnumerable<RepliedComplaints>> GetRepliedComplaintsByComplaintIDAsync(int complaintID);
+    Task<IEnumerable<RepliedComplaints>> GetRepliedComplaintsByReplyTextAsync(string replyText);
+    Task<IEnumerable<RepliedComplaints>> GetRecentRepliedComplaintsAsync(DateTime date);
 }

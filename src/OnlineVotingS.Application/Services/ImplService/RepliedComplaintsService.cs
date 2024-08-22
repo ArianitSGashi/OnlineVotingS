@@ -5,11 +5,6 @@ using OnlineVotingS.Application.DTO.PutDTO;
 using OnlineVotingS.Application.Services.IService;
 using OnlineVotingS.Domain.Entities;
 using OnlineVotingS.Domain.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace OnlineVotingS.Application.Services.ImplService;
 
@@ -26,12 +21,13 @@ public class RepliedComplaintsService : IRepliedComplaintsService
         _logger = logger;
     }
 
-    public async Task<RepliedComplaints> CreateRepliedComplaintAsync(RepliedComplaintsPostDTO repliedComplaintsDto)
+    public async Task<RepliedComplaints> CreateRepliedComplaintAsync(RepliedComplaintsPostDTO repliedComplaintDto)
     {
         try
         {
-            var repliedComplaint = _mapper.Map<RepliedComplaints>(repliedComplaintsDto);
+            var repliedComplaint = _mapper.Map<RepliedComplaints>(repliedComplaintDto);
             await _repliedComplaintsRepository.AddAsync(repliedComplaint);
+
             _logger.LogInformation("Replied complaint created successfully with ID {RepliedComplaintId}.", repliedComplaint.RepliedComplaintID);
             return repliedComplaint;
         }
@@ -42,25 +38,26 @@ public class RepliedComplaintsService : IRepliedComplaintsService
         }
     }
 
-    public async Task<RepliedComplaints> UpdateRepliedComplaintAsync(RepliedComplaintsPutDTO repliedComplaintsDto)
+    public async Task<RepliedComplaints> UpdateRepliedComplaintAsync(RepliedComplaintsPutDTO repliedComplaintDto)
     {
         try
         {
-            var repliedComplaint = await _repliedComplaintsRepository.GetByIdAsync(repliedComplaintsDto.RepliedComplaintID);
+            var repliedComplaint = await _repliedComplaintsRepository.GetByIdAsync(repliedComplaintDto.RepliedComplaintID);
             if (repliedComplaint == null)
             {
-                _logger.LogWarning("Replied complaint with ID {RepliedComplaintId} not found.", repliedComplaintsDto.RepliedComplaintID);
-                throw new KeyNotFoundException($"Replied complaint with ID {repliedComplaintsDto.RepliedComplaintID} not found.");
+                _logger.LogWarning("Replied complaint with ID {RepliedComplaintId} not found.", repliedComplaintDto.RepliedComplaintID);
+                throw new KeyNotFoundException($"Replied complaint with ID {repliedComplaintDto.RepliedComplaintID} not found.");
             }
 
-            _mapper.Map(repliedComplaintsDto, repliedComplaint);
+            _mapper.Map(repliedComplaintDto, repliedComplaint);
             await _repliedComplaintsRepository.UpdateAsync(repliedComplaint);
-            _logger.LogInformation("Replied complaint with ID {RepliedComplaintId} updated successfully.", repliedComplaintsDto.RepliedComplaintID);
+
+            _logger.LogInformation("Replied complaint with ID {RepliedComplaintId} updated successfully.", repliedComplaintDto.RepliedComplaintID);
             return repliedComplaint;
         }
         catch (Exception ex)
         {
-            _logger.LogError("An error occurred while updating the replied complaint with ID {RepliedComplaintId}: {ErrorMessage}", repliedComplaintsDto.RepliedComplaintID, ex.Message);
+            _logger.LogError("An error occurred while updating the replied complaint with ID {RepliedComplaintId}: {ErrorMessage}", repliedComplaintDto.RepliedComplaintID, ex.Message);
             throw;
         }
     }
@@ -77,6 +74,7 @@ public class RepliedComplaintsService : IRepliedComplaintsService
             }
 
             await _repliedComplaintsRepository.DeleteAsync(repliedComplaintId);
+
             _logger.LogInformation("Replied complaint with ID {RepliedComplaintId} deleted successfully.", repliedComplaintId);
             return true;
         }
@@ -121,7 +119,7 @@ public class RepliedComplaintsService : IRepliedComplaintsService
         }
     }
 
-    public async Task<IEnumerable<RepliedComplaints>> GetByComplaintIDAsync(int complaintID)
+    public async Task<IEnumerable<RepliedComplaints>> GetRepliedComplaintsByComplaintIDAsync(int complaintID)
     {
         try
         {
@@ -130,12 +128,12 @@ public class RepliedComplaintsService : IRepliedComplaintsService
         }
         catch (Exception ex)
         {
-            _logger.LogError("An error occurred while fetching replied complaints for complaint ID {ComplaintId}: {ErrorMessage}", complaintID, ex.Message);
+            _logger.LogError("An error occurred while fetching replied complaints for complaint ID {ComplaintID}: {ErrorMessage}", complaintID, ex.Message);
             throw;
         }
     }
 
-    public async Task<IEnumerable<RepliedComplaints>> GetByReplyTextAsync(string replyText)
+    public async Task<IEnumerable<RepliedComplaints>> GetRepliedComplaintsByReplyTextAsync(string replyText)
     {
         try
         {
@@ -149,7 +147,7 @@ public class RepliedComplaintsService : IRepliedComplaintsService
         }
     }
 
-    public async Task<IEnumerable<RepliedComplaints>> GetRecentRepliesAsync(DateTime date)
+    public async Task<IEnumerable<RepliedComplaints>> GetRecentRepliedComplaintsAsync(DateTime date)
     {
         try
         {

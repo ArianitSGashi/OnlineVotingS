@@ -5,11 +5,11 @@ using System.Threading.Tasks;
 
 namespace OnlineVotingS.Domain.Interfaces;
 
-    public interface IRepliedComplaintsRepository : IGenericRepository<RepliedComplaints>
-    {
-        Task<IEnumerable<RepliedComplaints>> GetByComplaintIDAsync(int complaintID);
+public interface IRepliedComplaintsRepository : IGenericRepository<RepliedComplaints>
+{
+    Task<IEnumerable<RepliedComplaints>> GetByComplaintIDAsync(int complaintID);
 
-        Task<IEnumerable<RepliedComplaints>> GetByReplyTextAsync(string replyText);
+    Task<IEnumerable<RepliedComplaints>> GetByReplyTextAsync(string replyText);
 
-        Task<IEnumerable<RepliedComplaints>> GetRecentRepliesAsync(DateTime date);
-    }
+    Task<IEnumerable<RepliedComplaints>> GetRecentRepliesAsync(DateTime date);
+}
