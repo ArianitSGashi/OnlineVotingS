@@ -7,7 +7,7 @@ namespace OnlineVotingS.Domain.Interfaces;
 
     public interface IRepliedComplaintsRepository : IGenericRepository<RepliedComplaints>
     {
-        Task<IEnumerable<RepliedComplaints>> GetByComplaintIDAsync(int complaintID);
+    Task<IEnumerable<RepliedComplaints>> GetByComplaintIDAsync(int complaintID);
     Task<List<RepliedComplaints>> GetByDateRangeAsync(DateTime startDate, DateTime endDate);
     Task<IEnumerable<RepliedComplaints>> GetByReplyTextAsync(string replyText);
     Task<List<RepliedComplaints>> GetByUserIdAsync(int userId);

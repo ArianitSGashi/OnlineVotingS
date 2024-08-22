@@ -10,10 +10,12 @@ namespace OnlineVotingS.Domain.Entities;
 
     public class RepliedComplaints
     {
-        /// <summary>
-        /// Gets or sets the unique identifier for the replied complaint.
-        /// </summary>
-        [Key]
+    public int userId;
+
+    /// <summary>
+    /// Gets or sets the unique identifier for the replied complaint.
+    /// </summary>
+    [Key]
         public int RepliedComplaintID { get; set; }
         /// <summary>
         /// Gets or sets the unique identifier of the complaint related to this reply.

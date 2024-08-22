@@ -5,13 +5,12 @@ using OnlineVotingS.Infrastructure.Persistence.Context;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
-namespace OnlineVotingS.Infrastructure.Repositories;
-
-public class RepliedComplaintsRepository : GenericRepository<RepliedComplaints>, IRepliedComplaintsRepository
+namespace OnlineVotingS.Infrastructure.Repositories
 {
+    public class RepliedComplaintsRepository : GenericRepository<RepliedComplaints>, IRepliedComplaintsRepository
+    {
         public RepliedComplaintsRepository(ApplicationDbContext context) : base(context)
         {
         }
@@ -30,5 +29,15 @@ public class RepliedComplaintsRepository : GenericRepository<RepliedComplaints>,
         {
             return await _dbSet.Where(rc => rc.ReplyDate >= date).ToListAsync();
         }
-    }
 
+        public async Task<List<RepliedComplaints>> GetByUserIdAsync(int userId)
+        {
+            return await _dbSet.Where(rc => rc.userId == userId).ToListAsync();
+        }
+
+        public async Task<List<RepliedComplaints>> GetByDateRangeAsync(DateTime startDate, DateTime endDate)
+        {
+            return await _dbSet.Where(rc => rc.ReplyDate >= startDate && rc.ReplyDate <= endDate).ToListAsync();
+        }
+    }
+}
