@@ -1,19 +1,20 @@
 ﻿using AutoMapper;
 using MediatR;
 using Microsoft.Extensions.Logging;
+using OnlineVotingS.Application.Services.Complaint.Requests.Queries;
 using OnlineVotingS.Application.Services.ImplService;
 using OnlineVotingS.Domain.Entities;
 using OnlineVotingS.Domain.Interfaces;
 
-namespace OnlineVotingS.Application.Services.Complaint.GetComplaintsByUserId;
+namespace OnlineVotingS.Application.Services.Complaint.Handlers.Queries;
 
-public class GetComplaintsByUserIdCommandHandler : IRequestHandler<GetComplaintsByUserIdCommand, IEnumerable<Complaints>>
+public class GetComplaintsByUserIdHandler : IRequestHandler<GetComplaintsByUserIdCommand, IEnumerable<Complaints>>
 {
     private readonly IComplaintRepository _complaintRepository;
     private readonly IMapper _mapper;
     private readonly ILogger<ComplaintService> _logger;
 
-    public GetComplaintsByUserIdCommandHandler(IComplaintRepository complaintRepository, IMapper mapper, ILogger<ComplaintService> logger)
+    public GetComplaintsByUserIdHandler(IComplaintRepository complaintRepository, IMapper mapper, ILogger<ComplaintService> logger)
     {
         _complaintRepository = complaintRepository;
         _mapper = mapper;

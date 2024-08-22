@@ -1,19 +1,20 @@
 ﻿using AutoMapper;
 using MediatR;
 using Microsoft.Extensions.Logging;
+using OnlineVotingS.Application.Services.Complaint.Requests.Commands;
 using OnlineVotingS.Application.Services.ImplService;
 using OnlineVotingS.Domain.Entities;
 using OnlineVotingS.Domain.Interfaces;
 
-namespace OnlineVotingS.Application.Services.Complaint.CreateComplaint;
+namespace OnlineVotingS.Application.Services.Complaint.Handlers.Commands;
 
-internal class CreateComplaintCommandHandler : IRequestHandler<CreateComplaintCommand, Complaints>
+public class CreateComplaintHandler : IRequestHandler<CreateComplaintCommand, Complaints>
 {
     private readonly IComplaintRepository _complaintRepository;
     private readonly IMapper _mapper;
     private readonly ILogger<ComplaintService> _logger;
 
-    public CreateComplaintCommandHandler(IComplaintRepository complaintRepository, IMapper mapper, ILogger<ComplaintService> logger)
+    public CreateComplaintHandler(IComplaintRepository complaintRepository, IMapper mapper, ILogger<ComplaintService> logger)
     {
         _complaintRepository = complaintRepository;
         _mapper = mapper;
@@ -24,7 +25,7 @@ internal class CreateComplaintCommandHandler : IRequestHandler<CreateComplaintCo
     {
         try
         {
-            var complaint = _mapper.Map<Complaints>(request);
+            var complaint = _mapper.Map<Complaints>(request.ComplaintsPostDTO);
             await _complaintRepository.AddAsync(complaint);
             _logger.LogInformation($"Complaint added successfully.");
             return complaint;
