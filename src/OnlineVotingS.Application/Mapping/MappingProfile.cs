@@ -2,11 +2,12 @@
 using OnlineVotingS.Application.DTO;
 using OnlineVotingS.Application.DTO.PostDTO;
 using OnlineVotingS.Application.DTO.PutDTO;
+using OnlineVotingS.Application.Services.Complaint.Requests.Commands;
 using OnlineVotingS.Domain.Entities;
 
 namespace OnlineVotingS.Application.Mapping;
 
-    public class MappingProfile : Profile
+public class MappingProfile : Profile
     {
        public MappingProfile()
        {
