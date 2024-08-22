@@ -28,6 +28,7 @@ public class DeleteComplaintHandler : IRequestHandler<DeleteCampaignCommand, boo
             if (!exists)
             {
                 _logger.LogWarning($"Complaint with ID {request.CampaignId} not found.");
+                throw new KeyNotFoundException($"Complaint with ID : {request.CampaignId} not found.");
             }
             await _complaintRepository.DeleteAsync(request.CampaignId);
             _logger.LogInformation($"Complaint with ID {request.CampaignId} deleted successfully.");

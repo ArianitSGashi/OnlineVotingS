@@ -29,6 +29,7 @@ public class UpdateComplaintHandler : IRequestHandler<UpdateComplaintCommand, Co
             if (complaint == null)
             {
                 _logger.LogWarning($"Complaint with ID {request.ComplaintsPutDTO.ComplaintID} not found.");
+                throw new KeyNotFoundException($"Complaint with ID : {request.ComplaintsPutDTO.ComplaintID} not found.");
             }
             _mapper.Map(request.ComplaintsPutDTO, complaint);
             await _complaintRepository.UpdateAsync(complaint);
