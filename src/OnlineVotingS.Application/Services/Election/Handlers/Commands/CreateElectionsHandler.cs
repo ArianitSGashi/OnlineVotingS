@@ -27,7 +27,6 @@ public class CreateElectionsHandler : IRequestHandler<CreateElectionsCommand, El
             var elections = _mapper.Map<Elections>(request.ElectionDto);
             await _electionsRepository.AddAsync(elections);
 
-            _logger.LogInformation("Elections created successfully with ID {ElectionsId}.", elections.ElectionID);
             return elections;
         }
         catch (Exception ex)

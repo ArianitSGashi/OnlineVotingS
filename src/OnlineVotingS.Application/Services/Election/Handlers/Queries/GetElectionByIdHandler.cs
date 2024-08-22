@@ -23,12 +23,6 @@ public class GetElectionByIdHandler : IRequestHandler<GetElectionsByIdQuery, Ele
         try
         {
             var campaign = await _electionRepository.GetByIdAsync(request.ElectionID);
-            if (campaign == null)
-            {
-                _logger.LogWarning("Election with ID {ElectonId} not found.", request.ElectionID);
-                throw new KeyNotFoundException($"Election with ID {request.ElectionID} not found.");
-            }
-
             return campaign;
         }
         catch (Exception ex)

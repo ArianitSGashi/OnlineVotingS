@@ -23,13 +23,11 @@ public class DeleteElectionsHandler : IRequestHandler<DeleteElectionsCommand, bo
             var exists = await _electionsRepository.ExistsAsync(request.ElectionId);
             if (!exists)
             {
-                _logger.LogWarning("Elections with ID {ElectionId} not found.", request.ElectionId);
                 throw new KeyNotFoundException($"Elections with ID {request.ElectionId} not found.");
             }
 
             await _electionsRepository.DeleteAsync(request.ElectionId);
 
-            _logger.LogInformation("Elections with ID {ElectionId} deleted successfully.", request.ElectionId);
             return true;
         }
         catch (Exception ex)
