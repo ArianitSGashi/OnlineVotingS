@@ -2,7 +2,6 @@
 using MediatR;
 using Microsoft.Extensions.Logging;
 using OnlineVotingS.Application.Services.Complaint.Requests.Commands;
-using OnlineVotingS.Application.Services.ImplService;
 using OnlineVotingS.Domain.Entities;
 using OnlineVotingS.Domain.Interfaces;
 
@@ -12,9 +11,9 @@ public class UpdateComplaintHandler : IRequestHandler<UpdateComplaintCommand, Co
 {
     private readonly IComplaintRepository _complaintRepository;
     private readonly IMapper _mapper;
-    private readonly ILogger<ComplaintService> _logger;
+    private readonly ILogger<UpdateComplaintHandler> _logger;
 
-    public UpdateComplaintHandler(IComplaintRepository complaintRepository, IMapper mapper, ILogger<ComplaintService> logger)
+    public UpdateComplaintHandler(IComplaintRepository complaintRepository, IMapper mapper, ILogger<UpdateComplaintHandler> logger)
     {
         _complaintRepository = complaintRepository;
         _mapper = mapper;
@@ -33,7 +32,6 @@ public class UpdateComplaintHandler : IRequestHandler<UpdateComplaintCommand, Co
 
             _mapper.Map(request.ComplaintsPutDTO, complaint);
             await _complaintRepository.UpdateAsync(complaint);
-            
             return complaint;
         }
         catch (Exception ex)

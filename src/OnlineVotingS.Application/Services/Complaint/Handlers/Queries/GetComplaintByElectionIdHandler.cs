@@ -1,8 +1,6 @@
-﻿using AutoMapper;
-using MediatR;
+﻿using MediatR;
 using Microsoft.Extensions.Logging;
 using OnlineVotingS.Application.Services.Complaint.Requests.Queries;
-using OnlineVotingS.Application.Services.ImplService;
 using OnlineVotingS.Domain.Entities;
 using OnlineVotingS.Domain.Interfaces;
 
@@ -11,13 +9,11 @@ namespace OnlineVotingS.Application.Services.Complaint.Handlers.Queries;
 public class GetComplaintByElectionIdHandler : IRequestHandler<GetComplaintByElectionIdCommand, IEnumerable<Complaints>>
 {
     private readonly IComplaintRepository _complaintRepository;
-    private readonly IMapper _mapper;
-    private readonly ILogger<ComplaintService> _logger;
+    private readonly ILogger<GetComplaintByElectionIdHandler> _logger;
 
-    public GetComplaintByElectionIdHandler(IComplaintRepository complaintRepository, IMapper mapper, ILogger<ComplaintService> logger)
+    public GetComplaintByElectionIdHandler(IComplaintRepository complaintRepository, ILogger<GetComplaintByElectionIdHandler> logger)
     {
         _complaintRepository = complaintRepository;
-        _mapper = mapper;
         _logger = logger;
     }
 

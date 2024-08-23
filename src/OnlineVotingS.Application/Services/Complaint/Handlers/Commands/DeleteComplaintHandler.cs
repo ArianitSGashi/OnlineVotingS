@@ -1,8 +1,6 @@
-﻿using AutoMapper;
-using MediatR;
+﻿using MediatR;
 using Microsoft.Extensions.Logging;
 using OnlineVotingS.Application.Services.Campaigns.Requests.Commands;
-using OnlineVotingS.Application.Services.ImplService;
 using OnlineVotingS.Domain.Interfaces;
 
 namespace OnlineVotingS.Application.Services.Complaint.Handlers.Commands;
@@ -10,13 +8,11 @@ namespace OnlineVotingS.Application.Services.Complaint.Handlers.Commands;
 public class DeleteComplaintHandler : IRequestHandler<DeleteCampaignCommand, bool>
 {
     private readonly IComplaintRepository _complaintRepository;
-    private readonly IMapper _mapper;
-    private readonly ILogger<ComplaintService> _logger;
+    private readonly ILogger<DeleteComplaintHandler> _logger;
 
-    public DeleteComplaintHandler(IComplaintRepository complaintRepository, IMapper mapper, ILogger<ComplaintService> logger)
+    public DeleteComplaintHandler(IComplaintRepository complaintRepository, ILogger<DeleteComplaintHandler> logger)
     {
         _complaintRepository = complaintRepository;
-        _mapper = mapper;
         _logger = logger;
     }
 

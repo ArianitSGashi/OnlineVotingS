@@ -4,11 +4,6 @@ using Microsoft.Extensions.Logging;
 using OnlineVotingS.Application.Services.Candidate.Requests.Commands;
 using OnlineVotingS.Domain.Entities;
 using OnlineVotingS.Domain.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace OnlineVotingS.Application.Services.Candidate.Handlers.Commands;
 
@@ -31,8 +26,6 @@ public class CreateCandidateCommandHandler : IRequestHandler<CreateCandidateComm
         {
             var candidate = _mapper.Map<Candidates>(request.CandidateDto);
             await _candidateRepository.AddAsync(candidate);
-
-            _logger.LogInformation("Candidate created successfully with ID {CandidateId}.", candidate.CandidateID);
             return candidate;
         }
         catch (Exception ex)

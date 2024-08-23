@@ -3,11 +3,6 @@ using Microsoft.Extensions.Logging;
 using OnlineVotingS.Application.Services.Candidate.Requests.Queries;
 using OnlineVotingS.Domain.Entities;
 using OnlineVotingS.Domain.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace OnlineVotingS.Application.Services.Candidate.Handlers.Queries;
 
@@ -27,7 +22,6 @@ public class GetAllCandidatesQueryHandler : IRequestHandler<GetAllCandidatesQuer
         try
         {
             var candidates = await _candidateRepository.GetAllAsync();
-            _logger.LogInformation("Successfully retrieved {Count} candidates.", candidates.Count());
             return candidates;
         }
         catch (Exception ex)

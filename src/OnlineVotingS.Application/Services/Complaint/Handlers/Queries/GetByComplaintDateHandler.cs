@@ -1,24 +1,17 @@
-﻿using AutoMapper;
-using MediatR;
+﻿using MediatR;
 using Microsoft.Extensions.Logging;
 using OnlineVotingS.Application.Services.Complaint.Requests.Queries;
-using OnlineVotingS.Application.Services.ImplService;
 using OnlineVotingS.Domain.Entities;
 using OnlineVotingS.Domain.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace OnlineVotingS.Application.Services.Complaint.Handlers.Queries;
 
 public class GetByComplaintDateHandler : IRequestHandler<GetByComplaintDateCommand, IEnumerable<Complaints>>
 {
     private readonly IComplaintRepository _complaintRepository;
-    private readonly ILogger<ComplaintService> _logger;
+    private readonly ILogger<GetByComplaintDateHandler> _logger;
 
-    public GetByComplaintDateHandler(IComplaintRepository complaintRepository, ILogger<ComplaintService> logger)
+    public GetByComplaintDateHandler(IComplaintRepository complaintRepository, ILogger<GetByComplaintDateHandler> logger)
     {
         _complaintRepository = complaintRepository;
         _logger = logger;

@@ -27,14 +27,11 @@ public class UpdateCampaignHandler : IRequestHandler<UpdateCampaignCommand, Camp
             var campaign = await _campaignRepository.GetByIdAsync(request.CampaignDto.CampaignID);
             if (campaign == null)
             {
-                _logger.LogWarning("Campaign with ID {CampaignId} not found.", request.CampaignDto.CampaignID);
                 throw new KeyNotFoundException($"Campaign with ID {request.CampaignDto.CampaignID} not found.");
             }
 
             _mapper.Map(request.CampaignDto, campaign);
             await _campaignRepository.UpdateAsync(campaign);
-
-            _logger.LogInformation("Campaign with ID {CampaignId} updated successfully.", request.CampaignDto.CampaignID);
             return campaign;
         }
         catch (Exception ex)

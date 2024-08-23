@@ -27,13 +27,11 @@ public class UpdateFeedbackHandler : IRequestHandler<UpdateFeedbackCommand, Feed
             var feedback = await _feedbackRepository.GetByIdAsync(request.FeedbackDto.FeedbackID);
             if (feedback == null)
             {
-                _logger.LogWarning("Feedback with ID {FeedbackId} not found.", request.FeedbackDto.FeedbackID);
                 throw new KeyNotFoundException($"Feedback with ID {request.FeedbackDto.FeedbackID} not found.");
             }
 
             _mapper.Map(request.FeedbackDto, feedback);
             await _feedbackRepository.UpdateAsync(feedback);
-            _logger.LogInformation("Feedback with ID {FeedbackId} updated successfully.", request.FeedbackDto.FeedbackID);
             return feedback;
         }
         catch (Exception ex)

@@ -3,11 +3,6 @@ using Microsoft.Extensions.Logging;
 using OnlineVotingS.Application.Services.RepliedComplaint.Requests.Queries;
 using OnlineVotingS.Domain.Entities;
 using OnlineVotingS.Domain.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace OnlineVotingS.Application.Services.RepliedComplaint.Handlers.Queries;
 

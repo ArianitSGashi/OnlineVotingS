@@ -24,7 +24,6 @@ public class GetFeedbackByIdHandler : IRequestHandler<GetFeedbackByIdQuery, Feed
             var feedback = await _feedbackRepository.GetByIdAsync(request.FeedbackId);
             if (feedback == null)
             {
-                _logger.LogWarning("Feedback with ID {FeedbackId} not found.", request.FeedbackId);
                 throw new KeyNotFoundException($"Feedback with ID {request.FeedbackId} not found.");
             }
 

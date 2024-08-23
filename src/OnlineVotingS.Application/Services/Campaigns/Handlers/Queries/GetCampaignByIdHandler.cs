@@ -24,7 +24,6 @@ public class GetCampaignByIdHandler : IRequestHandler<GetCampaignByIdQuery, Camp
             var campaign = await _campaignRepository.GetByIdAsync(request.CampaignID);
             if (campaign == null)
             {
-                _logger.LogWarning("Campaign with ID {CampaignId} not found.", request.CampaignID);
                 throw new KeyNotFoundException($"Campaign with ID {request.CampaignID} not found.");
             }
 
