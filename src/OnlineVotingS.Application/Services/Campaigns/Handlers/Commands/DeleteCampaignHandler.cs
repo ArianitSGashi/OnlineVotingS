@@ -23,13 +23,10 @@ public class DeleteCampaignHandler : IRequestHandler<DeleteCampaignCommand, bool
             var exists = await _campaignRepository.ExistsAsync(request.CampaignId);
             if (!exists)
             {
-                _logger.LogWarning("Campaign with ID {CampaignId} not found.", request.CampaignId);
                 throw new KeyNotFoundException($"Campaign with ID {request.CampaignId} not found.");
             }
 
             await _campaignRepository.DeleteAsync(request.CampaignId);
-
-            _logger.LogInformation("Campaign with ID {CampaignId} deleted successfully.", request.CampaignId);
             return true;
         }
         catch (Exception ex)

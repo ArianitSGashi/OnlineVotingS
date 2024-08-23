@@ -2,12 +2,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using OnlineVotingS.Application;
-using OnlineVotingS.Application.Mapping;
-using OnlineVotingS.Application.Services.Campaigns.Handlers.Commands;
-using OnlineVotingS.Application.Services.ImplService;
-using OnlineVotingS.Application.Services.IService;
 using OnlineVotingS.Infrastructure;
-using System.Reflection;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);

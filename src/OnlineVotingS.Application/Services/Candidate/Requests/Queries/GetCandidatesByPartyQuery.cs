@@ -1,16 +1,11 @@
 ﻿using MediatR;
 using OnlineVotingS.Domain.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace OnlineVotingS.Application.Services.Candidate.Requests.Queries;
 
 public class GetCandidatesByPartyQuery : IRequest<IEnumerable<Candidates>>
 {
-    public string PartyName { get; set; } 
+    public string PartyName { get; } 
 
     public GetCandidatesByPartyQuery(string party)
     {

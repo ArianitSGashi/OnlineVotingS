@@ -26,8 +26,6 @@ public class CreateCampaignHandler : IRequestHandler<CreateCampaignCommand, Camp
         {
             var campaign = _mapper.Map<Campaign>(request.CampaignDto);
             await _campaignRepository.AddAsync(campaign);
-
-            _logger.LogInformation("Campaign created successfully with ID {CampaignId}.", campaign.CampaignID);
             return campaign;
         }
         catch (Exception ex)

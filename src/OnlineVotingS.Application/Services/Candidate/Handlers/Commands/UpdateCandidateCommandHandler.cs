@@ -4,11 +4,6 @@ using Microsoft.Extensions.Logging;
 using OnlineVotingS.Application.Services.Candidate.Requests.Commands;
 using OnlineVotingS.Domain.Entities;
 using OnlineVotingS.Domain.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace OnlineVotingS.Application.Services.Candidate.Handlers.Commands;
 
@@ -32,14 +27,11 @@ public class UpdateCandidateCommandHandler : IRequestHandler<UpdateCandidateComm
             var candidate = await _candidateRepository.GetByIdAsync(request.CandidateDto.CandidateID);
             if (candidate == null)
             {
-                _logger.LogWarning("Candidate with ID {CandidateId} not found.", request.CandidateDto.CandidateID);
                 throw new KeyNotFoundException($"Candidate with ID {request.CandidateDto.CandidateID} not found.");
             }
 
             _mapper.Map(request.CandidateDto, candidate);
             await _candidateRepository.UpdateAsync(candidate);
-
-            _logger.LogInformation("Candidate with ID {CandidateId} updated successfully.", request.CandidateDto.CandidateID);
             return candidate;
         }
         catch (Exception ex)

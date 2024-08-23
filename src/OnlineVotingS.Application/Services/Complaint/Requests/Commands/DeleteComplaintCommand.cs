@@ -4,7 +4,7 @@ namespace OnlineVotingS.Application.Services.Complaint.Requests.Commands;
 
 public class DeleteComplaintCommand : IRequest<bool>
 {
-    public int ComplaintId{ get; set; }
+    public int ComplaintId{ get;}
 
     public DeleteComplaintCommand(int complaintId)
     {

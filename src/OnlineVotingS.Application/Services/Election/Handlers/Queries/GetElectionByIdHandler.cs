@@ -1,6 +1,5 @@
 ﻿using MediatR;
 using Microsoft.Extensions.Logging;
-using OnlineVotingS.Application.Services.Campaigns.Requests.Queries;
 using OnlineVotingS.Application.Services.Election.Requests.Queries;
 using OnlineVotingS.Domain.Entities;
 using OnlineVotingS.Domain.Interfaces;

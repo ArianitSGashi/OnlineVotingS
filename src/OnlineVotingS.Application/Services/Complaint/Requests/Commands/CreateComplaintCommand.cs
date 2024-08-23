@@ -6,7 +6,7 @@ namespace OnlineVotingS.Application.Services.Complaint.Requests.Commands;
 
 public class CreateComplaintCommand : IRequest<Complaints>
 {
-    public ComplaintsPostDTO ComplaintsPostDTO{ get; set; }
+    public ComplaintsPostDTO ComplaintsPostDTO{ get;}
     public CreateComplaintCommand(ComplaintsPostDTO complaintsPost)
     {
         ComplaintsPostDTO = complaintsPost;

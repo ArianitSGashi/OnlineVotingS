@@ -5,7 +5,7 @@ namespace OnlineVotingS.Application.Services.Complaint.Requests.Queries;
 
 public class GetComplaintsByUserIdCommand : IRequest<IEnumerable<Complaints>>
 {
-    public string UserId { get; set; }
+    public string UserId { get;}
 
     public GetComplaintsByUserIdCommand(string userId)
     {
