@@ -32,14 +32,11 @@ public class UpdateVoteCommandHandler : IRequestHandler<UpdateVoteCommand, Votes
             var vote = await _votesRepository.GetByIdAsync(request.VoteDto.VoteID);
             if (vote == null)
             {
-                _logger.LogWarning("Vote with ID {VoteId} not found.", request.VoteDto.VoteID);
                 throw new KeyNotFoundException($"Vote with ID {request.VoteDto.VoteID} not found.");
             }
 
             _mapper.Map(request.VoteDto, vote);
             await _votesRepository.UpdateAsync(vote);
-
-            _logger.LogInformation("Vote with ID {VoteId} updated successfully.", request.VoteDto.VoteID);
             return vote;
         }
         catch (Exception ex)

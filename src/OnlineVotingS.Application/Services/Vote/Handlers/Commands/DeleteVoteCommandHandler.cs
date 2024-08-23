@@ -28,13 +28,10 @@ public class DeleteVoteCommandHandler : IRequestHandler<DeleteVoteCommand, bool>
             var exists = await _votesRepository.ExistsAsync(request.VoteId);
             if (!exists)
             {
-                _logger.LogWarning("Vote with ID {VoteId} not found.", request.VoteId);
                 throw new KeyNotFoundException($"Vote with ID {request.VoteId} not found.");
             }
 
             await _votesRepository.DeleteAsync(request.VoteId);
-
-            _logger.LogInformation("Vote with ID {VoteId} deleted successfully.", request.VoteId);
             return true;
         }
         catch (Exception ex)

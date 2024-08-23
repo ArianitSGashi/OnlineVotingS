@@ -27,7 +27,6 @@ public class GetAllVotesQueryHandler : IRequestHandler<GetAllVotesQuery, IEnumer
         try
         {
             var votes = await _votesRepository.GetAllAsync();
-            _logger.LogInformation("Successfully retrieved {Count} votes.", votes.Count());
             return votes;
         }
         catch (Exception ex)

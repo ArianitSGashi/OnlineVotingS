@@ -31,8 +31,6 @@ public class CreateVoteCommandHandler : IRequestHandler<CreateVoteCommand, Votes
         {
             var vote = _mapper.Map<Votes>(request.VoteDto);
             await _votesRepository.AddAsync(vote);
-
-            _logger.LogInformation("Vote created successfully with ID {VoteId}.", vote.VoteID);
             return vote;
         }
         catch (Exception ex)
