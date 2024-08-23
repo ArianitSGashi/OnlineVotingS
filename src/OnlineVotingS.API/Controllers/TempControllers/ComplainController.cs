@@ -67,7 +67,7 @@ public class ComplainController : Controller
     }
 
     [HttpGet]
-    public async Task<IEnumerable<Complaints>> GetAllByDate(DateTime Date)
+    public async Task<IEnumerable<Complaints>> GetAllByDate([FromQuery] DateTime Date)
     {
         var response = await Mediator.Send(new GetByComplaintDateCommand(Date));
 
@@ -75,7 +75,7 @@ public class ComplainController : Controller
     }
 
     [HttpGet]
-    public async Task<IEnumerable<Complaints>> GetAllByElectionId(int ElectionId)
+    public async Task<IEnumerable<Complaints>> GetAllByElectionId([FromQuery] int ElectionId)
     {
         var response = await Mediator.Send(new GetComplaintByElectionIdCommand(ElectionId));
 
@@ -83,7 +83,7 @@ public class ComplainController : Controller
     }
 
     [HttpGet]
-    public async Task<Complaints> GetById(int ComplaintId)
+    public async Task<Complaints> GetById([FromQuery] int ComplaintId)
     {
         var response = await Mediator.Send(new GetComplaintsByIdCommand(ComplaintId));
 
@@ -91,7 +91,7 @@ public class ComplainController : Controller
     }
 
     [HttpGet]
-    public async Task<IEnumerable<Complaints>> GetComplaintsByUserId(string UserId)
+    public async Task<IEnumerable<Complaints>> GetComplaintsByUserId([FromQuery] string UserId)
     {
         var response = await Mediator.Send(new GetComplaintsByUserIdCommand(UserId));
 
