@@ -35,7 +35,7 @@ public class ComplainController : Controller
     }
 
     [HttpPost]
-    public async Task<Complaints> Create([FromBody]ComplaintsPostDTO complaintsPost)
+    public async Task<Complaints> Create([FromBody] ComplaintsPostDTO complaintsPost)
     {
         var response = await Mediator.Send(new CreateComplaintCommand(complaintsPost));
 
@@ -43,7 +43,7 @@ public class ComplainController : Controller
     }
 
     [HttpDelete]
-    public async Task<bool> Delete(int ComplaintId)
+    public async Task<bool> Delete([FromQuery] int ComplaintId)
     {
         var response = await Mediator.Send(new DeleteComplaintCommand(ComplaintId));
 
