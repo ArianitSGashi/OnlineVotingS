@@ -1,64 +1,40 @@
-using System.Collections.Generic;
-using OnlineVotingS.Domain.Entities;
-using OnlineVotingS.API.Models.AdminViewModels.ComplaintViewModels;
-using MediatR;
-using OnlineVotingS.Application.Services.Candidate.Requests.Commands;
-using OnlineVotingS.Application.Services.Candidate.Requests.Queries;
-using OnlineVotingS.Application.DTO.PostDTO;
-using OnlineVotingS.Application.DTO.PutDTO;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using OnlineVotingS.API.Models.AdminViewModels.CandidateViewModels;
 
 
 namespace OnlineVotingS.API.Controllers.TempControllers;
 
 public class CandidateController : Controller
 {
-    private readonly ISender _mediator;
-
-    public CandidateController(ISender mediator)
-    {
-        _mediator = mediator;
-    }
-
-    [HttpPost]
-    public async Task<Candidates> Create([FromBody] CandidatesPostDTO candidatesPost)
-    {
-        var response = await _mediator.Send(new CreateCandidateCommand(candidatesPost));
-        return response;
-    }
-
-    [HttpDelete]
-    public async Task<bool> Delete(int candidateId)
-    {
-        var response = await _mediator.Send(new DeleteCandidateCommand(candidateId));
-        return response;
-    }
-
-    [HttpPut]
-    public async Task<Candidates> Update([FromBody] CandidatesPutDTO candidatesPut)
-    {
-        var response = await _mediator.Send(new UpdateCandidateCommand(candidatesPut));
-        return response;
-    }
-
     [HttpGet]
-    public async Task<IEnumerable<Candidates>> GetAll()
+    public IActionResult AddCandidate()
     {
-        var response = await _mediator.Send(new GetAllCandidatesQuery());
-        return response;
+        var model = new AddCandidateViewModel
+        {
+            Elections = new List<SelectListItem>
+                {
+                    new SelectListItem { Value = "1", Text = "hi" },
+                    new SelectListItem { Value = "2", Text = "," },
+                    new SelectListItem { Value = "3", Text = "." }
+                }
+        };
+        return View("~/Views/Admin/Candidate/AddCandidate.cshtml", model);
     }
 
-    [HttpGet]
-    public async Task<Candidates> GetById([FromQuery] int candidateId)
+    public IActionResult EditCandidate()
     {
-        var response = await _mediator.Send(new GetCandidateByIdQuery(candidateId));
-        return response;
+        return View("~/Views/Admin/Candidate/EditCandidate.cshtml");
     }
 
-    [HttpGet]
-    public async Task<IEnumerable<Candidates>> GetByElectionId([FromQuery] int electionId)
+    public IActionResult DeleteCandidate()
     {
-        var response = await _mediator.Send(new GetCandidatesByElectionIdQuery(electionId));
-        return response;
+        return View("~/Views/Admin/Candidate/DeleteCandidate.cshtml");
+    }
+
+    public IActionResult ViewCandidates()
+    {
+        var model = new List<ViewCandidatesViewModel>();
+        return View("~/Views/Admin/Candidate/ViewCandidates.cshtml", model);
     }
 }
