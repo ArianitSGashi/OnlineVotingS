@@ -19,10 +19,6 @@ public class CampaignController : ControllerBase
         _mediator = mediator;
     }
 
-    /// <summary>
-    /// Retrieves all campaigns.
-    /// </summary>
-    /// <returns>A list of campaigns.</returns>
     [HttpGet]
     [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<ActionResult<IEnumerable<Campaign>>> GetAllCampaigns()
@@ -32,11 +28,6 @@ public class CampaignController : ControllerBase
         return Ok(campaigns);
     }
 
-    /// <summary>
-    /// Retrieves a campaign by ID.
-    /// </summary>
-    /// <param name="id">The ID of the campaign.</param>
-    /// <returns>The campaign with the specified ID.</returns>
     [HttpGet("{id:int}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -49,10 +40,6 @@ public class CampaignController : ControllerBase
             : Ok(campaign);
     }
 
-    /// <summary>
-    /// Retrieves active campaigns.
-    /// </summary>
-    /// <returns>A list of active campaigns.</returns>
     [HttpGet("active")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<ActionResult<IEnumerable<Campaign>>> GetActiveCampaigns()
@@ -62,11 +49,6 @@ public class CampaignController : ControllerBase
         return Ok(campaigns);
     }
 
-    /// <summary>
-    /// Retrieves campaigns by candidate ID.
-    /// </summary>
-    /// <param name="candidateId">The ID of the candidate.</param>
-    /// <returns>A list of campaigns for the specified candidate.</returns>
     [HttpGet("candidate/{candidateId:int}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<ActionResult<IEnumerable<Campaign>>> GetCampaignsByCandidateId([FromRoute] int candidateId)
@@ -76,11 +58,6 @@ public class CampaignController : ControllerBase
         return Ok(campaigns);
     }
 
-    /// <summary>
-    /// Retrieves campaigns by election ID.
-    /// </summary>
-    /// <param name="electionId">The ID of the election.</param>
-    /// <returns>A list of campaigns for the specified election.</returns>
     [HttpGet("election/{electionId:int}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<ActionResult<IEnumerable<Campaign>>> GetCampaignsByElectionId([FromRoute] int electionId)
@@ -90,11 +67,6 @@ public class CampaignController : ControllerBase
         return Ok(campaigns);
     }
 
-    /// <summary>
-    /// Creates a new campaign.
-    /// </summary>
-    /// <param name="campaignDto">The campaign data.</param>
-    /// <returns>The created campaign.</returns>
     [HttpPost]
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -115,11 +87,6 @@ public class CampaignController : ControllerBase
         return CreatedAtAction(nameof(GetCampaignById), new { id = campaign.CampaignID }, campaign);
     }
 
-    /// <summary>
-    /// Updates an existing campaign.
-    /// </summary>
-    /// <param name="campaignDto">The updated campaign data.</param>
-    /// <returns>No content if successful, or appropriate error response.</returns>
     [HttpPut]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -144,11 +111,6 @@ public class CampaignController : ControllerBase
             : NoContent();
     }
 
-    /// <summary>
-    /// Deletes a campaign by ID.
-    /// </summary>
-    /// <param name="id">The ID of the campaign.</param>
-    /// <returns>No content if successful, or appropriate error response.</returns>
     [HttpDelete("{id:int}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
