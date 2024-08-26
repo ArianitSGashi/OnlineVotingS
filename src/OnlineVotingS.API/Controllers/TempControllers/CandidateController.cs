@@ -1,7 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using OnlineVotingS.API.Models.AdminViewModels.CandidateViewModels;
-using OnlineVotingS.API.Models.AdminViewModels.AdminVoterViewModels;
+
 
 namespace OnlineVotingS.API.Controllers.TempControllers;
 
