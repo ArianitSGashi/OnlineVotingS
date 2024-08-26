@@ -8,7 +8,7 @@ namespace OnlineVotingS.Application.DTO.PostDTO;
 
     public class ComplaintsPostDTO
     {
-        public int UserID { get; set; }
+        public string UserID { get; set; }
         public int ElectionID { get; set; }
         public string ComplaintText { get; set; } = null!;
         public DateTime ComplaintDate { get; set; }
