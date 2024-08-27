@@ -11,5 +11,5 @@ namespace OnlineVotingS.Application.DTO.PostDTO;
         public string UserID { get; set; } = null!;
         public int ElectionID { get; set; }
         public string FeedbackText { get; set; } = null!;
-        public DateTime FeedbackDate { get; set; }
+        public DateTime FeedbackDate { get; set; } = DateTime.UtcNow;
     }
