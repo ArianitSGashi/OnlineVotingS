@@ -13,7 +13,8 @@ namespace OnlineVotingS.Application.DTO.PutDTO;
         public string? Description { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
+        public DateTime UpdateAt { get; set; } = DateTime.UtcNow;
 
-       // TODO: Add properties for the date and time of the created at and last update.
+    // TODO: Add properties for the date and time of the created at and last update.
 
-    }
+}
