@@ -60,7 +60,7 @@ public class ComplaintsController : Controller
     {
         if (complaintsPut == null || complaintsPut.ComplaintID <= 0)
         {
-            return BadRequest("Valid Campaign ID is required.");
+            return BadRequest("Valid Complaint ID is required.");
         }
 
         if (!ModelState.IsValid)
