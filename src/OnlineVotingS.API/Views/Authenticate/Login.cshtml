@@ -1,0 +1,43 @@
+﻿@model LoginViewModel
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link rel="stylesheet" href="/css/login.css">
+    <script>
+                debugger;
+                window.onload = function() {
+                    var loginFailed = '@ViewBag.LoginFailed';
+                    if (loginFailed === 'True') {
+                        alert('Login failed. Please check your Voter ID and password.');
+                    }
+                };
+    </script>
+</head>
+<body>
+    <div class="wrapper">
+        @using (Html.BeginForm("Login", "Authenticate", FormMethod.Post))
+        {
+            <h2>Login</h2>
+            <div class="input-field">
+                @Html.TextBoxFor(model => model.VoterId, new { @class = "input", placeholder = "Enter your Voter Id" })
+            </div>
+            <div class="input-field">
+                @Html.PasswordFor(model => model.Password, new { @class = "input", placeholder = "Enter your password" })
+            </div>
+            @* <div class="forget">
+        @Html.ActionLink("Forgot password?", "ForgotPassword", "Account", null, new { @class = "forgot-link" })
+        </div> *@
+            <button type="submit">Log In</button>
+            <div class="register">
+                <p>Don't have an account? @Html.ActionLink("Register", "Register", "Authenticate")</p>
+            </div>
+        }
+    </div>
+</body>
+</html>

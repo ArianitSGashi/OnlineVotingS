@@ -19,7 +19,7 @@ public static class Startup
             options.UseSqlServer(connectionString, b => b.MigrationsAssembly("OnlineVotingS.Infrastructure")));
 
         // Setting Up Identity
-        services.AddIdentityCore<ApplicationUser>()
+        services.AddIdentity<ApplicationUser, IdentityRole>()
             .AddRoles<IdentityRole>()
             .AddTokenProvider<DataProtectorTokenProvider<ApplicationUser>>("OnlineVotingS")
             .AddEntityFrameworkStores<ApplicationDbContext>()
