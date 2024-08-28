@@ -1,91 +1,100 @@
 ﻿using MediatR;
-using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using OnlineVotingS.Application.DTO.PostDTO;
 using OnlineVotingS.Application.DTO.PutDTO;
-using OnlineVotingS.Application.Services.RepliedComplaint.Requests.Queries;
 using OnlineVotingS.Application.Services.RepliedComplaint.Requests.Commands;
+using OnlineVotingS.Application.Services.RepliedComplaint.Requests.Queries;
 using OnlineVotingS.Domain.Entities;
-
 
 namespace OnlineVotingS.API.Controllers;
 
-[Route("api/[controller]")]
 [ApiController]
+[Route("api/[controller]")]
 public class RepliedComplaintsController : ControllerBase
 {
     private readonly IMediator _mediator;
-    private readonly IMapper _mapper;
 
-    public RepliedComplaintsController(IMediator mediator, IMapper mapper)
+    public RepliedComplaintsController(IMediator mediator)
     {
         _mediator = mediator;
-        _mapper = mapper;
     }
 
     [HttpGet]
-    public async Task<IActionResult> GetAll()
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    public async Task<ActionResult<IEnumerable<RepliedComplaints>>> GetAllRepliedComplaints()
     {
-        var result = await _mediator.Send(new GetAllRepliedComplaintsQuery());
-        return Ok(result);
+        var query = new GetAllRepliedComplaintsQuery();
+        var repliedComplaints = await _mediator.Send(query);
+        return Ok(repliedComplaints);
     }
 
     [HttpGet("{id}")]
-    public async Task<IActionResult> Get(int id)
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<RepliedComplaints>> GetRepliedComplaintById(int id)
     {
-        var result = await _mediator.Send(new GetRepliedComplaintByIdQuery(id));
-        if (result == null)
-        {
-            return NotFound();
-        }
-        return Ok(result);
+        var query = new GetRepliedComplaintByIdQuery(id);
+        var repliedComplaint = await _mediator.Send(query);
+        return repliedComplaint != null ? Ok(repliedComplaint) : NotFound($"Replied complaint with ID {id} not found.");
+    }
+
+    [HttpGet("complaint/{complaintId}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    public async Task<ActionResult<IEnumerable<RepliedComplaints>>> GetRepliedComplaintsByComplaintId(int complaintId)
+    {
+        var query = new GetRepliedComplaintsByComplaintIDQuery(complaintId);
+        var repliedComplaints = await _mediator.Send(query);
+        return Ok(repliedComplaints);
+    }
+
+    [HttpGet("replytext/{replyText}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    public async Task<ActionResult<IEnumerable<RepliedComplaints>>> GetRepliedComplaintsByReplyText(string replyText)
+    {
+        var query = new GetRepliedComplaintsByReplyTextQuery(replyText);
+        var repliedComplaints = await _mediator.Send(query);
+        return Ok(repliedComplaints);
+    }
+
+    [HttpGet("recent")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    public async Task<ActionResult<IEnumerable<RepliedComplaints>>> GetRecentRepliedComplaints([FromQuery] DateTime date)
+    {
+        var query = new GetRecentRepliedComplaintsQuery(date);
+        var repliedComplaints = await _mediator.Send(query);
+        return Ok(repliedComplaints);
     }
 
     [HttpPost]
-    public async Task<IActionResult> Create([FromBody] CreateRepliedComplaintCommand command)
+    [ProducesResponseType(StatusCodes.Status201Created)]
+    public async Task<ActionResult<RepliedComplaints>> CreateRepliedComplaint([FromBody] RepliedComplaintsPostDTO repliedComplaintDto)
     {
-        if (!ModelState.IsValid)
-        {
-            return BadRequest(ModelState);
-        }
-
-        var createdId = await _mediator.Send(command);
-        return CreatedAtAction(nameof(Get), new { id = createdId }, command);
+        var command = new CreateRepliedComplaintCommand(repliedComplaintDto);
+        var repliedComplaint = await _mediator.Send(command);
+        return CreatedAtAction(nameof(GetRepliedComplaintById), new { id = repliedComplaint.RepliedComplaintID }, repliedComplaint);
     }
 
-    [HttpPut("{id}")]
-    public async Task<IActionResult> Update(int id, [FromBody] UpdateRepliedComplaintCommand command)
+    [HttpPut]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> UpdateRepliedComplaint([FromBody] RepliedComplaintsPutDTO repliedComplaintDto)
     {
-        if (id != command.RepliedComplaint.RepliedComplaintID) 
+        if (repliedComplaintDto == null || repliedComplaintDto.RepliedComplaintID == 0)
         {
-            return BadRequest("ID in URL and model do not match.");
+            return BadRequest("Replied Complaint ID is required.");
         }
-
-        if (!ModelState.IsValid)
-        {
-            return BadRequest(ModelState);
-        }
-
-        var result = await _mediator.Send(command);
-
-        if (result == null)
-        {
-            return NotFound();
-        }
-
+        var command = new UpdateRepliedComplaintCommand(repliedComplaintDto);
+        await _mediator.Send(command);
         return NoContent();
     }
 
     [HttpDelete("{id}")]
-    public async Task<IActionResult> Delete(int id)
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> DeleteRepliedComplaint(int id)
     {
-        var result = await _mediator.Send(new DeleteRepliedComplaintCommand(id));
-
-        if (result == null)
-        {
-            return NotFound();
-        }
-
-        return NoContent();
+        var command = new DeleteRepliedComplaintCommand(id);
+        var result = await _mediator.Send(command);
+        return result ? NoContent() : NotFound($"Replied complaint with ID {id} not found.");
     }
 }
