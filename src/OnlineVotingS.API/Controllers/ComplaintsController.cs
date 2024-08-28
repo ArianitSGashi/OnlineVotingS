@@ -19,7 +19,6 @@ public class ComplaintsController : Controller
     }
 
     [HttpPost]
-    [HttpPost]
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<ActionResult<Complaints>> Create([FromBody] ComplaintsPostDTO complaintsPost)
@@ -87,7 +86,7 @@ public class ComplaintsController : Controller
         return Ok(response);
     }
 
-    [HttpGet]
+    [HttpGet("date/{Date:datetime}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<ActionResult<IEnumerable<Complaints>>> GetAllByDate([FromQuery] DateTime Date)
     {
@@ -97,7 +96,7 @@ public class ComplaintsController : Controller
         return Ok(response);
     }
 
-    [HttpGet]
+    [HttpGet("election/{ElectionId:int}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<ActionResult<IEnumerable<Complaints>>> GetAllByElectionId([FromQuery] int ElectionId)
     {
@@ -107,7 +106,7 @@ public class ComplaintsController : Controller
         return Ok(response);
     }
 
-    [HttpGet]
+    [HttpGet("{ComplaintId:int}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<Complaints>> GetById([FromQuery] int ComplaintId)
@@ -120,7 +119,7 @@ public class ComplaintsController : Controller
             : Ok(response);
     }
 
-    [HttpGet]
+    [HttpGet("user/{UserId:int}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<ActionResult<IEnumerable<Complaints>>> GetComplaintsByUserId([FromQuery] string UserId)
     {
