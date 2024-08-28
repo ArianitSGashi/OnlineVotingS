@@ -3,36 +3,40 @@ using Microsoft.Extensions.Logging;
 using OnlineVotingS.Application.Services.Results.Requests.Queries;
 using OnlineVotingS.Domain.Entities;
 using OnlineVotingS.Domain.Interfaces;
+using System;
+using System.Threading;
+using System.Threading.Tasks;
 
-namespace OnlineVotingS.Application.Services.Results.Handlers.Queries;
-
-public class GetResultByIdHandler : IRequestHandler<GetResultByIdQuery, Result>
+namespace OnlineVotingS.Application.Services.Results.Handlers.Queries
 {
-    private readonly IResultRepository _resultRepository;
-    private readonly ILogger<GetResultByIdHandler> _logger;
-
-    public GetResultByIdHandler(IResultRepository resultRepository, ILogger<GetResultByIdHandler> logger)
+    public class GetResultByIdHandler : IRequestHandler<GetResultByIdQuery, Result>
     {
-        _resultRepository = resultRepository;
-        _logger = logger;
-    }
+        private readonly IResultRepository _resultRepository;
+        private readonly ILogger<GetResultByIdHandler> _logger;
 
-    public async Task<Result> Handle(GetResultByIdQuery request, CancellationToken cancellationToken)
-    {
-        try
+        public GetResultByIdHandler(IResultRepository resultRepository, ILogger<GetResultByIdHandler> logger)
         {
-            var result = await _resultRepository.GetByIdAsync(request.ResultId);
-            if (result == null)
-            {
-                throw new KeyNotFoundException($"Result with ID {request.ResultId} not found.");
-            }
-
-            return result;
+            _resultRepository = resultRepository;
+            _logger = logger;
         }
-        catch (Exception ex)
+
+        public async Task<Result> Handle(GetResultByIdQuery request, CancellationToken cancellationToken)
         {
-            _logger.LogError("An error occurred while fetching the result with ID {ResultId}: {ErrorMessage}", request.ResultId, ex.Message);
-            throw;
+            try
+            {
+                var result = await _resultRepository.GetByIdAsync(request.ResultId);
+                if (result == null)
+                {
+                    throw new KeyNotFoundException($"Result with ID {request.ResultId} not found.");
+                }
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("An error occurred while fetching the result with ID {ResultId}: {ErrorMessage}", request.ResultId, ex.Message);
+                throw;
+            }
         }
     }
 }

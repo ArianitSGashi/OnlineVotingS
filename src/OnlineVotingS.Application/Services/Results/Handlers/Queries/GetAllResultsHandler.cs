@@ -21,7 +21,7 @@ public class GetAllResultsHandler : IRequestHandler<GetAllResultsQuery, IEnumera
     {
         try
         {
-            var results = await _resultRepository.GetAllAsync();
+            var results = await _resultRepository.GetAllResultsWithDetailsAsync();
             return results;
         }
         catch (Exception ex)
