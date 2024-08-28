@@ -11,5 +11,5 @@ namespace OnlineVotingS.Application.DTO.PutDTO;
         public int RepliedComplaintID { get; set; }
         public int ComplaintID { get; set; }
         public string ReplyText { get; set; } = null!;
-        public DateTime ReplyDate { get; set; }
+        public DateTime ReplyDate { get; set; } = DateTime.UtcNow;
     }
