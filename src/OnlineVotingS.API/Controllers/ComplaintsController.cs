@@ -42,7 +42,7 @@ public class ComplaintsController : Controller
     [HttpDelete]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<bool>> Delete([FromQuery] int ComplaintId)
+    public async Task<IActionResult> Delete([FromQuery] int ComplaintId)
     {
         var command = new DeleteComplaintCommand(ComplaintId);
         var response = await Mediator.Send(command);
@@ -56,7 +56,7 @@ public class ComplaintsController : Controller
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<Complaints>> Update([FromBody] ComplaintsPutDTO complaintsPut)
+    public async Task<IActionResult> Update([FromBody] ComplaintsPutDTO complaintsPut)
     {
         if (complaintsPut == null || complaintsPut.ComplaintID <= 0)
         {
