@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using Microsoft.AspNetCore.Http.Connections;
 using Microsoft.Extensions.Logging;
 using OnlineVotingS.Application.Services.Feedbacks.Requests.Queries;
 using OnlineVotingS.Domain.Entities;
@@ -21,7 +22,8 @@ public class GetFeedbacksByUserIdHandler : IRequestHandler<GetFeedbacksByUserIdQ
     {
         try
         {
-            return await _feedbackRepository.GetByUserIDAsync(request.UserId);
+            var feedbacks= await _feedbackRepository.GetByUserIDAsync(request.UserId);
+            return feedbacks;
         }
         catch (Exception ex)
         {
