@@ -44,5 +44,9 @@ namespace OnlineVotingS.Infrastructure.Repositories
         {
             return await GetResultWithDetailsAsync(id);
         }
+        public async Task<Result> GetByResultIdAsync(int resultId)
+        {
+            return await _dbSet.FirstOrDefaultAsync(r => r.ResultID == resultId);
+        }
     }
 }

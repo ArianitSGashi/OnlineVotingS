@@ -8,7 +8,7 @@ using System.Threading;
 using System.Threading.Tasks;
 
 namespace OnlineVotingS.Application.Services.Results.Handlers.Queries;
-{
+
 public class GetResultByIdHandler : IRequestHandler<GetResultByIdQuery, Result>
 {
     private readonly IResultRepository _resultRepository;
@@ -24,7 +24,7 @@ public class GetResultByIdHandler : IRequestHandler<GetResultByIdQuery, Result>
     {
         try
         {
-            var result = await _resultRepository.GetByIdAsync(request.ResultId);
+            var result = await _resultRepository.GetByResultIdAsync(request.ResultId);
             if (result == null)
             {
                 throw new KeyNotFoundException($"Result with ID {request.ResultId} not found.");
@@ -32,11 +32,11 @@ public class GetResultByIdHandler : IRequestHandler<GetResultByIdQuery, Result>
 
             return result;
         }
-            catch (Exception ex)
-            {
-                _logger.LogError("An error occurred while fetching the result with ID {ResultId}: {ErrorMessage}", request.ResultId, ex.Message);
-                throw;
-            }
+        catch (Exception ex)
+        {
+            _logger.LogError("An error occurred while fetching the result with ID {ResultId}: {ErrorMessage}", request.ResultId, ex.Message);
+            throw;
         }
     }
 }
+
