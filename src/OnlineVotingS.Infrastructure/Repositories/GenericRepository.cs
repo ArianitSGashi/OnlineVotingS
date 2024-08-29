@@ -20,10 +20,6 @@ public class GenericRepository<T> : IGenericRepository<T> where T : class
     public async Task<T> GetByIdAsync(int id)
     {
         var entity = await _dbSet.FindAsync(id);
-        if (entity == null)
-        {
-            throw new KeyNotFoundException($"Entity with id {id} was not found.");
-        }
         return entity;
     }
 

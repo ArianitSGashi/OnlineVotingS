@@ -22,6 +22,10 @@ public class GetVoteByIdQueryHandler : IRequestHandler<GetVoteByIdQuery, Votes>
             try
             {
                 var vote = await _votesRepository.GetByIdAsync(request.VoteId);
+                if (vote == null)
+                {
+                   throw new KeyNotFoundException($"Vote with ID {request.VoteId} not found.");
+                }
                 return vote;
             }
             catch (Exception ex)
