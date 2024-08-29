@@ -26,7 +26,7 @@ public class GetResultsByCandidateIdHandler : IRequestHandler<GetResultsByCandid
         }
         catch (Exception ex)
         {
-            _logger.LogError("An error occurred while fetching results for Candidate ID {CandidateId}: {ErrorMessage}", request.CandidateId, ex.Message);
+            _logger.LogError("An error occurred while fetching results for candidate ID {CandidateId}: {ErrorMessage}", request.CandidateId, ex.Message);
             throw;
         }
     }

@@ -15,53 +15,29 @@ namespace OnlineVotingS.Infrastructure.Repositories
         }
 
         // Method to get all results with related Elections and Candidates entities
-        public async Task<IEnumerable<Result>> GetAllResultsWithDetailsAsync()
-        {
-            return await _dbSet
-             .Include(r => r.Elections)
-             .Include(r => r.Candidates)
-             .ToListAsync();
-        }
-
-        // Method to get a specific result by ID with related Elections and Candidates entities
-        public async Task<Result> GetResultWithDetailsAsync(int resultId)
-        {
-            return await _dbSet
-                .Include(r => r.Elections)  // Including related Elections entity
-                .Include(r => r.Candidates) // Including related Candidates entity
-                .FirstOrDefaultAsync(r => r.ResultID == resultId);
-        }
-
-        // Method to get results by Election ID with related entities
         public async Task<IEnumerable<Result>> GetByElectionIdAsync(int electionId)
         {
-            return await _dbSet
-                .Include(r => r.Elections)
-                .Include(r => r.Candidates)
-                .Where(r => r.ElectionID == electionId)
-                .ToListAsync();
+            return await _dbSet.Where(r => r.ElectionID == electionId).ToListAsync();
         }
 
-        // Method to get results by Candidate ID with related entities
+        // Corrected method to get a specific result by ID with related Elections and Candidates entities
+        public async Task<Result> GetResultWithDetailsAsync(int resultId)
+        {
+            return await _dbSet.Include(r => r.Elections)  // Use 'Elections' to match the entity property
+                               .Include(r => r.Candidates) // Use 'Candidates' to match the entity property
+                               .FirstOrDefaultAsync(r => r.ResultID == resultId);
+        }
+
         public async Task<IEnumerable<Result>> GetByCandidateIdAsync(int candidateId)
         {
-            return await _dbSet
-                .Include(r => r.Elections)
-                .Include(r => r.Candidates)
-                .Where(r => r.CandidateID == candidateId)
-                .ToListAsync();
+            return await _dbSet.Where(r => r.CandidateID == candidateId).ToListAsync();
         }
 
         // Method to get results with total votes greater than a specified value with related entities
         public async Task<IEnumerable<Result>> GetByTotalVotesGreaterThanAsync(int votes)
         {
-            return await _dbSet
-                .Include(r => r.Elections)
-                .Include(r => r.Candidates)
-                .Where(r => r.TotalVotes > votes)
-                .ToListAsync();
+            return await _dbSet.Where(r => r.TotalVotes > votes).ToListAsync();
         }
-
 
         // Method to get a specific result by ID (uses GetResultWithDetailsAsync internally)
         public async Task<Result> GetByIdAsync(int id)
