@@ -129,6 +129,8 @@ namespace OnlineVotingS.Infrastructure.Persistence.Context;
                 entity.HasKey(v => v.VoteID);
                 entity.Property(v => v.UserID).IsRequired();
                 entity.Property(v => v.VoteDate).IsRequired();
+                entity.Property(v => v.ElectionID).IsRequired();
+                entity.Property(v => v.CandidateID).IsRequired();
 
                 entity.HasOne(v => v.Elections)
                       .WithMany(e => e.Votes)

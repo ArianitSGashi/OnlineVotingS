@@ -4,7 +4,6 @@ using OnlineVotingS.Application.DTO.PostDTO;
 using OnlineVotingS.Application.DTO.PutDTO;
 using OnlineVotingS.Application.Services.Vote.Requests.Commands;
 using OnlineVotingS.Application.Services.Vote.Requests.Queries;
-using OnlineVotingS.Domain.Entities;
 
 namespace OnlineVotingS.API.Controllers;
 
@@ -20,8 +19,7 @@ public class VotesController : ControllerBase
     }
 
     [HttpGet]
-    [ProducesResponseType(StatusCodes.Status200OK)]
-    public async Task<ActionResult<IEnumerable<Votes>>> GetAllVotes()
+    public async Task<IActionResult> GetAllVotesAsync()
     {
         var query = new GetAllVotesQuery();
         var votes = await _mediator.Send(query);
@@ -29,18 +27,15 @@ public class VotesController : ControllerBase
     }
 
     [HttpGet("{id}")]
-    [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<Votes>> GetVoteById(int id)
+    public async Task<IActionResult> GetVoteByIdAsync(int id)
     {
         var query = new GetVoteByIdQuery(id);
         var vote = await _mediator.Send(query);
-        return vote != null ? Ok(vote) : NotFound("Vote not found.");
+        return Ok(vote);
     }
 
-    [HttpGet("user/{userId}")]
-    [ProducesResponseType(StatusCodes.Status200OK)]
-    public async Task<ActionResult<IEnumerable<Votes>>> GetVotesByUserId(string userId)
+    [HttpGet("user/{userId?}")]
+    public async Task<IActionResult> GetVotesByUserIdAsync(string userId)
     {
         var query = new GetVotesByUserIDQuery(userId);
         var votes = await _mediator.Send(query);
@@ -48,8 +43,7 @@ public class VotesController : ControllerBase
     }
 
     [HttpGet("election/{electionId}")]
-    [ProducesResponseType(StatusCodes.Status200OK)]
-    public async Task<ActionResult<IEnumerable<Votes>>> GetVotesByElectionId(int electionId)
+    public async Task<IActionResult> GetVotesByElectionIdAsync(int electionId)
     {
         var query = new GetVotesByElectionIDQuery(electionId);
         var votes = await _mediator.Send(query);
@@ -57,46 +51,42 @@ public class VotesController : ControllerBase
     }
 
     [HttpGet("candidate/{candidateId}")]
-    [ProducesResponseType(StatusCodes.Status200OK)]
-    public async Task<ActionResult<IEnumerable<Votes>>> GetVotesByCandidateId(int candidateId)
+    public async Task<IActionResult> GetVotesByCandidateIdAsync(int candidateId)
     {
         var query = new GetVotesByCandidateIDQuery(candidateId);
         var votes = await _mediator.Send(query);
         return Ok(votes);
     }
 
+    [HttpGet("recent")]
+    public async Task<IActionResult> GetRecentVotesAsync([FromQuery] DateTime date)
+    {
+        var query = new GetRecentVotesQuery(date);
+        var votes = await _mediator.Send(query);
+        return Ok(votes);
+    }
+
     [HttpPost]
-    [ProducesResponseType(StatusCodes.Status201Created)]
-    public async Task<ActionResult<Votes>> CreateVote([FromBody] VotesPostDTO voteDto)
+    public async Task<IActionResult> CreateVoteAsync([FromBody] VotesPostDTO voteDto)
     {
         var command = new CreateVoteCommand(voteDto);
         var vote = await _mediator.Send(command);
-        return CreatedAtAction(nameof(GetVoteById), new { id = vote.VoteID }, vote);
+        return CreatedAtAction(nameof(GetVoteByIdAsync), new { id = vote.VoteID }, vote);
     }
 
     [HttpPut]
-    [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> UpdateVote([FromBody] VotesPutDTO voteDto)
+    public async Task<IActionResult> UpdateVoteAsync([FromBody] VotesPutDTO voteDto)
     {
-        if (voteDto == null || voteDto.VoteID == 0)
-        {
-            return BadRequest("Vote ID is required.");
-        }
-
         var command = new UpdateVoteCommand(voteDto);
         var updatedVote = await _mediator.Send(command);
-        return updatedVote != null ? Ok(updatedVote) : NotFound($"Vote with ID {voteDto.VoteID} not found.");
+        return Ok(updatedVote);
     }
 
     [HttpDelete("{id}")]
-    [ProducesResponseType(StatusCodes.Status204NoContent)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> DeleteVote(int id)
+    public async Task<IActionResult> DeleteVoteAsync(int id)
     {
         var command = new DeleteVoteCommand(id);
         var result = await _mediator.Send(command);
-        return result ? NoContent() : NotFound();
+        return NoContent();
     }
 }

@@ -17,17 +17,17 @@ public class GetVotesByUserIDQueryHandler : IRequestHandler<GetVotesByUserIDQuer
             _logger = logger;
         }
 
-        public async Task<IEnumerable<Votes>> Handle(GetVotesByUserIDQuery request, CancellationToken cancellationToken)
+    public async Task<IEnumerable<Votes>> Handle(GetVotesByUserIDQuery request, CancellationToken cancellationToken)
+    {
+        try
         {
-            try
-            {
-                var votes = await _votesRepository.GetByUserIDAsync(request.UserID);
-                return votes;
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError("An error occurred while fetching votes for user ID {UserID}: {ErrorMessage}", request.UserID, ex.Message);
-                throw;
-            }
+            var votes = await _votesRepository.GetByUserIDAsync(request.UserID);
+            return votes;
         }
+        catch (Exception ex)
+        {
+            _logger.LogError("An error occurred while fetching votes for user ID {UserID}: {ErrorMessage}", request.UserID, ex.Message);
+            throw;
+        }
+    }
 }
