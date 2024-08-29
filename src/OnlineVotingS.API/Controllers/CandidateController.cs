@@ -22,7 +22,7 @@ public class CandidateController : ControllerBase
     [HttpPost]
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<ActionResult<Candidates>> Create([FromBody] CandidatesPostDTO candidatesPost)
+    public async Task<IActionResult> CreateAsync([FromBody] CandidatesPostDTO candidatesPost)
     {
         if (candidatesPost == null)
         {
@@ -36,13 +36,13 @@ public class CandidateController : ControllerBase
 
         var command = new CreateCandidateCommand(candidatesPost);
         var result = await _mediator.Send(command);
-        return CreatedAtAction(nameof(GetById), new { candidateId = result.CandidateID }, result);
+        return CreatedAtAction(nameof(GetByIdAsync), new { candidateId = result.CandidateID }, result);
     }
 
     [HttpDelete("{candidateId:int}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> Delete([FromRoute] int candidateId)
+    public async Task<IActionResult> DeleteAsync([FromRoute] int candidateId)
     {
         var command = new DeleteCandidateCommand(candidateId);
         var result = await _mediator.Send(command);
@@ -53,7 +53,7 @@ public class CandidateController : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<Candidates>> Update([FromBody] CandidatesPutDTO candidatesPut)
+    public async Task<IActionResult> UpdateAsync([FromBody] CandidatesPutDTO candidatesPut)
     {
         if (candidatesPut == null || candidatesPut.CandidateID <= 0)
         {
@@ -75,7 +75,7 @@ public class CandidateController : ControllerBase
 
     [HttpGet]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    public async Task<ActionResult<IEnumerable<Candidates>>> GetAll()
+    public async Task<IActionResult> GetAllAsync()
     {
         var query = new GetAllCandidatesQuery();
         var result = await _mediator.Send(query);
@@ -85,7 +85,7 @@ public class CandidateController : ControllerBase
     [HttpGet("{candidateId:int}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<Candidates>> GetById([FromRoute] int candidateId)
+    public async Task<IActionResult> GetByIdAsync([FromRoute] int candidateId)
     {
         var query = new GetCandidateByIdQuery(candidateId);
         var result = await _mediator.Send(query);
@@ -94,7 +94,7 @@ public class CandidateController : ControllerBase
 
     [HttpGet("election/{electionId:int}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    public async Task<ActionResult<IEnumerable<Candidates>>> GetByElectionId([FromRoute] int electionId)
+    public async Task<IActionResult> GetByElectionIdAsync([FromRoute] int electionId)
     {
         var query = new GetCandidatesByElectionIdQuery(electionId);
         var result = await _mediator.Send(query);
@@ -103,7 +103,7 @@ public class CandidateController : ControllerBase
 
     [HttpGet("income/{minIncome:decimal}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    public async Task<ActionResult<IEnumerable<Candidates>>> GetByMinIncome([FromRoute] decimal minIncome)
+    public async Task<IActionResult> GetByMinIncomeAsync([FromRoute] decimal minIncome)
     {
         var query = new GetCandidatesByMinIncomeQuery(minIncome);
         var result = await _mediator.Send(query);
@@ -112,7 +112,7 @@ public class CandidateController : ControllerBase
 
     [HttpGet("name/{name}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    public async Task<ActionResult<IEnumerable<Candidates>>> GetByName([FromRoute] string name)
+    public async Task<IActionResult> GetByNameAsync([FromRoute] string name)
     {
         var query = new GetCandidatesByNameQuery(name);
         var result = await _mediator.Send(query);
@@ -121,7 +121,7 @@ public class CandidateController : ControllerBase
 
     [HttpGet("party/{party}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    public async Task<ActionResult<IEnumerable<Candidates>>> GetByParty([FromRoute] string party)
+    public async Task<IActionResult> GetByPartyAsync([FromRoute] string party)
     {
         var query = new GetCandidatesByPartyQuery(party);
         var result = await _mediator.Send(query);
