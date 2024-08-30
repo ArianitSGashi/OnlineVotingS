@@ -18,20 +18,60 @@ public class CandidateController : ControllerBase
         _mediator = mediator;
     }
 
+    [HttpGet]
+    public async Task<IActionResult> GetAllAsync()
+    {
+        var query = new GetAllCandidatesQuery();
+        var result = await _mediator.Send(query);
+        return Ok(result);
+    }
+
+    [HttpGet("{candidateId}")]
+    public async Task<IActionResult> GetByIdAsync(int candidateId)
+    {
+        var query = new GetCandidateByIdQuery(candidateId);
+        var result = await _mediator.Send(query);
+        return Ok(result);
+    }
+
+    [HttpGet("election/{electionId}")]
+    public async Task<IActionResult> GetByElectionIdAsync(int electionId)
+    {
+        var query = new GetCandidatesByElectionIdQuery(electionId);
+        var result = await _mediator.Send(query);
+        return Ok(result);
+    }
+
+    [HttpGet("income/{minIncome:decimal}")]
+    public async Task<IActionResult> GetByMinIncomeAsync(decimal minIncome)
+    {
+        var query = new GetCandidatesByMinIncomeQuery(minIncome);
+        var result = await _mediator.Send(query);
+        return Ok(result);
+    }
+
+    [HttpGet("name/{name}")]
+    public async Task<IActionResult> GetByNameAsync(string name)
+    {
+        var query = new GetCandidatesByNameQuery(name);
+        var result = await _mediator.Send(query);
+        return Ok(result);
+    }
+
+    [HttpGet("party/{party}")]
+    public async Task<IActionResult> GetByPartyAsync(string party)
+    {
+        var query = new GetCandidatesByPartyQuery(party);
+        var result = await _mediator.Send(query);
+        return Ok(result);
+    }
+
     [HttpPost]
     public async Task<IActionResult> CreateAsync([FromBody] CandidatesPostDTO candidatesPost)
     {
         var command = new CreateCandidateCommand(candidatesPost);
         var result = await _mediator.Send(command);
         return CreatedAtAction(nameof(GetByIdAsync), new { candidateId = result.CandidateID }, result);
-    }
-
-    [HttpDelete("{candidateId:int}")]
-    public async Task<IActionResult> DeleteAsync(int candidateId)
-    {
-        var command = new DeleteCandidateCommand(candidateId);
-        var result = await _mediator.Send(command);
-        return NoContent();
     }
 
     [HttpPut]
@@ -42,51 +82,11 @@ public class CandidateController : ControllerBase
         return Ok(result);
     }
 
-    [HttpGet]
-    public async Task<IActionResult> GetAllAsync()
+    [HttpDelete("{candidateId}")]
+    public async Task<IActionResult> DeleteAsync(int candidateId)
     {
-        var query = new GetAllCandidatesQuery();
-        var result = await _mediator.Send(query);
-        return Ok(result);
-    }
-
-    [HttpGet("{candidateId:int}")]
-    public async Task<IActionResult> GetByIdAsync([FromRoute] int candidateId)
-    {
-        var query = new GetCandidateByIdQuery(candidateId);
-        var result = await _mediator.Send(query);
-        return Ok(result);
-    }
-
-    [HttpGet("election/{electionId:int}")]
-    public async Task<IActionResult> GetByElectionIdAsync([FromRoute] int electionId)
-    {
-        var query = new GetCandidatesByElectionIdQuery(electionId);
-        var result = await _mediator.Send(query);
-        return Ok(result);
-    }
-
-    [HttpGet("income/{minIncome:decimal}")]
-    public async Task<IActionResult> GetByMinIncomeAsync([FromRoute] decimal minIncome)
-    {
-        var query = new GetCandidatesByMinIncomeQuery(minIncome);
-        var result = await _mediator.Send(query);
-        return Ok(result);
-    }
-
-    [HttpGet("name/{name}")]
-    public async Task<IActionResult> GetByNameAsync([FromRoute] string name)
-    {
-        var query = new GetCandidatesByNameQuery(name);
-        var result = await _mediator.Send(query);
-        return Ok(result);
-    }
-
-    [HttpGet("party/{party}")]
-    public async Task<IActionResult> GetByPartyAsync([FromRoute] string party)
-    {
-        var query = new GetCandidatesByPartyQuery(party);
-        var result = await _mediator.Send(query);
-        return Ok(result);
+        var command = new DeleteCandidateCommand(candidateId);
+        var result = await _mediator.Send(command);
+        return NoContent();
     }
 }
