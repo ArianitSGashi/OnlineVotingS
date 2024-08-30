@@ -4,7 +4,6 @@ using OnlineVotingS.Application.DTO.PostDTO;
 using OnlineVotingS.Application.DTO.PutDTO;
 using OnlineVotingS.Application.Services.Feedbacks.Requests.Commands;
 using OnlineVotingS.Application.Services.Feedbacks.Requests.Queries;
-using OnlineVotingS.Domain.Entities;
 
 namespace OnlineVotingS.API.Controllers;
 
@@ -20,8 +19,7 @@ public class FeedbackController : ControllerBase
     }
 
     [HttpGet]
-    [ProducesResponseType(StatusCodes.Status200OK)]
-    public async Task<ActionResult<IEnumerable<Feedback>>> GetAllFeedbacks()
+    public async Task<IActionResult> GetAllFeedbacksAsync()
     {
         var query = new GetAllFeedbacksQuery();
         var feedbacks = await _mediator.Send(query);
@@ -29,18 +27,15 @@ public class FeedbackController : ControllerBase
     }
 
     [HttpGet("{id}")]
-    [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<Feedback>> GetFeedbackById(int id)
+    public async Task<IActionResult> GetFeedbackByIdAsync(int id)
     {
         var query = new GetFeedbackByIdQuery(id);
         var feedback = await _mediator.Send(query);
-        return feedback != null ? Ok(feedback) : NotFound("Feedback not found.");
+        return Ok(feedback);
     }
 
-    [HttpGet("user/{userId}")]
-    [ProducesResponseType(StatusCodes.Status200OK)]
-    public async Task<ActionResult<IEnumerable<Feedback>>> GetFeedbacksByUserId(string userId)
+    [HttpGet("user/{userId?}")]
+    public async Task<IActionResult> GetFeedbacksByUserIdAsync(string userId)
     {
         var query = new GetFeedbacksByUserIdQuery(userId);
         var feedbacks = await _mediator.Send(query);
@@ -48,8 +43,7 @@ public class FeedbackController : ControllerBase
     }
 
     [HttpGet("election/{electionId}")]
-    [ProducesResponseType(StatusCodes.Status200OK)]
-    public async Task<ActionResult<IEnumerable<Feedback>>> GetFeedbacksByElectionId(int electionId)
+    public async Task<IActionResult> GetFeedbacksByElectionIdAsync(int electionId)
     {
         var query = new GetFeedbacksByElectionIdQuery(electionId);
         var feedbacks = await _mediator.Send(query);
@@ -57,8 +51,7 @@ public class FeedbackController : ControllerBase
     }
 
     [HttpGet("recent")]
-    [ProducesResponseType(StatusCodes.Status200OK)]
-    public async Task<ActionResult<IEnumerable<Feedback>>> GetRecentFeedbacks([FromQuery] DateTime date)
+    public async Task<IActionResult> GetRecentFeedbacksAsync([FromQuery] DateTime date)
     {
         var query = new GetRecentFeedbacksQuery(date);
         var feedbacks = await _mediator.Send(query);
@@ -66,43 +59,26 @@ public class FeedbackController : ControllerBase
     }
 
     [HttpPost]
-    [ProducesResponseType(StatusCodes.Status201Created)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<ActionResult<Feedback>> CreateFeedback([FromBody] FeedbackPostDTO feedbackDto)
+    public async Task<IActionResult> CreateFeedbackAsync([FromBody] FeedbackPostDTO feedbackDto)
     {
-        if (!ModelState.IsValid)
-        {
-            return BadRequest(ModelState);
-        }
-
         var command = new CreateFeedbackCommand(feedbackDto);
         var feedback = await _mediator.Send(command);
-        return CreatedAtAction(nameof(GetFeedbackById), new { id = feedback.FeedbackID }, feedback);
+        return CreatedAtAction(nameof(GetFeedbackByIdAsync), new { id = feedback.FeedbackID }, feedback);
     }
 
     [HttpPut]
-    [ProducesResponseType(StatusCodes.Status204NoContent)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> UpdateFeedback([FromBody] FeedbackPutDTO feedbackDto)
+    public async Task<IActionResult> UpdateFeedbackAsync([FromBody] FeedbackPutDTO feedbackDto)
     {
-        if (!ModelState.IsValid || feedbackDto.FeedbackID == 0)
-        {
-            return BadRequest("Feedback ID is required and must be valid.");
-        }
-
         var command = new UpdateFeedbackCommand(feedbackDto);
         var updatedFeedback = await _mediator.Send(command);
-        return updatedFeedback != null ? NoContent() : NotFound($"Feedback with ID {feedbackDto.FeedbackID} not found.");
+        return Ok(updatedFeedback);
     }
 
-    [HttpDelete("{id}")]
-    [ProducesResponseType(StatusCodes.Status204NoContent)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> DeleteFeedback(int id)
+    [HttpDelete("{id?}")]
+    public async Task<IActionResult> DeleteFeedbackAsync(int id)
     {
         var command = new DeleteFeedbackCommand(id);
         var result = await _mediator.Send(command);
-        return result ? NoContent() : NotFound($"Feedback with ID {id} not found.");
+        return NoContent();
     }
 }

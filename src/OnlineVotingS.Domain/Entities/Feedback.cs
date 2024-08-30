@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using OnlineVotingS.Domain.Models;
+using System.Text.Json.Serialization;
 
 namespace OnlineVotingS.Domain.Entities;
 
@@ -39,9 +40,11 @@ public class Feedback
     /// <summary>
     /// Election object associated with the feedback, representing the election details.
     /// </summary>
+    [JsonIgnore]
     public Elections Elections { get; set; } = null!;
     /// <summary>
     /// Navigation property for IdentityUser
     /// </summary>
+    [JsonIgnore]
     public ApplicationUser User { get; set; } = null!;
 }

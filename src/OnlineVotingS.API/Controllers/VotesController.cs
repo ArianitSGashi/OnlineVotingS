@@ -82,7 +82,7 @@ public class VotesController : ControllerBase
         return Ok(updatedVote);
     }
 
-    [HttpDelete("{id}")]
+    [HttpDelete("{id?}")]
     public async Task<IActionResult> DeleteVoteAsync(int id)
     {
         var command = new DeleteVoteCommand(id);
