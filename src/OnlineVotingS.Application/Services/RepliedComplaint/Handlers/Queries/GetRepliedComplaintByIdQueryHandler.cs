@@ -21,7 +21,12 @@ public class GetRepliedComplaintByIdQueryHandler : IRequestHandler<GetRepliedCom
     {
         try
         {
-            return await _repliedComplaintsRepository.GetByIdAsync(request.RepliedComplaintId);
+            var repliedcomplaint = await _repliedComplaintsRepository.GetByIdAsync(request.RepliedComplaintId);
+            if (repliedcomplaint == null)
+            {
+                throw new KeyNotFoundException($"Replied complaint with ID {request.RepliedComplaintId} not found.");
+            }
+            return repliedcomplaint;
         }
         catch (Exception ex)
         {

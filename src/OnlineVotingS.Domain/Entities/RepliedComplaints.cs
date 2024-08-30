@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace OnlineVotingS.Domain.Entities;
 
@@ -28,5 +29,6 @@ public class RepliedComplaints
     /// <summary>
     /// Navigation property to the associated Complaint entity.
     /// </summary>
+    [JsonIgnore]
     public Complaints Complaint { get; set; } = null!;
 }
