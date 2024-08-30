@@ -1,15 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace OnlineVotingS.Application.DTO.PostDTO;
 
-    public class ComplaintsPostDTO
-    {
-        public string UserID { get; set; } = null!;
-        public int ElectionID { get; set; }
-        public string ComplaintText { get; set; } = null!;
-        public DateTime ComplaintDate { get; set; }
-    }
+public class ComplaintsPostDTO
+{
+    public string UserID { get; set; } = null!;
+    [Required]
+    public int ElectionID { get; set; }
+    public string ComplaintText { get; set; } = null!;
+    [Required]
+    public DateTime ComplaintDate { get; set; } = DateTime.Now;
+}

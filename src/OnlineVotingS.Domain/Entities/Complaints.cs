@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using OnlineVotingS.Domain.Models;
+using System.Text.Json.Serialization;
 
 namespace OnlineVotingS.Domain.Entities;
 
@@ -39,10 +40,12 @@ public class Complaints
     /// <summary>
     /// Navigation property to the associated Election entity.
     /// </summary>
+    [JsonIgnore]
     public Elections Elections { get; set; } = null!;
     /// <summary>
     /// Navigation property for IdentityUser
     /// </summary>
+    [JsonIgnore]
     public ApplicationUser User { get; set; } = null!;
     /// <summary>
     /// Navigation property to RepliedComplaints

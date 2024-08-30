@@ -4,128 +4,81 @@ using OnlineVotingS.Application.DTO.PostDTO;
 using OnlineVotingS.Application.DTO.PutDTO;
 using OnlineVotingS.Application.Services.Complaint.Requests.Commands;
 using OnlineVotingS.Application.Services.Complaint.Requests.Queries;
-using OnlineVotingS.Domain.Entities;
 
 namespace OnlineVotingS.API.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class ComplaintsController : Controller
+public class ComplaintsController : ControllerBase
 {
-    private readonly ISender Mediator;
-    public ComplaintsController(ISender _mediator)
+    private readonly IMediator _mediator;
+
+    public ComplaintsController(IMediator mediator)
     {
-        Mediator = _mediator;
-    }
-
-    [HttpPost]
-    [ProducesResponseType(StatusCodes.Status201Created)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<ActionResult<Complaints>> Create([FromBody] ComplaintsPostDTO complaintsPost)
-    {
-        if (complaintsPost == null)
-        {
-            return BadRequest("Complaint data is required.");
-        }
-
-        if (!ModelState.IsValid)
-        {
-            return BadRequest(ModelState);
-        }
-
-        var command = new CreateComplaintCommand(complaintsPost);
-        var response = await Mediator.Send(command);
-
-        return CreatedAtAction(nameof(GetComplaintsByIdCommand), new { complaintText = complaintsPost.ComplaintText}, response);
-    }
-
-    [HttpDelete]
-    [ProducesResponseType(StatusCodes.Status204NoContent)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> Delete([FromQuery] int ComplaintId)
-    {
-        var command = new DeleteComplaintCommand(ComplaintId);
-        var response = await Mediator.Send(command);
-
-        return response
-                  ? NoContent()
-                  : NotFound($"Complaint with ID {ComplaintId} not found.");
-    }
-
-    [HttpPut]
-    [ProducesResponseType(StatusCodes.Status204NoContent)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> Update([FromBody] ComplaintsPutDTO complaintsPut)
-    {
-        if (complaintsPut == null || complaintsPut.ComplaintID <= 0)
-        {
-            return BadRequest("Valid Complaint ID is required.");
-        }
-
-        if (!ModelState.IsValid)
-        {
-            return BadRequest(ModelState);
-        }
-
-        var command = new UpdateComplaintCommand(complaintsPut);
-        var response = await Mediator.Send(command);
-
-        return response == null
-           ? NotFound($"Complaint with ID {response.ComplaintID} not found.")
-           : NoContent();
+        _mediator = mediator;
     }
 
     [HttpGet]
-    [ProducesResponseType(StatusCodes.Status200OK)]
-    public async Task<ActionResult<IEnumerable<Complaints>>> GetAll()
+    public async Task<IActionResult> GetAllComplaintsAsync()
     {
         var query = new GetAllComplaintCommand();
-        var response = await Mediator.Send(query);
-
-        return Ok(response);
+        var complaints = await _mediator.Send(query);
+        return Ok(complaints);
     }
 
-    [HttpGet("date/{Date:datetime}")]
-    [ProducesResponseType(StatusCodes.Status200OK)]
-    public async Task<ActionResult<IEnumerable<Complaints>>> GetAllByDate([FromQuery] DateTime Date)
+    [HttpGet("{id}")]
+    public async Task<IActionResult> GetComplaintByIdAsync(int id)
     {
-        var query = new GetByComplaintDateCommand(Date);
-        var response = await Mediator.Send(query);
-
-        return Ok(response);
+        var query = new GetComplaintsByIdCommand(id);
+        var complaint = await _mediator.Send(query);
+        return Ok(complaint);
     }
 
-    [HttpGet("election/{ElectionId:int}")]
-    [ProducesResponseType(StatusCodes.Status200OK)]
-    public async Task<ActionResult<IEnumerable<Complaints>>> GetAllByElectionId([FromQuery] int ElectionId)
+    [HttpGet("user/{userId?}")]
+    public async Task<IActionResult> GetComplaintsByUserIdAsync(string userId)
     {
-        var query = new GetComplaintByElectionIdCommand(ElectionId);
-        var response = await Mediator.Send(query);
-
-        return Ok(response);
+        var query = new GetComplaintsByUserIdCommand(userId);
+        var complaints = await _mediator.Send(query);
+        return Ok(complaints);
     }
 
-    [HttpGet("{ComplaintId:int}")]
-    [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<Complaints>> GetById([FromQuery] int ComplaintId)
+    [HttpGet("election/{electionId}")]
+    public async Task<IActionResult> GetComplaintsByElectionIdAsync(int electionId)
     {
-        var query = new GetComplaintsByIdCommand(ComplaintId);
-        var response = await Mediator.Send(query);
-
-        return response == null
-            ? NotFound($"Complaint with ID {ComplaintId} not found.")
-            : Ok(response);
+        var query = new GetComplaintByElectionIdCommand(electionId);
+        var complaints = await _mediator.Send(query);
+        return Ok(complaints);
     }
 
-    [HttpGet("user/{UserId:int}")]
-    [ProducesResponseType(StatusCodes.Status200OK)]
-    public async Task<ActionResult<IEnumerable<Complaints>>> GetComplaintsByUserId([FromQuery] string UserId)
+    [HttpGet("date/{date}")]
+    public async Task<IActionResult> GetComplaintsByDateAsync(DateTime date)
     {
-        var query = new GetComplaintsByUserIdCommand(UserId);
-        var response = await Mediator.Send(query);
+        var query = new GetByComplaintDateCommand(date);
+        var complaints = await _mediator.Send(query);
+        return Ok(complaints);
+    }
 
-        return Ok(response);
+    [HttpPost]
+    public async Task<IActionResult> CreateComplaintAsync([FromBody] ComplaintsPostDTO complaintDto)
+    {
+        var command = new CreateComplaintCommand(complaintDto);
+        var complaint = await _mediator.Send(command);
+        return CreatedAtAction(nameof(GetComplaintByIdAsync), new { id = complaint.ComplaintID }, complaint);
+    }
+
+    [HttpPut]
+    public async Task<IActionResult> UpdateComplaintAsync([FromBody] ComplaintsPutDTO complaintDto)
+    {
+        var command = new UpdateComplaintCommand(complaintDto);
+        var updatedComplaint = await _mediator.Send(command);
+        return Ok(updatedComplaint);
+    }
+
+    [HttpDelete("{id?}")]
+    public async Task<IActionResult> DeleteComplaintAsync(int id)
+    {
+        var command = new DeleteComplaintCommand(id);
+        var result = await _mediator.Send(command);
+        return NoContent();
     }
 }
