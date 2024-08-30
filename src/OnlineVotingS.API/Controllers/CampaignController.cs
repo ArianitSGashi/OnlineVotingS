@@ -4,7 +4,6 @@ using OnlineVotingS.Application.DTO.PostDTO;
 using OnlineVotingS.Application.DTO.PutDTO;
 using OnlineVotingS.Application.Services.Campaigns.Requests.Commands;
 using OnlineVotingS.Application.Services.Campaigns.Requests.Queries;
-using OnlineVotingS.Domain.Entities;
 
 namespace OnlineVotingS.API.Controllers;
 
@@ -20,106 +19,66 @@ public class CampaignController : ControllerBase
     }
 
     [HttpGet]
-    [ProducesResponseType(StatusCodes.Status200OK)]
-    public async Task<ActionResult<IEnumerable<Campaign>>> GetAllCampaigns()
+    public async Task<IActionResult> GetAllCampaignsAsync()
     {
         var query = new GetAllCampaignsQuery();
         var campaigns = await _mediator.Send(query);
         return Ok(campaigns);
     }
 
-    [HttpGet("{id:int}")]
-    [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<Campaign>> GetCampaignById([FromRoute] int id)
+    [HttpGet("{id}")]
+    public async Task<IActionResult> GetCampaignByIdAsync(int id)
     {
         var query = new GetCampaignByIdQuery(id);
         var campaign = await _mediator.Send(query);
-        return campaign == null
-            ? NotFound($"Campaign with ID {id} not found.")
-            : Ok(campaign);
+        return Ok(campaign);
     }
 
-    [HttpGet("active")]
-    [ProducesResponseType(StatusCodes.Status200OK)]
-    public async Task<ActionResult<IEnumerable<Campaign>>> GetActiveCampaigns()
-    {
-        var query = new GetActiveCampaignsQuery();
-        var campaigns = await _mediator.Send(query);
-        return Ok(campaigns);
-    }
-
-    [HttpGet("candidate/{candidateId:int}")]
-    [ProducesResponseType(StatusCodes.Status200OK)]
-    public async Task<ActionResult<IEnumerable<Campaign>>> GetCampaignsByCandidateId([FromRoute] int candidateId)
+    [HttpGet("candidate/{candidateId}")]
+    public async Task<IActionResult> GetCampaignsByCandidateIdAsync(int candidateId)
     {
         var query = new GetCampaignsByCandidateIdQuery(candidateId);
         var campaigns = await _mediator.Send(query);
         return Ok(campaigns);
     }
 
-    [HttpGet("election/{electionId:int}")]
-    [ProducesResponseType(StatusCodes.Status200OK)]
-    public async Task<ActionResult<IEnumerable<Campaign>>> GetCampaignsByElectionId([FromRoute] int electionId)
+    [HttpGet("election/{electionId}")]
+    public async Task<IActionResult> GetCampaignsByElectionIdAsync(int electionId)
     {
         var query = new GetCampaignsByElectionIdQuery(electionId);
         var campaigns = await _mediator.Send(query);
         return Ok(campaigns);
     }
 
-    [HttpPost]
-    [ProducesResponseType(StatusCodes.Status201Created)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<ActionResult<Campaign>> CreateCampaign([FromBody] CampaignPostDTO campaignDto)
+    [HttpGet("active")]
+    public async Task<IActionResult> GetActiveCampaignsAsync()
     {
-        if (campaignDto == null)
-        {
-            return BadRequest("Campaign data is required.");
-        }
+        var query = new GetActiveCampaignsQuery();
+        var campaigns = await _mediator.Send(query);
+        return Ok(campaigns);
+    }
 
-        if (!ModelState.IsValid)
-        {
-            return BadRequest(ModelState);
-        }
-
+    [HttpPost]
+    public async Task<IActionResult> CreateCampaignAsync([FromBody] CampaignPostDTO campaignDto)
+    {
         var command = new CreateCampaignCommand(campaignDto);
         var campaign = await _mediator.Send(command);
-        return CreatedAtAction(nameof(GetCampaignById), new { id = campaign.CampaignID }, campaign);
+        return CreatedAtAction(nameof(GetCampaignByIdAsync), new { id = campaign.CampaignID }, campaign);
     }
 
     [HttpPut]
-    [ProducesResponseType(StatusCodes.Status204NoContent)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> UpdateCampaign([FromBody] CampaignPutDTO campaignDto)
+    public async Task<IActionResult> UpdateCampaignAsync([FromBody] CampaignPutDTO campaignDto)
     {
-        if (campaignDto == null || campaignDto.CampaignID <= 0)
-        {
-            return BadRequest("Valid Campaign ID is required.");
-        }
-
-        if (!ModelState.IsValid)
-        {
-            return BadRequest(ModelState);
-        }
-
         var command = new UpdateCampaignCommand(campaignDto);
         var updatedCampaign = await _mediator.Send(command);
-
-        return updatedCampaign == null
-            ? NotFound($"Campaign with ID {campaignDto.CampaignID} not found.")
-            : NoContent();
+        return Ok(updatedCampaign);
     }
 
-    [HttpDelete("{id:int}")]
-    [ProducesResponseType(StatusCodes.Status204NoContent)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> DeleteCampaign([FromRoute] int id)
+    [HttpDelete("{id?}")]
+    public async Task<IActionResult> DeleteCampaignAsync(int id)
     {
         var command = new DeleteCampaignCommand(id);
         var result = await _mediator.Send(command);
-        return result
-            ? NoContent()
-            : NotFound($"Campaign with ID {id} not found.");
+        return NoContent();
     }
 }
