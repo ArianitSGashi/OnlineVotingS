@@ -31,7 +31,7 @@ public class RepliedComplaintsController : ControllerBase
     {
         var query = new GetRepliedComplaintByIdQuery(id);
         var repliedComplaint = await _mediator.Send(query);
-        return repliedComplaint != null ? Ok(repliedComplaint) : NotFound($"Replied complaint with ID {id} not found.");
+        return Ok(repliedComplaint);
     }
 
     [HttpGet("complaint/{complaintId}")]
@@ -68,22 +68,17 @@ public class RepliedComplaintsController : ControllerBase
 
     [HttpPut]
     public async Task<IActionResult> UpdateRepliedComplaintAsync([FromBody] RepliedComplaintsPutDTO repliedComplaintDto)
-    {
-        if (repliedComplaintDto == null || repliedComplaintDto.RepliedComplaintID == 0)
-        {
-            return BadRequest("Replied Complaint ID is required.");
-        }
-
+    { 
         var command = new UpdateRepliedComplaintCommand(repliedComplaintDto);
         var updatedRepliedComplaint = await _mediator.Send(command);
         return Ok(updatedRepliedComplaint);
     }
 
-    [HttpDelete("{id}")]
+    [HttpDelete("{id?}")]
     public async Task<IActionResult> DeleteRepliedComplaintAsync(int id)
     {
         var command = new DeleteRepliedComplaintCommand(id);
         var result = await _mediator.Send(command);
-        return result ? NoContent() : NotFound($"Replied complaint with ID {id} not found.");
+        return NoContent();
     }
 }
