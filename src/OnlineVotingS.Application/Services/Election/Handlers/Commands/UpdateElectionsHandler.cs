@@ -25,6 +25,11 @@ public class UpdateElectionsHandler : IRequestHandler<UpdateElectionsCommand, El
         try
         {
             var elections = await _electionsRepository.GetByIdAsync(request.ElectionDto.ElectionID);
+            if (elections == null)
+            {
+                throw new KeyNotFoundException($"Election with ID {request.ElectionDto.ElectionID} not found.");
+            }
+
             _mapper.Map(request.ElectionDto, elections);
             await _electionsRepository.UpdateAsync(elections);
             return elections;

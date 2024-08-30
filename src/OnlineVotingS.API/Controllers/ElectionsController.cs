@@ -4,7 +4,6 @@ using OnlineVotingS.Application.DTO.PostDTO;
 using OnlineVotingS.Application.DTO.PutDTO;
 using OnlineVotingS.Application.Services.Election.Requests.Commands;
 using OnlineVotingS.Application.Services.Election.Requests.Queries;
-using OnlineVotingS.Domain.Entities;
 
 namespace OnlineVotingS.API.Controllers;
 
@@ -28,7 +27,7 @@ public class ElectionsController : ControllerBase
     }
 
     [HttpGet("{id}")]
-    public async Task<IActionResult> GetElectionsById(int id)
+    public async Task<IActionResult> GetElectionsByIdAsync(int id)
     {
         var query = new GetElectionsByIdQuery(id);
         var election = await _mediator.Send(query);
@@ -36,15 +35,15 @@ public class ElectionsController : ControllerBase
     }
 
     [HttpGet("active")]
-    public async Task<IActionResult> GetActiveElections()
+    public async Task<IActionResult> GetActiveElectionsAsync()
     {
         var query = new GetActiveElectionsQuery();
         var election = await _mediator.Send(query);
         return Ok(election);
     }
 
-    [HttpGet("title/{title}")]
-    public async Task<IActionResult> GetElectionsByTitle(string title)
+    [HttpGet("title/{title?}")]
+    public async Task<IActionResult> GetElectionsByTitleAsync(string title)
     {
         var query = new GetByTitleQuery(title);
         var election = await _mediator.Send(query);
@@ -52,7 +51,7 @@ public class ElectionsController : ControllerBase
     }
 
     [HttpGet("upcoming")]
-    public async Task<IActionResult> GetUpcomingElections([FromQuery] DateTime date)
+    public async Task<IActionResult> GetUpcomingElectionsAsync([FromQuery] DateTime date)
     {
         var query = new GetUpcomingElectionsQuery(date);
         var election = await _mediator.Send(query);
@@ -60,11 +59,11 @@ public class ElectionsController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<IActionResult> CreateElectionsAction([FromBody] ElectionsPostDTO electionDto)
+    public async Task<IActionResult> CreateElectionsActionAsync([FromBody] ElectionsPostDTO electionDto)
     {
         var command = new CreateElectionsCommand(electionDto);
         var election = await _mediator.Send(command);
-        return CreatedAtAction(nameof(GetElectionsById), new { id = election.ElectionID }, election);
+        return CreatedAtAction(nameof(GetElectionsByIdAsync), new { id = election.ElectionID }, election);
     }
 
     [HttpPut]
@@ -75,7 +74,7 @@ public class ElectionsController : ControllerBase
         return Ok(updatedElection);
     }
 
-    [HttpDelete("{id}")]
+    [HttpDelete("{id?}")]
     public async Task<IActionResult> DeleteElectionsAsync(int id)
     {
         var command = new DeleteElectionsCommand(id);
