@@ -5,6 +5,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Text.Json.Serialization;
 
 namespace OnlineVotingS.Domain.Entities;
 
@@ -49,9 +50,11 @@ public class Campaign
     /// <summary>
     /// Navigation property to the associated Election entity.
     /// </summary>
+    [JsonIgnore]
     public Elections Elections { get; set; } = null!;
     /// <summary>
     /// Navigation property to the associated Candidate entity.
     /// </summary>
+    [JsonIgnore]
     public Candidates Candidates { get; set; } = null!;
 }
