@@ -4,7 +4,6 @@ using OnlineVotingS.Application.DTO.PostDTO;
 using OnlineVotingS.Application.DTO.PutDTO;
 using OnlineVotingS.Application.Services.RepliedComplaint.Requests.Commands;
 using OnlineVotingS.Application.Services.RepliedComplaint.Requests.Queries;
-using OnlineVotingS.Domain.Entities;
 
 namespace OnlineVotingS.API.Controllers;
 
@@ -20,8 +19,7 @@ public class RepliedComplaintsController : ControllerBase
     }
 
     [HttpGet]
-    [ProducesResponseType(StatusCodes.Status200OK)]
-    public async Task<ActionResult<IEnumerable<RepliedComplaints>>> GetAllRepliedComplaints()
+    public async Task<IActionResult> GetAllRepliedComplaintsAsync()
     {
         var query = new GetAllRepliedComplaintsQuery();
         var repliedComplaints = await _mediator.Send(query);
@@ -29,9 +27,7 @@ public class RepliedComplaintsController : ControllerBase
     }
 
     [HttpGet("{id}")]
-    [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<RepliedComplaints>> GetRepliedComplaintById(int id)
+    public async Task<IActionResult> GetRepliedComplaintByIdAsync(int id)
     {
         var query = new GetRepliedComplaintByIdQuery(id);
         var repliedComplaint = await _mediator.Send(query);
@@ -39,8 +35,7 @@ public class RepliedComplaintsController : ControllerBase
     }
 
     [HttpGet("complaint/{complaintId}")]
-    [ProducesResponseType(StatusCodes.Status200OK)]
-    public async Task<ActionResult<IEnumerable<RepliedComplaints>>> GetRepliedComplaintsByComplaintId(int complaintId)
+    public async Task<IActionResult> GetRepliedComplaintsByComplaintIdAsync(int complaintId)
     {
         var query = new GetRepliedComplaintsByComplaintIDQuery(complaintId);
         var repliedComplaints = await _mediator.Send(query);
@@ -48,8 +43,7 @@ public class RepliedComplaintsController : ControllerBase
     }
 
     [HttpGet("replytext/{replyText}")]
-    [ProducesResponseType(StatusCodes.Status200OK)]
-    public async Task<ActionResult<IEnumerable<RepliedComplaints>>> GetRepliedComplaintsByReplyText(string replyText)
+    public async Task<IActionResult> GetRepliedComplaintsByReplyTextAsync(string replyText)
     {
         var query = new GetRepliedComplaintsByReplyTextQuery(replyText);
         var repliedComplaints = await _mediator.Send(query);
@@ -57,8 +51,7 @@ public class RepliedComplaintsController : ControllerBase
     }
 
     [HttpGet("recent")]
-    [ProducesResponseType(StatusCodes.Status200OK)]
-    public async Task<ActionResult<IEnumerable<RepliedComplaints>>> GetRecentRepliedComplaints([FromQuery] DateTime date)
+    public async Task<IActionResult> GetRecentRepliedComplaintsAsync([FromQuery] DateTime date)
     {
         var query = new GetRecentRepliedComplaintsQuery(date);
         var repliedComplaints = await _mediator.Send(query);
@@ -66,32 +59,28 @@ public class RepliedComplaintsController : ControllerBase
     }
 
     [HttpPost]
-    [ProducesResponseType(StatusCodes.Status201Created)]
-    public async Task<ActionResult<RepliedComplaints>> CreateRepliedComplaint([FromBody] RepliedComplaintsPostDTO repliedComplaintDto)
+    public async Task<IActionResult> CreateRepliedComplaintAsync([FromBody] RepliedComplaintsPostDTO repliedComplaintDto)
     {
         var command = new CreateRepliedComplaintCommand(repliedComplaintDto);
         var repliedComplaint = await _mediator.Send(command);
-        return CreatedAtAction(nameof(GetRepliedComplaintById), new { id = repliedComplaint.RepliedComplaintID }, repliedComplaint);
+        return CreatedAtAction(nameof(GetRepliedComplaintByIdAsync), new { id = repliedComplaint.RepliedComplaintID }, repliedComplaint);
     }
 
     [HttpPut]
-    [ProducesResponseType(StatusCodes.Status204NoContent)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> UpdateRepliedComplaint([FromBody] RepliedComplaintsPutDTO repliedComplaintDto)
+    public async Task<IActionResult> UpdateRepliedComplaintAsync([FromBody] RepliedComplaintsPutDTO repliedComplaintDto)
     {
         if (repliedComplaintDto == null || repliedComplaintDto.RepliedComplaintID == 0)
         {
             return BadRequest("Replied Complaint ID is required.");
         }
+
         var command = new UpdateRepliedComplaintCommand(repliedComplaintDto);
-        await _mediator.Send(command);
-        return NoContent();
+        var updatedRepliedComplaint = await _mediator.Send(command);
+        return Ok(updatedRepliedComplaint);
     }
 
     [HttpDelete("{id}")]
-    [ProducesResponseType(StatusCodes.Status204NoContent)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> DeleteRepliedComplaint(int id)
+    public async Task<IActionResult> DeleteRepliedComplaintAsync(int id)
     {
         var command = new DeleteRepliedComplaintCommand(id);
         var result = await _mediator.Send(command);
