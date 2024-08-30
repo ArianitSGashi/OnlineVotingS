@@ -34,7 +34,7 @@ public class FeedbackController : ControllerBase
         return Ok(feedback);
     }
 
-    [HttpGet("user/{userId}")]
+    [HttpGet("user/{userId?}")]
     public async Task<IActionResult> GetFeedbacksByUserIdAsync(string userId)
     {
         var query = new GetFeedbacksByUserIdQuery(userId);
@@ -74,7 +74,7 @@ public class FeedbackController : ControllerBase
         return Ok(updatedFeedback);
     }
 
-    [HttpDelete("{id}")]
+    [HttpDelete("{id?}")]
     public async Task<IActionResult> DeleteFeedbackAsync(int id)
     {
         var command = new DeleteFeedbackCommand(id);

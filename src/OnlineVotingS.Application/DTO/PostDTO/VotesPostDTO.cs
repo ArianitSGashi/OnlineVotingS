@@ -10,9 +10,7 @@ namespace OnlineVotingS.Application.DTO.PostDTO;
     public class VotesPostDTO
     {
         public string UserID { get; set; } = null!;
-        [Required]
         public int ElectionID { get; set; }
-        [Required]
         public int CandidateID { get; set; }
         public DateTime VoteDate { get; set; } = DateTime.UtcNow;
     }
