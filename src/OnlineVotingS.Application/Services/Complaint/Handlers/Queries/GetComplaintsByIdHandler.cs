@@ -21,7 +21,12 @@ public class GetComplaintsByIdHandler : IRequestHandler<GetComplaintsByIdCommand
     {
         try
         {
-            return await _complaintRepository.GetByIdAsync(request.ComplaintId);
+            var complaint =  await _complaintRepository.GetByIdAsync(request.ComplaintId);
+            if (complaint == null)
+            {
+                throw new KeyNotFoundException($"Complaint with ID {request.ComplaintId} not found.");
+            }
+            return complaint;
         }
         catch (Exception ex)
         {

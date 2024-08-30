@@ -9,5 +9,5 @@ public class ComplaintsPostDTO
     public int ElectionID { get; set; }
     public string ComplaintText { get; set; } = null!;
     [Required]
-    public DateTime ComplaintDate { get; set; }
+    public DateTime ComplaintDate { get; set; } = DateTime.Now;
 }
