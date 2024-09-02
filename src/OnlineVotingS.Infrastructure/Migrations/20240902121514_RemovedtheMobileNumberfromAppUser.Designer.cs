@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using OnlineVotingS.Infrastructure.Persistence.Context;
 
@@ -11,9 +12,11 @@ using OnlineVotingS.Infrastructure.Persistence.Context;
 namespace OnlineVotingS.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240902121514_RemovedtheMobileNumberfromAppUser")]
+    partial class RemovedtheMobileNumberfromAppUser
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -51,17 +54,17 @@ namespace OnlineVotingS.Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "363c71fc-d99b-4750-aaa1-1ce3d32c7c7c",
-                            ConcurrencyStamp = "69c95bae-06c8-4050-a1e9-3913f17cd132",
+                            Id = "5431d6b1-1d6b-42db-a330-dda5aad14907",
+                            ConcurrencyStamp = "c00d6eff-59c8-46e3-a11a-4e1e2e66afe6",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "048e71a0-945c-40f3-a542-edcd1d93b367",
-                            ConcurrencyStamp = "118bdb50-9bfd-4042-bf38-a283814e9dfc",
-                            Name = "Voter",
-                            NormalizedName = "VOTER"
+                            Id = "e509d8c1-26cb-4820-8f63-e4a65ef1afad",
+                            ConcurrencyStamp = "80ab86f2-f82b-4148-b9af-5ad20a2d5be6",
+                            Name = "User",
+                            NormalizedName = "USER"
                         });
                 });
 

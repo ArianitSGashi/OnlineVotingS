@@ -14,18 +14,18 @@
                 window.onload = function() {
                     var loginFailed = '@ViewBag.LoginFailed';
                     if (loginFailed === 'True') {
-                        alert('Login failed. Please check your Voter ID and password.');
+                        alert('Login failed. Please check your UserName and Password.');
                     }
                 };
     </script>
 </head>
 <body>
     <div class="wrapper">
-        @using (Html.BeginForm("Login", "Authenticate", FormMethod.Post))
+        @using (Html.BeginForm("Login", "Auth", FormMethod.Post))
         {
             <h2>Login</h2>
             <div class="input-field">
-                @Html.TextBoxFor(model => model.VoterId, new { @class = "input", placeholder = "Enter your Voter Id" })
+                @Html.TextBoxFor(model => model.UserName, new { @class = "input", placeholder = "Enter your UserName" })
             </div>
             <div class="input-field">
                 @Html.PasswordFor(model => model.Password, new { @class = "input", placeholder = "Enter your password" })
@@ -35,7 +35,7 @@
         </div> *@
             <button type="submit">Log In</button>
             <div class="register">
-                <p>Don't have an account? @Html.ActionLink("Register", "Register", "Authenticate")</p>
+                <p>Don't have an account? @Html.ActionLink("Register", "Register", "Auth")</p>
             </div>
         }
     </div>
