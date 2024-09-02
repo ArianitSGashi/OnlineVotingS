@@ -35,8 +35,8 @@ namespace OnlineVotingS.Infrastructure.Persistence.Context;
                 new IdentityRole
                 {
                     Id = Guid.NewGuid().ToString(),
-                    Name = "User",
-                    NormalizedName = "USER",
+                    Name = "Voter",
+                    NormalizedName = "VOTER",
                     ConcurrencyStamp = Guid.NewGuid().ToString()
                 }
             );
@@ -45,13 +45,11 @@ namespace OnlineVotingS.Infrastructure.Persistence.Context;
             modelBuilder.Entity<ApplicationUser>(entity =>
             {
                 entity.ToTable("AspNetUsers"); // Maps to the existing AspNetUsers table
-                entity.Property(e => e.VoterId).IsRequired().HasMaxLength(50);
                 entity.Property(e => e.Name).IsRequired().HasMaxLength(100);
                 entity.Property(e => e.FathersName).IsRequired().HasMaxLength(100);
                 entity.Property(e => e.Gender).IsRequired();
                 entity.Property(e => e.DateOfBirth).IsRequired();
                 entity.Property(e => e.Address).IsRequired().HasMaxLength(200);
-                entity.Property(e => e.MobileNumber).IsRequired().HasMaxLength(15);
             });
 
             // Election entity

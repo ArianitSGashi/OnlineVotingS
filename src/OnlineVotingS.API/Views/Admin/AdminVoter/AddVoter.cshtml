@@ -23,8 +23,8 @@
         <form method="post" action="/AdminVoter/AddVoter" class="form-container">
             <div class="mb-3">
                 <label for="voterId" class="form-label">Voter ID</label>
-                @Html.TextBoxFor(m => m.VoterId, new { @class = "form-control", required = true })
-                @Html.ValidationMessageFor(m => m.VoterId, "", new { @class = "text-danger" })
+                @Html.TextBoxFor(m => m.Id, new { @class = "form-control", required = true })
+                @Html.ValidationMessageFor(m => m.Id, "", new { @class = "text-danger" })
             </div>
             <div class="mb-3">
                 <label for="name" class="form-label">Name</label>

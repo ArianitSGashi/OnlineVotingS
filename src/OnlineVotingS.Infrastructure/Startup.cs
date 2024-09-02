@@ -21,7 +21,6 @@ public static class Startup
         // Setting Up Identity
         services.AddIdentity<ApplicationUser, IdentityRole>()
             .AddRoles<IdentityRole>()
-            .AddTokenProvider<DataProtectorTokenProvider<ApplicationUser>>("OnlineVotingS")
             .AddEntityFrameworkStores<ApplicationDbContext>()
             .AddDefaultTokenProviders();
 

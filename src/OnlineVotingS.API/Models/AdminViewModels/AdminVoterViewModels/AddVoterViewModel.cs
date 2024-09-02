@@ -1,10 +1,12 @@
 ﻿using OnlineVotingS.Domain.Enums;
+using System.ComponentModel.DataAnnotations;
 
 namespace OnlineVotingS.API.Models.AdminViewModels.AdminVoterViewModels;
 
 public class AddVoterViewModel
 {
-    public string VoterId { get; set; } = string.Empty;
+    [Required]
+    public string Id { get; set; } = string.Empty;
     public string Name { get; set; } = string.Empty;
     public string FathersName { get; set; } = string.Empty;
     public Gender Gender { get; set; }

@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using OnlineVotingS.Infrastructure.Persistence.Context;
 
@@ -11,9 +12,11 @@ using OnlineVotingS.Infrastructure.Persistence.Context;
 namespace OnlineVotingS.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240902084147_UpdateApplicationUser")]
+    partial class UpdateApplicationUser
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -51,17 +54,17 @@ namespace OnlineVotingS.Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "363c71fc-d99b-4750-aaa1-1ce3d32c7c7c",
-                            ConcurrencyStamp = "69c95bae-06c8-4050-a1e9-3913f17cd132",
+                            Id = "b9c0059a-322a-467f-84e8-ba5281253276",
+                            ConcurrencyStamp = "f50b717b-9b45-4528-9027-87729b660bd1",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "048e71a0-945c-40f3-a542-edcd1d93b367",
-                            ConcurrencyStamp = "118bdb50-9bfd-4042-bf38-a283814e9dfc",
-                            Name = "Voter",
-                            NormalizedName = "VOTER"
+                            Id = "7c540af6-05fb-46da-a459-26b5b7d8c067",
+                            ConcurrencyStamp = "05ec46ac-16a2-474b-b94f-a83cd46cbdd7",
+                            Name = "User",
+                            NormalizedName = "USER"
                         });
                 });
 
@@ -470,6 +473,11 @@ namespace OnlineVotingS.Infrastructure.Migrations
 
                     b.Property<DateTimeOffset?>("LockoutEnd")
                         .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("MobileNumber")
+                        .IsRequired()
+                        .HasMaxLength(15)
+                        .HasColumnType("nvarchar(15)");
 
                     b.Property<string>("Name")
                         .IsRequired()
