@@ -12,4 +12,5 @@ namespace OnlineVotingS.Application.DTO.PutDTO;
         public int ElectionID { get; set; }
         public int CandidateID { get; set; }
         public int TotalVotes { get; set; }
+
     }
