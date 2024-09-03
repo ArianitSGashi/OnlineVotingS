@@ -1,0 +1,124 @@
+﻿@model IEnumerable<OnlineVotingS.API.Models.GuestViewModels.CandidateViewModel>
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Candidate Page</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="~/css/guest-candidate.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <a class="navbar-brand" href="@Url.Action("GuestDashboard", "Guest")">Online Voting System</a>
+        <div class="collapse navbar-collapse">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="@Url.Action("GuestDashboard", "Guest")">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">About Us</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="@Url.Action("CandidatePage", "Guest")">Candidate</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="@Url.Action("ElectionPage", "Guest")">Election</a>
+                </li>
+            </ul>
+            <button class="btn btn-primary ml-2" onclick="location.href='@Url.Action("Login", "Auth")'">Login</button>
+        </div>
+    </nav>
+
+    <!-- Candidate Table Section -->
+    <div class="hero-section text-center">
+        <div class="container">
+            <h1 class="display-4">Candidates</h1>
+            <input type="text" id="electionSearch" placeholder="Search by Candidate ID, Full Name, or Party" class="form-control">
+            <button id="searchButton" class="btn btn-primary mt-2">Search</button>
+
+            <table class="table table-hover mt-4" id="electionTable">
+                <thead class="thead-dark">
+                    <tr>
+                        <th>Candidate ID</th>
+                        <th>Election ID</th>
+                        <th>Full Name</th>
+                        <th>Party</th>
+                        <th>Description</th>
+                        <th>Income</th>
+                        <th>Works</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var candidate in Model)
+                    {
+                        <tr>
+                            <td>@candidate.CandidateID</td>
+                            <td>@candidate.ElectionID</td>
+                            <td>@candidate.FullName</td>
+                            <td>@candidate.Party</td>
+                            <td>@candidate.Description</td>
+                            <td>@candidate.Income</td>
+                            <td>@candidate.Works</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-6 col-md-6">
+                    <h5>Useful Links</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="#">Home</a></li>
+                        <li><a href="#">About Us</a></li>
+                        <li><a href="#">Services</a></li>
+                        <li><a href="#">Terms of Service</a></li>
+                        <li><a href="#">Privacy Policy</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-6 col-md-6">
+                    <h5>Contact Us</h5>
+                    <p>Email: info@example.com</p>
+                    <ul class="list-inline">
+                        <li class="list-inline-item"><a href="#"><i class="fab fa-twitter"></i></a></li>
+                        <li class="list-inline-item"><a href="#"><i class="fab fa-facebook"></i></a></li>
+                        <li class="list-inline-item"><a href="#"><i class="fab fa-instagram"></i></a></li>
+                        <li class="list-inline-item"><a href="#"><i class="fab fa-google"></i></a></li>
+                        <li class="list-inline-item"><a href="#"><i class="fab fa-linkedin"></i></a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Search Script -->
+    <script>
+        $(document).ready(function () {
+            $("#searchButton").on("click", function () {
+                var value = $("#electionSearch").val().toLowerCase();
+                $("#electionTable tbody tr").filter(function () {
+                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+                });
+            });
+
+            $("#electionSearch").on("keyup", function (event) {
+                if (event.keyCode === 13) { // 13 is the Enter key
+                    $("#searchButton").click();
+                }
+            });
+        });
+    </script>
+</body>
+</html>
