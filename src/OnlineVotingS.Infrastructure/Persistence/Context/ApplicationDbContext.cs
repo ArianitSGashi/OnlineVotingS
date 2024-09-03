@@ -23,26 +23,26 @@ namespace OnlineVotingS.Infrastructure.Persistence.Context;
         {
             base.OnModelCreating(modelBuilder);
 
-            // Seed roles
-            modelBuilder.Entity<IdentityRole>().HasData(
-                new IdentityRole
-                {
-                    Id = new Guid("5be9341f-b95e-4155-a0f2-ca8f188a1d7b").ToString(),
-                    Name = "Admin",
-                    NormalizedName = "ADMIN",
-                    ConcurrencyStamp = Guid.NewGuid().ToString()
-                },
-                new IdentityRole
-                {
-                    Id = new Guid("5be9341f-b95e-4155-a0f2-ca8f188a1d7b").ToString(),
-                    Name = "Voter",
-                    NormalizedName = "VOTER",
-                    ConcurrencyStamp = Guid.NewGuid().ToString()
-                }
-            );
+        // Seed roles
+        modelBuilder.Entity<IdentityRole>().HasData(
+            new IdentityRole
+            {
+                Id = "5be9341f-b95e-4155-a0f2-ca8f188a1d7b",
+                Name = "Admin",
+                NormalizedName = "ADMIN",
+                ConcurrencyStamp = "7d5cf4ed-83e2-4c71-a8e8-03c2e6a572aa"
+            },
+            new IdentityRole
+            {
+                Id = "6cd1fa1e-c4c6-4a16-a8b2-3f4c031ec0d3",
+                Name = "Voter",
+                NormalizedName = "VOTER",
+                ConcurrencyStamp = "9d5bf4ce-7a3e-9c15-b2e9-04d3e7a683bb"
+            }
+        );
 
-            // Map ApplicationUser to AspNetUsers table
-            modelBuilder.Entity<ApplicationUser>(entity =>
+        // Map ApplicationUser to AspNetUsers table
+        modelBuilder.Entity<ApplicationUser>(entity =>
             {
                 entity.ToTable("AspNetUsers"); // Maps to the existing AspNetUsers table
                 entity.Property(e => e.Name).IsRequired().HasMaxLength(100);
