@@ -34,10 +34,11 @@ public class Result
     /// <summary>
     /// Election object associated with the result, representing the election details.
     /// </summary>
-
+    [JsonIgnore]
     public Elections Elections { get; set; } = null!;
     /// <summary>
     /// Candidate object associated with the result, representing the candidate details.
     /// </summary>
+    [JsonIgnore]
     public Candidates Candidates { get; set; } = null!;
 }
