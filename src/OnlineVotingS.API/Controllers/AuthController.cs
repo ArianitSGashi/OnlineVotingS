@@ -22,13 +22,18 @@ namespace OnlineVotingS.API.Controllers
         }
 
         [HttpGet]
-        public IActionResult Login()
+        public IActionResult Login(string? returnUrl = null)
         {
+            ViewData["ReturnUrl"] = returnUrl;
+            if (User.Identity?.IsAuthenticated == true)
+            {
+                _signInManager.SignOutAsync().Wait();
+            }
             return View();
         }
 
         [HttpPost]
-        public async Task<IActionResult> Login(LoginViewModel model)
+        public async Task<IActionResult> Login(LoginViewModel model, string? returnUrl = null)
         {
             if (ModelState.IsValid)
             {
@@ -36,15 +41,22 @@ namespace OnlineVotingS.API.Controllers
                 if (result.Succeeded)
                 {
                     var user = await _userManager.FindByNameAsync(model.UserName);
-                    var roles = await _userManager.GetRolesAsync(user);
-
-                    if (roles.Contains("Admin"))
+                    if (user != null)
                     {
-                        return RedirectToAction("Dashboard", "Admin");
+                        var roles = await _userManager.GetRolesAsync(user);
+                        if (roles.Contains("Admin"))
+                        {
+                            return RedirectToAction("Dashboard", "Admin");
+                        }
+                        else if (roles.Contains("Voter"))
+                        {
+                            return RedirectToAction("VoterDashboard", "Voter");
+                        }
                     }
-                    else if (roles.Contains("Voter"))
+                    else
                     {
-                        return RedirectToAction("VoterDashboard", "Voter");
+                        ModelState.AddModelError(string.Empty, "User not found.");
+                        return View(model);
                     }
                 }
                 ModelState.AddModelError(string.Empty, "Invalid login attempt.");
@@ -81,7 +93,7 @@ namespace OnlineVotingS.API.Controllers
                 {
                     await _userManager.AddToRoleAsync(user, "Voter");
                     await _signInManager.SignInAsync(user, isPersistent: false);
-                    return RedirectToAction("VoterDashboard", "Voter");
+                    return RedirectToAction("Login", "Auth");
                 }
 
                 foreach (var error in result.Errors)
@@ -96,7 +108,7 @@ namespace OnlineVotingS.API.Controllers
         public async Task<IActionResult> Logout()
         {
             await _signInManager.SignOutAsync();
-            return RedirectToAction("Login", "Auth");
+            return RedirectToAction("GuestDashboard", "Guest");
         }
     }
 }

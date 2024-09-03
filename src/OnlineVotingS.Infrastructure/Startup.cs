@@ -20,9 +20,8 @@ public static class Startup
 
         // Setting Up Identity
         services.AddIdentity<ApplicationUser, IdentityRole>()
-            .AddRoles<IdentityRole>()
-            .AddEntityFrameworkStores<ApplicationDbContext>()
-            .AddDefaultTokenProviders();
+         .AddEntityFrameworkStores<ApplicationDbContext>()
+         .AddDefaultTokenProviders();
 
         // Register the generic repository
         services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
