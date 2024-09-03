@@ -9,6 +9,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login</title>
     <link rel="stylesheet" href="/css/login.css">
+    
+    <style>
+            .text-danger {
+                color: red;
+            }
+    </style>
+    
     <script>
                 debugger;
                 window.onload = function() {
@@ -26,9 +33,11 @@
             <h2>Login</h2>
             <div class="input-field">
                 @Html.TextBoxFor(model => model.UserName, new { @class = "input", placeholder = "Enter your UserName" })
+                 @Html.ValidationMessageFor(model => model.UserName, "", new { @class = "text-danger" })
             </div>
             <div class="input-field">
                 @Html.PasswordFor(model => model.Password, new { @class = "input", placeholder = "Enter your password" })
+                @Html.ValidationMessageFor(model => model.Password, "", new { @class = "text-danger" })
             </div>
             @* <div class="forget">
         @Html.ActionLink("Forgot password?", "ForgotPassword", "Account", null, new { @class = "forgot-link" })

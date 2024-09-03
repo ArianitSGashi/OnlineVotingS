@@ -27,14 +27,14 @@ namespace OnlineVotingS.Infrastructure.Persistence.Context;
             modelBuilder.Entity<IdentityRole>().HasData(
                 new IdentityRole
                 {
-                    Id = Guid.NewGuid().ToString(),
+                    Id = new Guid("5be9341f-b95e-4155-a0f2-ca8f188a1d7b").ToString(),
                     Name = "Admin",
                     NormalizedName = "ADMIN",
                     ConcurrencyStamp = Guid.NewGuid().ToString()
                 },
                 new IdentityRole
                 {
-                    Id = Guid.NewGuid().ToString(),
+                    Id = new Guid("5be9341f-b95e-4155-a0f2-ca8f188a1d7b").ToString(),
                     Name = "Voter",
                     NormalizedName = "VOTER",
                     ConcurrencyStamp = Guid.NewGuid().ToString()
