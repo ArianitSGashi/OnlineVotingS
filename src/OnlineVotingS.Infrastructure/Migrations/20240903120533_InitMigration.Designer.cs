@@ -12,8 +12,8 @@ using OnlineVotingS.Infrastructure.Persistence.Context;
 namespace OnlineVotingS.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240902121514_RemovedtheMobileNumberfromAppUser")]
-    partial class RemovedtheMobileNumberfromAppUser
+    [Migration("20240903120533_InitMigration")]
+    partial class InitMigration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -54,17 +54,17 @@ namespace OnlineVotingS.Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "5431d6b1-1d6b-42db-a330-dda5aad14907",
-                            ConcurrencyStamp = "c00d6eff-59c8-46e3-a11a-4e1e2e66afe6",
+                            Id = "91200ead-291b-40f8-914a-19765c3b9d46",
+                            ConcurrencyStamp = "57055b53-18cd-48d0-ab2f-ca0bca8bf618",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "e509d8c1-26cb-4820-8f63-e4a65ef1afad",
-                            ConcurrencyStamp = "80ab86f2-f82b-4148-b9af-5ad20a2d5be6",
-                            Name = "User",
-                            NormalizedName = "USER"
+                            Id = "037629ae-362f-4bb2-9393-331f3c4ce43c",
+                            ConcurrencyStamp = "62367227-2410-42d5-9313-8b8da0461936",
+                            Name = "Voter",
+                            NormalizedName = "VOTER"
                         });
                 });
 

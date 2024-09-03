@@ -11,7 +11,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Register</title>
     <link rel="stylesheet" href="/css/register.css">
-
+    <style>
+        .text-danger {
+            color: red;
+        }
+    </style>
     <script>
         // JavaScript to display an alert if registration failed
         window.onload = function() {
@@ -91,17 +95,17 @@
                 @Html.ValidationMessageFor(model => model.MobileNumber, "", new { @class = "text-danger" })
             </div>
 
-            <div class="input-field">
-                @Html.PasswordFor(model => model.Password, new { @class = "input-field", required = true })
-                @Html.LabelFor(model => model.Password)
-                @Html.ValidationMessageFor(model => model.Password, "", new { @class = "text-danger" })
-            </div>
+           <div class="input-field">
+               @Html.PasswordFor(model => model.Password, new { @class = "input-field", required = true })
+               @Html.LabelFor(model => model.Password)
+               @Html.ValidationMessageFor(model => model.Password, "", new { @class = "text-danger" })
+           </div>
 
-            <div class="input-field">
-                @Html.PasswordFor(model => model.ConfirmPassword, new { @class = "input-field", required = true })
-                @Html.LabelFor(model => model.ConfirmPassword)
-                @Html.ValidationMessageFor(model => model.ConfirmPassword, "", new { @class = "text-danger" })
-            </div>
+           <div class="input-field">
+               @Html.PasswordFor(model => model.ConfirmPassword, new { @class = "input-field", required = true })
+               @Html.LabelFor(model => model.ConfirmPassword)
+               @Html.ValidationMessageFor(model => model.ConfirmPassword, "", new { @class = "text-danger" })
+           </div>
 
             <button type="submit">Register</button>
             <div class="register">

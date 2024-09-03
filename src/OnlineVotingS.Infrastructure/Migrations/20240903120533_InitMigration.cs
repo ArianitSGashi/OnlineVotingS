@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace OnlineVotingS.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialCreate : Migration
+    public partial class InitMigration : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -32,13 +32,11 @@ namespace OnlineVotingS.Infrastructure.Migrations
                 columns: table => new
                 {
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    VoterId = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     Name = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     FathersName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     Gender = table.Column<int>(type: "int", nullable: false),
                     DateOfBirth = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Address = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
-                    MobileNumber = table.Column<string>(type: "nvarchar(15)", maxLength: 15, nullable: false),
                     UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     Email = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
@@ -355,13 +353,34 @@ namespace OnlineVotingS.Infrastructure.Migrations
                         onDelete: ReferentialAction.Restrict);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "RepliedComplaints",
+                columns: table => new
+                {
+                    RepliedComplaintID = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    ComplaintID = table.Column<int>(type: "int", nullable: false),
+                    ReplyText = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
+                    ReplyDate = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_RepliedComplaints", x => x.RepliedComplaintID);
+                    table.ForeignKey(
+                        name: "FK_RepliedComplaints_Complaints_ComplaintID",
+                        column: x => x.ComplaintID,
+                        principalTable: "Complaints",
+                        principalColumn: "ComplaintID",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
             migrationBuilder.InsertData(
                 table: "AspNetRoles",
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "4839a2ff-9d0c-44de-b1f3-9f2ceb675b04", "5c6ce15a-b9a2-4e64-be66-8fe0c6d0147b", "Admin", "ADMIN" },
-                    { "7f22441e-7a66-4949-b46d-1052027e6f9f", "66654619-1056-40da-804a-5bba15dde883", "User", "USER" }
+                    { "037629ae-362f-4bb2-9393-331f3c4ce43c", "62367227-2410-42d5-9313-8b8da0461936", "Voter", "VOTER" },
+                    { "91200ead-291b-40f8-914a-19765c3b9d46", "57055b53-18cd-48d0-ab2f-ca0bca8bf618", "Admin", "ADMIN" }
                 });
 
             migrationBuilder.CreateIndex(
@@ -439,6 +458,11 @@ namespace OnlineVotingS.Infrastructure.Migrations
                 column: "UserID");
 
             migrationBuilder.CreateIndex(
+                name: "IX_RepliedComplaints_ComplaintID",
+                table: "RepliedComplaints",
+                column: "ComplaintID");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Results_CandidateID",
                 table: "Results",
                 column: "CandidateID");
@@ -486,10 +510,10 @@ namespace OnlineVotingS.Infrastructure.Migrations
                 name: "Campaigns");
 
             migrationBuilder.DropTable(
-                name: "Complaints");
+                name: "Feedbacks");
 
             migrationBuilder.DropTable(
-                name: "Feedbacks");
+                name: "RepliedComplaints");
 
             migrationBuilder.DropTable(
                 name: "Results");
@@ -501,10 +525,13 @@ namespace OnlineVotingS.Infrastructure.Migrations
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
-                name: "AspNetUsers");
+                name: "Complaints");
 
             migrationBuilder.DropTable(
                 name: "Candidates");
+
+            migrationBuilder.DropTable(
+                name: "AspNetUsers");
 
             migrationBuilder.DropTable(
                 name: "Elections");
