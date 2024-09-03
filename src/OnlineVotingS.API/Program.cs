@@ -2,7 +2,6 @@ using Microsoft.AspNetCore.Identity;
 using OnlineVotingS.API.Middleware;
 using OnlineVotingS.Application;
 using OnlineVotingS.Infrastructure;
-using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,14 +9,13 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();  // Register MVC services
 builder.Services.AddEndpointsApiExplorer();
 
-// Configure Swagger to include JWT Authentication support
-//builder.Services.AddSwaggerGen();
-
+// Configure application services
 builder.Services.ConfigureService(builder.Configuration);
 
 // Call the new AddApplicationServices method from the Application layer
 builder.Services.AddApplicationServices();
 
+// Configure Identity options
 builder.Services.Configure<IdentityOptions>(options =>
 {
     options.Password.RequireDigit = false;
@@ -28,28 +26,45 @@ builder.Services.Configure<IdentityOptions>(options =>
     options.Password.RequiredUniqueChars = 1;
 });
 
-// Configure Logging
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("RequireAdminRole", policy => policy.RequireRole("Admin"));
+    options.AddPolicy("RequireVoterRole", policy => policy.RequireRole("Voter"));
+});
+
+// Configure logging
 builder.Logging.AddConsole();
 builder.Logging.AddDebug();
 
+builder.Services.ConfigureApplicationCookie(options =>
+{
+    options.LoginPath = "/Auth/Login";
+    options.AccessDeniedPath = "/Auth/Login";
+    options.ExpireTimeSpan = TimeSpan.FromMinutes(20); // Set to desired expiration time
+    options.SlidingExpiration = true;
+});
+
 var app = builder.Build();
 
-//// Configure the HTTP request pipeline.
-//if (app.Environment.IsDevelopment())
-//{
-//    app.UseSwagger();
-//    app.UseSwaggerUI(options =>
-//    {
-//        options.SwaggerEndpoint("/swagger/v1/swagger.json", "Online Voting API v1");
-//        options.RoutePrefix = string.Empty;
-//    });
-//}
-//else
-//{
-//    app.UseExceptionHandler("/Home/Error");
-//    app.UseHsts();
-//}
+// Configure the HTTP request pipeline.
+if (app.Environment.IsDevelopment())
+{
+    // Enable Swagger in development
+    app.UseDeveloperExceptionPage();
+    //app.UseSwagger();
+    //app.UseSwaggerUI(options =>
+    //{
+    //    options.SwaggerEndpoint("/swagger/v1/swagger.json", "Online Voting API v1");
+    //    options.RoutePrefix = string.Empty;
+    //});
+}
+else
+{
+    app.UseExceptionHandler("/Home/Error");
+    app.UseHsts();
+}
 
+// Use custom global exception handling middleware
 app.UseMiddleware<GlobalExceptionHandler>();
 
 app.UseHttpsRedirection();
@@ -57,6 +72,10 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
+app.UseAuthentication();
+app.UseAuthorization();
+
+// Default route configuration
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Guest}/{action=GuestDashboard}/{id?}");

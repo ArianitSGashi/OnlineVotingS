@@ -37,7 +37,9 @@
                     <a class="nav-link" href="@Url.Action("RepliedComplaintsPage", "Voter")">Replied Complaints</a>
                 </li>
             </ul>
-            <button class="btn btn-danger ml-2">Logout</button>
+            <form asp-controller="Auth" asp-action="Logout" method="post" class="d-inline">
+                <button type="submit" class="btn btn-danger ml-2">Logout</button>
+            </form>
             <div class="dropdown ml-3">
                 <button class="btn btn-dark dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-expanded="false">
                     <i class="fas fa-user"></i> OVS

@@ -1,12 +1,13 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using OnlineVotingS.API.Models.VoterViewModels;
-using OnlineVotingS.Infrastructure.Persistence.Context;
 
 namespace OnlineVotingS.API.Controllers.TempControllers;
 
+[Authorize(Policy = "RequireVoterRole")]
 public class VoterController : Controller
 {
+    [Authorize(Policy = "RequireVoterRole")]
     public IActionResult VoterDashboard()
     {
         return View();
