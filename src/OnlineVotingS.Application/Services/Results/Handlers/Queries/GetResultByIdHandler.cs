@@ -24,7 +24,7 @@ public class GetResultByIdHandler : IRequestHandler<GetResultByIdQuery, Result>
     {
         try
         {
-            var result = await _resultRepository.GetByResultIdAsync(request.ResultId);
+            var result = await _resultRepository.GetByIdAsync(request.ResultId);
             if (result == null)
             {
                 throw new KeyNotFoundException($"Result with ID {request.ResultId} not found.");

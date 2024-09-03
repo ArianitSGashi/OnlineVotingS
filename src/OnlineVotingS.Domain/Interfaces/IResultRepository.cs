@@ -10,13 +10,7 @@ namespace OnlineVotingS.Domain.Interfaces;
 
 public interface IResultRepository : IGenericRepository<Result>
 {
-    Task<Result> GetByIdAsync(int id);
     Task<IEnumerable<Result>> GetByElectionIdAsync(int electionId);
     Task<IEnumerable<Result>> GetByCandidateIdAsync(int candidateId);
     Task<IEnumerable<Result>> GetByTotalVotesGreaterThanAsync(int votes);
-    Task<Result> GetByResultIdAsync(int resultId);
-
-
-
-
 }
