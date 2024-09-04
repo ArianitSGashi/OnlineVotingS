@@ -1,27 +1,33 @@
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
 using OnlineVotingS.API.Models.AdminViewModels.CandidateViewModels;
 using OnlineVotingS.Application.DTO.PutDTO;
-using OnlineVotingS.Infrastructure.Persistence.Context; // Ensure this path is correct
+using OnlineVotingS.Application.Services.Candidate.Requests.Commands;
+using OnlineVotingS.Application.Services.Candidate.Requests.Queries;
 
 namespace OnlineVotingS.API.Controllers.TempControllers;
 
+[ApiController]
+[Route("[controller]")]
 public class CandidateController : Controller
 {
-    private readonly ApplicationDbContext _context;
+    private readonly IMediator _mediator;
 
-    public CandidateController(ApplicationDbContext context)
+    public CandidateController(IMediator mediator)
     {
-        _context = context;
+        _mediator = mediator;
     }
 
-    [HttpGet]
-    public IActionResult AddCandidate()
+    [HttpGet("AddCandidate")]
+    public async Task<IActionResult> AddCandidate()
     {
+        var query = new GetAllCandidatesQuery();
+        var candidates = await _mediator.Send(query);
+
         var model = new AddCandidateViewModel
         {
-            Elections = _context.Candidates.Select(c => new SelectListItem
+            Elections = candidates.Select(c => new SelectListItem
             {
                 Value = c.ElectionID.ToString(),
                 Text = c.ElectionID.ToString(),
@@ -30,41 +36,43 @@ public class CandidateController : Controller
         return View("~/Views/Admin/Candidate/AddCandidate.cshtml", model);
     }
 
-    [HttpGet]
+    [HttpGet("EditCandidate")]
     public IActionResult EditCandidate()
     {
         return View("~/Views/Admin/Candidate/EditCandidate.cshtml");
     }
 
-    [HttpGet]
+    [HttpGet("DeleteCandidate")]
     public IActionResult DeleteCandidate()
     {
         return View("~/Views/Admin/Candidate/DeleteCandidate.cshtml");
     }
 
-    [HttpGet]
+    [HttpGet("ViewCandidates")]
     public async Task<IActionResult> ViewCandidates()
     {
-        var candidates = await _context.Candidates
-            .Select(c => new ViewCandidatesViewModel
-            {
-                CandidateID = c.CandidateID.ToString(),
-                ElectionID = c.ElectionID.ToString(),
-                FullName = c.FullName,
-                Party = c.Party,
-                Description = c.Description,
-                Works = c.Works,
-                Income = c.Income ?? 0, // Default to 0 if Income is null
-            }).ToListAsync();
+        var query = new GetAllCandidatesQuery();
+        var candidates = await _mediator.Send(query);
 
-        return View("~/Views/Admin/Candidate/ViewCandidates.cshtml", candidates);
+        var model = candidates.Select(c => new ViewCandidatesViewModel
+        {
+            CandidateID = c.CandidateID.ToString(),
+            ElectionID = c.ElectionID.ToString(),
+            FullName = c.FullName,
+            Party = c.Party,
+            Description = c.Description,
+            Works = c.Works,
+            Income = c.Income ?? 0
+        }).ToList();
+
+        return View("~/Views/Admin/Candidate/ViewCandidates.cshtml", model);
     }
 
     [HttpGet("validate")]
     public async Task<IActionResult> ValidateCandidate([FromQuery] int candidateId, [FromQuery] int electionId)
     {
-        var candidate = await _context.Candidates
-            .FirstOrDefaultAsync(c => c.CandidateID == candidateId);
+        var query = new GetCandidateByIdQuery(candidateId);
+        var candidate = await _mediator.Send(query);
 
         if (candidate == null)
         {
@@ -75,30 +83,31 @@ public class CandidateController : Controller
         return Ok(new { isValid });
     }
 
-    [HttpPut]
+    [HttpPut("UpdateCandidate")]
     public async Task<IActionResult> UpdateAsync([FromBody] CandidatesPutDTO candidatesPut)
     {
-        var existingCandidate = await _context.Candidates
-            .FirstOrDefaultAsync(c => c.CandidateID == candidatesPut.CandidateID);
+        var command = new UpdateCandidateCommand(candidatesPut);
+        var result = await _mediator.Send(command);
 
-        if (existingCandidate == null)
+        if (result == null)
         {
-            return NotFound($"Candidate with ID {candidatesPut.CandidateID} not found.");
+            return NotFound($"Candidate with ID {candidatesPut.CandidateID} not found or Election ID does not match.");
         }
 
-        if (existingCandidate.ElectionID != candidatesPut.ElectionID)
+        return Ok(result);
+    }
+
+    [HttpDelete("{candidateId}")]
+    public async Task<IActionResult> DeleteCandidate(int candidateId)
+    {
+        var command = new DeleteCandidateCommand(candidateId);
+        var result = await _mediator.Send(command);
+
+        if (!result)
         {
-            return BadRequest($"Election ID {candidatesPut.ElectionID} does not match with Candidate ID {candidatesPut.CandidateID}.");
+            return NotFound($"Candidate with ID {candidateId} not found.");
         }
 
-        existingCandidate.FullName = candidatesPut.FullName;
-        existingCandidate.Party = candidatesPut.Party;
-        existingCandidate.Description = candidatesPut.Description;
-        existingCandidate.Income = candidatesPut.Income;
-        existingCandidate.Works = candidatesPut.Works;
-
-        await _context.SaveChangesAsync();
-
-        return Ok(existingCandidate);
+        return NoContent();
     }
 }
