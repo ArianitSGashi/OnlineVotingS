@@ -10,9 +10,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Add Voter</title>
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet"> <!-- Bootstrap CSS -->
-    <link href="~/css/new-sidebar.css" rel="stylesheet"> <!-- Link to the sidebar CSS file -->
-    <link href="~/css/add-voter.css" rel="stylesheet"> <!-- Link to the new CSS file -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="~/css/new-sidebar.css" rel="stylesheet">
+    <link href="~/css/Candidate/add-candidate.css" rel="stylesheet">
 </head>
 <body>
     <!-- Sidebar Menu -->
@@ -22,9 +22,19 @@
         <h4 class="mb-4">Add Voter</h4>
         <form method="post" action="/AdminVoter/AddVoter" class="form-container">
             <div class="mb-3">
-                <label for="voterId" class="form-label">Voter ID</label>
+                <label for="Id" class="form-label">ID</label>
                 @Html.TextBoxFor(m => m.Id, new { @class = "form-control", required = true })
                 @Html.ValidationMessageFor(m => m.Id, "", new { @class = "text-danger" })
+            </div>
+            <div class="mb-3">
+                <label for="username" class="form-label">UserName</label>
+                @Html.TextBoxFor(m => m.UserName, new { @class = "form-control", required = true })
+                @Html.ValidationMessageFor(m => m.UserName, "", new { @class = "text-danger" })
+            </div>
+            <div class="mb-3">
+                <label for="email" class="form-label">Email</label>
+                @Html.TextBoxFor(m => m.Email, new { @class = "form-control", required = true })
+                @Html.ValidationMessageFor(m => m.Email, "", new { @class = "text-danger" })
             </div>
             <div class="mb-3">
                 <label for="name" class="form-label">Name</label>
@@ -38,7 +48,7 @@
             </div>
             <div class="mb-3">
                 <label for="gender" class="form-label">Gender</label>
-                @Html.DropDownListFor(m => m.Gender, Enum.GetValues(typeof(Gender)).Cast<Gender>().Select(e => new SelectListItem { Value = e.ToString(), Text = e.ToString() }), "Select Gender", new { @class = "form-control", required = true })
+                @Html.DropDownListFor(m => m.Gender, Enum.GetValues(typeof(Gender)).Cast<Gender>().Select(e => new SelectListItem { Value = e.ToString(), Text = e.ToString() }), "Select Gender", new { @class = "form-control select-dropdown", required = true })
                 @Html.ValidationMessageFor(m => m.Gender, "", new { @class = "text-danger" })
             </div>
             <div class="mb-3">
