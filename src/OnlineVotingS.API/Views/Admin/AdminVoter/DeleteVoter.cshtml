@@ -19,7 +19,7 @@
 
     <div class="container-with-sidebar bg-light p-4 rounded">
         <h4 class="mb-4">Delete Voter</h4>
-        <form method="post" action="/AdminVoter/DeleteVoter" class="form-container">
+        <form method="post" action="@Url.Action("DeleteVoter", "AdminVoter")" class="form-container">
             <div class="mb-3">
                 <label for="Id" class="form-label">ID</label>
                 @Html.TextBoxFor(m => m.Id, new { @class = "form-control", required = true })

@@ -12,7 +12,8 @@
     <title>Edit Voter</title>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet"> <!-- Bootstrap CSS -->
     <link href="~/css/new-sidebar.css" rel="stylesheet"> <!-- Link to the sidebar CSS file -->
-    <link href="~/css/edit-voter.css" rel="stylesheet"> <!-- Link to the new CSS file -->
+    <link href="~/css/Candidate/edit-candidate.css" rel="stylesheet"> <!-- Link to the new CSS file -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body>
     <!-- Sidebar Menu -->
@@ -22,9 +23,19 @@
         <h4 class="mb-4">Edit Voter</h4>
         <form method="post" action="/AdminVoter/EditVoter" class="form-container">
             <div class="mb-3">
-                <label for="Id" class="form-label">ID</label>
-                @Html.TextBoxFor(m => m.Id, new { @class = "form-control", required = true })
+                <label for="Id" class="form-label">Select Voter</label>
+                @Html.DropDownListFor(m => m.Id, Model.VoterList, "Select a Voter", new { @class = "form-control select-dropdown", required = true, id = "voterId" })
                 @Html.ValidationMessageFor(m => m.Id, "", new { @class = "text-danger" })
+            </div>
+            <div class="mb-3">
+                <label for="UserName" class="form-label">UserName</label>
+                @Html.TextBoxFor(m => m.UserName, new { @class = "form-control", required = true })
+                @Html.ValidationMessageFor(m => m.UserName, "", new { @class = "text-danger" })
+            </div>
+            <div class="mb-3">
+                <label for="email" class="form-label">Email</label>
+                @Html.TextBoxFor(m => m.Email, new { @class = "form-control", required = true })
+                @Html.ValidationMessageFor(m => m.Email, "", new { @class = "text-danger" })
             </div>
             <div class="mb-3">
                 <label for="name" class="form-label">Name</label>
@@ -38,7 +49,7 @@
             </div>
             <div class="mb-3">
                 <label for="gender" class="form-label">Gender</label>
-                @Html.DropDownListFor(m => m.Gender, Enum.GetValues(typeof(Gender)).Cast<Gender>().Select(e => new SelectListItem { Value = e.ToString(), Text = e.ToString() }), "Select Gender", new { @class = "form-control", required = true })
+                @Html.DropDownListFor(m => m.Gender, Enum.GetValues(typeof(Gender)).Cast<Gender>().Select(e => new SelectListItem { Value = e.ToString(), Text = e.ToString() }), "Select Gender", new { @class = "form-control select-dropdown", required = true })
                 @Html.ValidationMessageFor(m => m.Gender, "", new { @class = "text-danger" })
             </div>
             <div class="mb-3">
@@ -59,6 +70,33 @@
             <button type="submit" class="btn btn-primary">Save Changes</button>
         </form>
     </div>
+    <script>
+        $(document).ready(function () {
+            $('#voterId').change(function () {
+                var selectedId = $(this).val();
+                if (selectedId) {
+                    $.ajax({
+                        url: '/AdminVoter/GetVoterDetails',
+                        type: 'GET',
+                        data: { id: selectedId },
+                        success: function (data) {
+                            $('#UserName').val(data.userName);
+                            $('#Email').val(data.email);
+                            $('#Name').val(data.name);
+                            $('#FathersName').val(data.fathersName);
+                            $('#Gender').val(data.gender);
+                            $('#DateOfBirth').val(data.dateOfBirth);
+                            $('#Address').val(data.address);
+                            $('#MobileNumber').val(data.mobileNumber);
+                        },
+                        error: function () {
+                            alert('Error fetching voter details');
+                        }
+                    });
+                }
+            });
+        });
+    </script>
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
