@@ -44,7 +44,7 @@
                         <td>@candidate.FullName</td>
                         <td>@candidate.Party</td>
                         <td>@candidate.Description</td>
-                        <td>@candidate.Income.ToString("C")</td> 
+                        <td>@(candidate.Income?.ToString("C") ?? "N/A")</td>
                         <td>@candidate.Works</td>
                     </tr>
                 }
@@ -53,15 +53,7 @@
     </div>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
-    <script>
-        $(document).ready(function () {
-            $('#searchCandidate').on('keyup', function () {
-                var value = $(this).val().toLowerCase();
-                $('#candidateTableBody tr').filter(function () {
-                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
-                });
-            });
-        });
-    </script>
+    <script src="~/js/Candidate/ViewCandidates.js"></script>
+
 </body>
 </html>

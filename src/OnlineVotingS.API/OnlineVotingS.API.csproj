@@ -24,4 +24,8 @@
     <ProjectReference Include="..\OnlineVotingS.Infrastructure\OnlineVotingS.Infrastructure.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\js\Candidate\" />
+  </ItemGroup>
+
 </Project>
