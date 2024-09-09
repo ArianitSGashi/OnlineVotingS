@@ -21,8 +21,8 @@
         {
             <div class="form-group mb-3">
                 <label for="SelectedElectionID" class="form-label">Election Title</label>
-                @Html.DropDownListFor(model => model.SelectedElectionID, Model.OngoingElections, "Select an election", new { @class = "form-control dropdown-small", required = true })
-                @Html.ValidationMessageFor(model => model.SelectedElectionID, "", new { @class = "text-danger" })
+                @Html.DropDownListFor(model => model.SelectedTitle, Model.OngoingElections, "Select an election", new { @class = "form-control dropdown-small", required = true })
+                @Html.ValidationMessageFor(model => model.SelectedTitle, "", new { @class = "text-danger" })
             </div>
             <button type="submit" class="btn btn-primary">Complete Election</button>
         }

@@ -1,5 +1,4 @@
 ﻿@model OnlineVotingS.API.Models.AdminViewModels.ElectionViewModels.GenerateElectionViewModel
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -11,11 +10,10 @@
     <link href="~/css/Election/generateelection.css" rel="stylesheet"> 
 </head>
 <body>
-    <!-- Sidebar Menu -->
     @await Html.PartialAsync("_NewSidebar")
     <div class="container-with-sidebar bg-light p-4 rounded">
         <h4 class="mb-4">Generate Election</h4>
-        <form method="post" action="/AdminElection/AddElection" class="form-container">
+        <form method="post" action="/Election/GenerateElection" class="form-container">
             <div class="mb-3">
                 <label for="title" class="form-label">Election Title</label>
                 @Html.TextBoxFor(m => m.Title, new { @class = "form-control", required = true })
@@ -23,7 +21,7 @@
             </div>
             <div class="mb-3">
                 <label for="description" class="form-label">Election Description</label>
-                @Html.TextBoxFor(m => m.Description, new { @class = "form-control", required = true })
+                @Html.TextBoxFor(m => m.Description, new { @class = "form-control" })
                 @Html.ValidationMessageFor(m => m.Description, "", new { @class = "text-danger" })
             </div>
             <div class="mb-3">
@@ -32,9 +30,19 @@
                 @Html.ValidationMessageFor(m => m.StartDate, "", new { @class = "text-danger" })
             </div>
             <div class="mb-3">
+                <label for="startTime" class="form-label">Start Time</label>
+                @Html.TextBoxFor(m => m.StartTime, "{0:hh\\:mm}", new { @class = "form-control", type = "time", required = true })
+                @Html.ValidationMessageFor(m => m.StartTime, "", new { @class = "text-danger" })
+            </div>
+            <div class="mb-3">
                 <label for="endDate" class="form-label">End Date</label>
                 @Html.TextBoxFor(m => m.EndDate, "{0:yyyy-MM-dd}", new { @class = "form-control", type = "date", required = true })
                 @Html.ValidationMessageFor(m => m.EndDate, "", new { @class = "text-danger" })
+            </div>
+            <div class="mb-3">
+                <label for="endTime" class="form-label">End Time</label>
+                @Html.TextBoxFor(m => m.EndTime, "{0:hh\\:mm}", new { @class = "form-control", type = "time", required = true })
+                @Html.ValidationMessageFor(m => m.EndTime, "", new { @class = "text-danger" })
             </div>
             <button type="submit" class="btn btn-primary">Generate Election</button>
         </form>

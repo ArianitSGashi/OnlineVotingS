@@ -5,6 +5,6 @@ namespace OnlineVotingS.API.Models.AdminViewModels.ElectionViewModels;
 
 public class CompleteElectionViewModel
 {
-    public int SelectedElectionID { get; set; }
+    public string SelectedTitle { get; set; } = string.Empty;
     public List<SelectListItem> OngoingElections { get; set; } = new List<SelectListItem>();
 }

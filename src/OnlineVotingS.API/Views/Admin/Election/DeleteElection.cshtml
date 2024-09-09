@@ -17,7 +17,7 @@
     @await Html.PartialAsync("_NewSidebar")
     <div class="container-with-sidebar bg-light p-4 rounded">
         <h4 class="mb-4">Delete Election</h4>
-        <form method="post" action="/AdminElection/DeleteElection" class="form-container">
+        <form method="post" action="/Election/DeleteElection" class="form-container">
             <div class="mb-3">
                 <label for="electionId" class="form-label">Election ID</label>
                 @Html.TextBoxFor(m => m.ElectionID, new { @class = "form-control", required = true })

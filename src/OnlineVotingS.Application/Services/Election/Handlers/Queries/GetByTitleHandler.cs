@@ -21,7 +21,7 @@ public class GetByTitleHandler : IRequestHandler<GetByTitleQuery, IEnumerable<El
         {
             try
             {
-                return await _electionRepository.GetByTitleAsync(request.Title);
+                return await _electionRepository.GetElectionsByTitleAsync(request.Title);
             }
             catch (Exception ex)
             {

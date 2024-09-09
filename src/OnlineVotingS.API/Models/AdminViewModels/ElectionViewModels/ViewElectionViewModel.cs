@@ -5,14 +5,18 @@ namespace OnlineVotingS.API.Models.AdminViewModels.ElectionViewModels;
 
 public class ViewElectionViewModel
 {
-    public string ElectionID { get; set; } = string.Empty;
+    public int ElectionID { get; set; }
     [Required(ErrorMessage = "Title is required")]
     [MaxLength(50)]
     public string Title { get; set; } = string.Empty;
     [MaxLength(100)]
     public string? Description { get; set; }
     [Required(ErrorMessage = "Start date is required")]
-    public DateTime StartDate { get; set; }
+    public DateOnly StartDate { get; set; }
+    [Required(ErrorMessage = "Start time is required")]
+    public TimeSpan StartTime { get; set; }
     [Required(ErrorMessage = "End date is required")]
-    public DateTime EndDate { get; set; }
+    public DateOnly EndDate { get; set; }
+    [Required(ErrorMessage = "End time is required")]
+    public TimeSpan EndTime { get; set; }
 }
