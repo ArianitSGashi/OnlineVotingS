@@ -15,15 +15,15 @@
 
     <div class="content-container p-4">
         <h4 class="mb-4 text-center">Reply to Complaint</h4>
-        <form method="post" action="/Complain/ReplyComplain" class="form-container">
+        <form id="replyComplaintForm" class="form-container">
             <div class="mb-3">
                 <label for="complaintId" class="form-label">Complaint ID</label>
-                @Html.DropDownListFor(m => m.ComplaintID, Model.Complaints, "Select complaint no.", new { @class = "form-control" })
+                @Html.DropDownListFor(m => m.ComplaintID, Model.Complaints, "Select complaint no.", new { @class = "form-control", id = "complaintId" })
                 @Html.ValidationMessageFor(m => m.ComplaintID, "", new { @class = "text-danger" })
             </div>
             <div class="mb-3">
                 <label for="replyText" class="form-label">Reply</label>
-                @Html.TextAreaFor(m => m.ReplyText, new { @class = "form-control", placeholder = "Reply", rows = "4" })
+                @Html.TextAreaFor(m => m.ReplyText, new { @class = "form-control", placeholder = "Reply", rows = "4", id = "replyText" })
                 @Html.ValidationMessageFor(m => m.ReplyText, "", new { @class = "text-danger" })
             </div>
             <button type="submit" class="btn btn-primary">Reply</button>
@@ -32,5 +32,31 @@
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('#replyComplaintForm').on('submit', function (e) {
+                e.preventDefault();
+
+                var formData = {
+                    ComplaintID: $('#complaintId').val(),
+                    ReplyText: $('#replyText').val()
+                };
+
+                $.ajax({
+                    url: '/api/Complain/ReplyComplain',
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify(formData),
+                    success: function (result) {
+                        alert(result);
+                        $('#replyComplaintForm')[0].reset();
+                    },
+                    error: function (xhr, status, error) {
+                        alert('An error occurred: ' + xhr.responseText);
+                    }
+                });
+            });
+        });
+    </script>
 </body>
 </html>

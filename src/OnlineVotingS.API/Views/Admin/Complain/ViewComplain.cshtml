@@ -1,5 +1,9 @@
 ﻿@model IEnumerable<OnlineVotingS.API.Models.AdminViewModels.ComplaintViewModels.ComplaintViewModel>
 
+@{
+    Layout = null;
+}
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -8,15 +12,16 @@
     <title>View Complaints</title>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <link href="~/css/new-sidebar.css" rel="stylesheet">
-    <link href="~/css/Complain/view-complain.css" rel="stylesheet">
+    <link href="~/css/Complain/view-complaints.css" rel="stylesheet">
 </head>
 <body>
     <!-- Sidebar Menu -->
     @await Html.PartialAsync("_NewSidebar")
+
     <div class="container-with-sidebar bg-light p-4 rounded">
-        <h4 class="mb-4">Candidates</h4>
+        <h4 class="mb-4">Complaints</h4>
         <div class="input-group mb-4">
-            <input type="text" class="form-control" id="searchCandidate" placeholder="Search by Complaint ID, User ID, or Election ID">
+            <input type="text" class="form-control" id="searchComplaint" placeholder="Search by Complaint ID, User ID, or Election ID">
             <div class="input-group-append">
                 <button class="btn btn-primary" type="button">Search</button>
             </div>
@@ -27,19 +32,17 @@
                     <th>Complaint ID</th>
                     <th>User ID</th>
                     <th>Election ID</th>
-                    <th>Election Title</th>
                     <th>Complaint Text</th>
                     <th>Complaint Date</th>
                 </tr>
             </thead>
-            <tbody id="complainTableBody">
+            <tbody id="complaintTableBody">
                 @foreach (var complaint in Model)
                 {
                     <tr>
                         <td>@complaint.ComplaintID</td>
                         <td>@complaint.UserID</td>
                         <td>@complaint.ElectionID</td>
-                        <td>@complaint.ElectionTitle</td>
                         <td>@complaint.ComplaintText</td>
                         <td>@complaint.ComplaintDate.ToString("g")</td>
                     </tr>
@@ -50,12 +53,16 @@
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/Complain/ViewComplaints.js"></script>
+
     <script>
         $(document).ready(function () {
-            $('#searchCandidate').on('keyup', function () {
+            $('#searchComplaint').on('keyup', function () {
                 var value = $(this).val().toLowerCase();
-                $('#candidateTableBody tr').filter(function () {
-                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+                $('#complaintTableBody tr').filter(function () {
+                    $(this).toggle(
+                        $(this).text().toLowerCase().indexOf(value) > -1
+                    );
                 });
             });
         });
