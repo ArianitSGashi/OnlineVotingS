@@ -8,9 +8,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Delete Election</title>
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet"> 
-    <link href="~/css/new-sidebar.css" rel="stylesheet"> 
-    <link href="~/css/Election/delete-election.css" rel="stylesheet"> 
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="~/css/new-sidebar.css" rel="stylesheet">
+    <link href="~/css/Election/completeelection.css" rel="stylesheet">
 </head>
 <body>
     <!-- Sidebar Menu -->
@@ -19,9 +19,9 @@
         <h4 class="mb-4">Delete Election</h4>
         <form method="post" action="/Election/DeleteElection" class="form-container">
             <div class="mb-3">
-                <label for="electionId" class="form-label">Election ID</label>
-                @Html.TextBoxFor(m => m.ElectionID, new { @class = "form-control", required = true })
-                @Html.ValidationMessageFor(m => m.ElectionID, "", new { @class = "text-danger" })
+                <label for="SelectedElectionID" class="form-label">Select Election to Delete</label>
+                @Html.DropDownListFor(m => m.SelectedElectionID, Model.AvailableElections, "Select an Election", new { @class = "form-control dropdown-small", required = true })
+                @Html.ValidationMessageFor(m => m.SelectedElectionID, "", new { @class = "text-danger" })
             </div>
             <button type="submit" class="btn btn-danger">Delete Election</button>
         </form>

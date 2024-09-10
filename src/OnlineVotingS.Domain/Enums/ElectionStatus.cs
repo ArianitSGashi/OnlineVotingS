@@ -2,6 +2,7 @@
 
 public enum ElectionStatus
 {
+    Not_Active,
     Active,
     Completed
 }

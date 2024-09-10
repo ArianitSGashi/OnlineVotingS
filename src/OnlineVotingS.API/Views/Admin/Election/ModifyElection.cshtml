@@ -1,4 +1,5 @@
 ﻿@model OnlineVotingS.API.Models.AdminViewModels.ElectionViewModels.ModifyElectionViewModel
+@using OnlineVotingS.Domain.Enums
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -14,73 +15,72 @@
     <div class="container-with-sidebar bg-light p-4 rounded">
         <h4 class="mb-4">Modify Election</h4>
         <form method="post" action="/Election/ModifyElection" class="form-container">
-    <div class="mb-3">
-        <label for="ElectionId" class="form-label">Select Election</label>
-        @Html.DropDownListFor(m => m.ElectionID, ViewBag.Elections as SelectList, "Select an Election", new { @class = "form-control select-dropdown", id = "electionId", required = true })
-        @Html.ValidationMessageFor(m => m.ElectionID, "", new { @class = "text-danger" })
-    </div>
-    <div class="mb-3">
-        <label for="Title" class="form-label">Election Title</label>
+            <div class="mb-3">
+                <label for="ElectionId" class="form-label">Select Election</label>
+                @Html.DropDownListFor(m => m.ElectionID, ViewBag.Elections as SelectList, "Select an Election", new { @class = "form-control select-dropdown", id = "electionId", required = true })
+                @Html.ValidationMessageFor(m => m.ElectionID, "", new { @class = "text-danger" })
+            </div>
+            <div class="mb-3">
+                <label for="Title" class="form-label">Election Title</label>
                 @Html.TextBoxFor(m => m.Title, new { @class = "form-control", required = true })
                 @Html.ValidationMessageFor(m => m.Title, "", new { @class = "text-danger" })
-    </div>
-    <div class="mb-3">
-        <label for="Description" class="form-label">Election Description</label>
+            </div>
+            <div class="mb-3">
+                <label for="Description" class="form-label">Election Description</label>
                 @Html.TextAreaFor(m => m.Description, new { @class = "form-control" })
                 @Html.ValidationMessageFor(m => m.Description, "", new { @class = "text-danger" })
-    </div>
-    <div class="mb-3">
-        <label for="StartDate" class="form-label">Start Date</label>
+            </div>
+            <div class="mb-3">
+                <label for="StartDate" class="form-label">Start Date</label>
                 @Html.TextBoxFor(m => m.StartDate, "{0:yyyy-MM-dd}", new { @class = "form-control", type = "date", required = true })
                 @Html.ValidationMessageFor(m => m.StartDate, "", new { @class = "text-danger" })
-    </div>
-    <div class="mb-3">
-        <label for="StartTime" class="form-label">Start Time</label>
+            </div>
+            <div class="mb-3">
+                <label for="StartTime" class="form-label">Start Time</label>
                 @Html.TextBoxFor(m => m.StartTime, "{0:hh\\:mm}", new { @class = "form-control", type = "time", required = true })
                 @Html.ValidationMessageFor(m => m.StartTime, "", new { @class = "text-danger" })
-    </div>
-    <div class="mb-3">
-        <label for="EndDate" class="form-label">End Date</label>
+            </div>
+            <div class="mb-3">
+                <label for="EndDate" class="form-label">End Date</label>
                 @Html.TextBoxFor(m => m.EndDate, "{0:yyyy-MM-dd}", new { @class = "form-control", type = "date", required = true })
                 @Html.ValidationMessageFor(m => m.EndDate, "", new { @class = "text-danger" })
-    </div>
-    <div class="mb-3">
-        <label for="EndTime" class="form-label">End Time</label>
+            </div>
+            <div class="mb-3">
+                <label for="EndTime" class="form-label">End Time</label>
                 @Html.TextBoxFor(m => m.EndTime, "{0:hh\\:mm}", new { @class = "form-control", type = "time", required = true })
                 @Html.ValidationMessageFor(m => m.EndTime, "", new { @class = "text-danger" })
+            </div>
+            <button type="submit" class="btn btn-primary">Update Election</button>
+        </form>
     </div>
-    <button type="submit" class="btn btn-primary">Update Election</button>
-</form>
 
-        @section Scripts {
-        <script>
-            $(document).ready(function () {
-                $('#electionId').change(function () {
-                    var selectedId = $(this).val();
-                    if (selectedId) {
-                        $.ajax({
-                            url: '/Election/GetElectionDetails',
-                            type: 'GET',
-                            data: { id: selectedId },
-                            success: function (data) {
-                                $('#Title').val(data.title);
-                                $('#Description').val(data.description);
-                                $('#StartDate').val(data.startDate.split('T')[0]);
-                                $('#StartTime').val(data.startTime);
-                                $('#EndDate').val(data.endDate.split('T')[0]);
-                                $('#EndTime').val(data.endTime);
-                            },
-                            error: function () {
-                                alert('Error fetching election details');
-                            }
-                        });
-                    }
-                });
-            });
-        </script>
-        }
-    </div>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            $('#electionId').change(function () {
+                var selectedId = $(this).val();
+                if (selectedId) {
+                    $.ajax({
+                        url: '/Election/GetElectionDetails',
+                        type: 'GET',
+                        data: { id: selectedId },
+                        success: function (data) {
+                            $('#Title').val(data.title);
+                            $('#Description').val(data.description);
+                            $('#StartDate').val(data.startDate.split('T')[0]);
+                            $('#StartTime').val(data.startTime);
+                            $('#EndDate').val(data.endDate.split('T')[0]);
+                            $('#EndTime').val(data.endTime);
+                        },
+                        error: function () {
+                            alert('Error fetching election details');
+                        }
+                    });
+                }
+            });
+        });
+    </script>
 </body>
 </html>

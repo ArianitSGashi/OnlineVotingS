@@ -11,11 +11,11 @@ public class GenerateElectionViewModel
     [MaxLength(100)]
     public string? Description { get; set; }
     [Required(ErrorMessage = "Start date is required")]
-    public DateOnly StartDate { get; set; }
+    public DateOnly? StartDate { get; set; }
     [Required(ErrorMessage = "Start time is required")]
     public TimeSpan StartTime { get; set; }
     [Required(ErrorMessage = "End date is required")]
-    public DateOnly EndDate { get; set; }
+    public DateOnly? EndDate { get; set; }
     [Required(ErrorMessage = "End time is required")]
     public TimeSpan EndTime { get; set; }
 }

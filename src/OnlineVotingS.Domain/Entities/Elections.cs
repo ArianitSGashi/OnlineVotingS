@@ -39,7 +39,7 @@ public class Elections
     /// <summary>
     /// Gets or sets the status of the election.
     /// </summary>
-    public ElectionStatus Status { get; set; } = ElectionStatus.Active;
+    public ElectionStatus Status { get; set; }
     /// <summary>
     /// Gets or sets the date and time when the election was created.
     /// </summary>
@@ -47,7 +47,7 @@ public class Elections
     /// <summary>
     /// Gets or sets the date and time when the election was last updated.
     /// </summary>
-    public DateTime UpdatedAt { get; set; }
+    public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
 
     public ICollection<Candidates> Candidates { get; set; } = new List<Candidates>();
     public ICollection<Votes> Votes { get; set; } = new List<Votes>();

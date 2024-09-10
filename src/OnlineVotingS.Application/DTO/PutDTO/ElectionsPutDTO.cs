@@ -16,8 +16,8 @@ public class ElectionsPutDTO
     public TimeSpan StartTime { get; set; }
     public DateOnly EndDate { get; set; }
     public TimeSpan EndTime { get; set; }
-    public ElectionStatus Status { get; set; }
-    public DateTime UpdateAt { get; set; } = DateTime.UtcNow;
+    //public ElectionStatus Status { get; set; }
+    public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
 
     // TODO: Add properties for the date and time of the created at and last update.
 

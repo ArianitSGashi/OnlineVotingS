@@ -1,4 +1,5 @@
 ﻿@model IEnumerable<OnlineVotingS.API.Models.AdminViewModels.ElectionViewModels.ViewElectionViewModel>
+@using OnlineVotingS.Domain.Enums
 @{
     Layout = null;
 }
@@ -8,9 +9,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>View Elections</title>
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet"> 
-    <link href="~/css/new-sidebar.css" rel="stylesheet"> 
-    <link href="~/css/Election/view-elections.css" rel="stylesheet"> 
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="~/css/new-sidebar.css" rel="stylesheet">
+    <link href="~/css/Election/view-elections.css" rel="stylesheet">
 </head>
 <body>
     @await Html.PartialAsync("_NewSidebar")
@@ -32,20 +33,22 @@
                     <th>Start Time</th>
                     <th>End Date</th>
                     <th>End Time</th>
+                    <th>Status</th>
                 </tr>
             </thead>
             <tbody id="electionTableBody">
                 @foreach (var election in Model)
                 {
-                        <tr>
-                            <td>@election.ElectionID</td>
-                            <td>@election.Title</td>
-                            <td>@election.Description</td>
-                            <td>@election.StartDate.ToString("MM/dd/yyyy")</td>
-                            <td>@election.StartTime.ToString(@"hh\:mm")</td>
-                            <td>@election.EndDate.ToString("MM/dd/yyyy")</td>
-                            <td>@election.EndTime.ToString(@"hh\:mm")</td>
-                        </tr>
+                    <tr>
+                        <td>@election.ElectionID</td>
+                        <td>@election.Title</td>
+                        <td>@election.Description</td>
+                        <td>@election.StartDate.ToString("MM/dd/yyyy")</td>
+                        <td>@election.StartTime.ToString(@"hh\:mm")</td>
+                        <td>@election.EndDate.ToString("MM/dd/yyyy")</td>
+                        <td>@election.EndTime.ToString(@"hh\:mm")</td>
+                        <td>@election.Status</td>
+                    </tr>
                 }
             </tbody>
         </table>

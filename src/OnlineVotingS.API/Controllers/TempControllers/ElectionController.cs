@@ -34,9 +34,9 @@ public class ElectionController : Controller
         {
             Title = model.Title,
             Description = model.Description,
-            StartDate = model.StartDate,
+            StartDate = model.StartDate.GetValueOrDefault(),
             StartTime = model.StartTime,
-            EndDate = model.EndDate,
+            EndDate = model.StartDate.GetValueOrDefault(),
             EndTime = model.EndTime
         };
         var command = new CreateElectionsCommand(electionDto);
@@ -66,7 +66,8 @@ public class ElectionController : Controller
             startDate = election.StartDate,
             startTime = election.StartTime,
             endDate = election.EndDate,
-            endTime = election.EndTime
+            endTime = election.EndTime,
+            status = election.Status
         });
     }
 
@@ -98,11 +99,11 @@ public class ElectionController : Controller
             ElectionID = model.ElectionID,
             Title = model.Title,
             Description = model.Description,
-            StartDate = model.StartDate,
+            StartDate = model.StartDate.GetValueOrDefault(),
             StartTime = model.StartTime,
-            EndDate = model.EndDate,
+            EndDate = model.EndDate.GetValueOrDefault(),
             EndTime = model.EndTime,
-            UpdateAt = model.UpdatedAt
+            UpdatedAt = model.UpdatedAt
         };
 
         var command = new UpdateElectionsCommand(electionDto);
@@ -156,9 +157,18 @@ public class ElectionController : Controller
         return RedirectToAction(nameof(ViewElection));
     }
 
-    public IActionResult DeleteElection()
+    public async Task<IActionResult> DeleteElection()
     {
-        return View("~/Views/Admin/Election/DeleteElection.cshtml", new DeleteElectionViewModel());
+        var elections = await _mediator.Send(new GetAllElectionsQuery());
+        var model = new DeleteElectionViewModel
+        {
+            AvailableElections = elections.Select(e => new SelectListItem
+            {
+                Value = e.ElectionID.ToString(),
+                Text = $"{e.ElectionID} - {e.Title}"
+            }).ToList()
+        };
+        return View("~/Views/Admin/Election/DeleteElection.cshtml", model);
     }
 
     [HttpPost]
@@ -166,10 +176,17 @@ public class ElectionController : Controller
     {
         if (!ModelState.IsValid)
         {
+            // Refetch the list of elections if the model is invalid
+            var elections = await _mediator.Send(new GetAllElectionsQuery());
+            model.AvailableElections = elections.Select(e => new SelectListItem
+            {
+                Value = e.ElectionID.ToString(),
+                Text = $"{e.ElectionID} - {e.Title}"
+            }).ToList();
             return View("~/Views/Admin/Election/DeleteElection.cshtml", model);
         }
 
-        var command = new DeleteElectionsCommand(model.ElectionID);
+        var command = new DeleteElectionsCommand(model.SelectedElectionID);
         var result = await _mediator.Send(command);
 
         if (result)
@@ -195,7 +212,8 @@ public class ElectionController : Controller
             StartDate = e.StartDate,
             StartTime = e.StartTime,
             EndDate = e.EndDate,
-            EndTime = e.EndTime
+            EndTime = e.EndTime,
+            Status = e.Status  // Make sure this line is included
         }).ToList();
         return View("~/Views/Admin/Election/ViewElection.cshtml", model);
     }
