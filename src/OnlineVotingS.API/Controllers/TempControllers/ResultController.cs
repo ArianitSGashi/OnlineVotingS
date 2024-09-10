@@ -1,5 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using MediatR;
+using Microsoft.AspNetCore.Mvc;
 using OnlineVotingS.API.Models.AdminViewModels.ResultViewModels;
+using OnlineVotingS.Application.DTO.PostDTO;
+using OnlineVotingS.Application.Services.Candidate.Requests.Queries;
+using OnlineVotingS.Application.Services.Election.Requests.Queries;
+using OnlineVotingS.Application.Services.Results.Requests.Commands;
+using OnlineVotingS.Application.Services.Results.Requests.Queries;
+using OnlineVotingS.Application.Services.Vote.Requests.Queries;
 using OnlineVotingS.Domain.Entities;
 using OnlineVotingS.Domain.Interfaces;
 
@@ -7,24 +14,17 @@ namespace OnlineVotingS.API.Controllers.TempControllers;
 
 public class ResultController : Controller
 {
-    private readonly IElectionRepository _electionRepository;
-    private readonly ICandidateRepository _candidateRepository;
-    private readonly IVotesRepository _votesRepository;
-    private readonly IResultRepository _resultRepository;
+    private readonly IMediator _mediator;
 
-    public ResultController(IElectionRepository electionRepository, ICandidateRepository candidateRepository, IVotesRepository votesRepository, 
-        IResultRepository resultRepository)
+    public ResultController(IMediator mediator)
     {
-        _electionRepository = electionRepository;
-        _candidateRepository = candidateRepository;
-        _votesRepository = votesRepository;
-        _resultRepository = resultRepository;
+        _mediator = mediator;
     }
 
     [HttpGet]
     public async Task<IActionResult> GenerateResult()
     {
-        var allElections = await _electionRepository.GetAllAsync();
+        var allElections = await _mediator.Send(new GetAllElectionsQuery());
 
         var model = new GenerateResultViewModel
         {
@@ -37,8 +37,8 @@ public class ResultController : Controller
     public async Task<IActionResult> GenerateResult(int SelectedElectionID, int? CandidateId)
     {
         bool resultExists = false;
-        var results = await _resultRepository.GetAllAsync();
-        var votesForElection = await _votesRepository.GetByElectionIDAsync(SelectedElectionID);
+        var results = await _mediator.Send(new GetAllResultsQuery());
+        var votesForElection = await _mediator.Send(new GetVotesByElectionIDQuery(SelectedElectionID));
         
         if (CandidateId != null)
         {
@@ -54,13 +54,13 @@ public class ResultController : Controller
             var votesBasedOnCandidates = votesForElection.GroupBy(x => x.CandidateID);
             foreach (var vote in votesBasedOnCandidates.ToList())
             {
-                Result result = new Result()
+                ResultPostDTO result = new ResultPostDTO()
                 {
                     TotalVotes = vote.Count(),
                     CandidateID = vote.Key,
                     ElectionID = SelectedElectionID
                 };
-                await _resultRepository.AddAsync(result);
+                await _mediator.Send(new CreateResultCommand(result));
             }
         }
         else
@@ -75,7 +75,7 @@ public class ResultController : Controller
     [HttpGet]
     public async Task<IActionResult> GetCandidatesByElection(int electionId)
     {
-        var candidates = await _candidateRepository.GetByElectionIdAsync(electionId);
+        var candidates = await _mediator.Send(new GetCandidatesByElectionIdQuery(electionId));
 
         return Json(candidates);
     }
@@ -84,12 +84,12 @@ public class ResultController : Controller
     public async Task<IActionResult> ViewResult()
     {
         var model = new List<ViewResultViewModel>();
-        var allResults = await _resultRepository.GetAllAsync();
+        var allResults = await _mediator.Send(new GetAllResultsQuery());
 
         foreach (var item in allResults)
         {
-            var candidate = await _candidateRepository.GetByIdAsync(item.CandidateID);
-            var election = await _electionRepository.GetByIdAsync(item.ElectionID);
+            var candidate = await _mediator.Send(new GetCandidateByIdQuery(item.CandidateID));
+            var election = await _mediator.Send(new GetElectionsByIdQuery(item.ElectionID));
             model.Add(new ViewResultViewModel
             {
                 ResultID = item.ResultID,
