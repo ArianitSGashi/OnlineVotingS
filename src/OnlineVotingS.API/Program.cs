@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Identity;
 using OnlineVotingS.API.Middleware;
+using OnlineVotingS.API.Validations;
 using OnlineVotingS.Application;
 using OnlineVotingS.Infrastructure;
 
@@ -14,6 +15,8 @@ builder.Services.ConfigureService(builder.Configuration);
 
 // Call the new AddApplicationServices method from the Application layer
 builder.Services.AddApplicationServices();
+
+builder.Services.AddScoped<IElectionValidation, ElectionValidation>();
 
 // Configure Identity options
 builder.Services.Configure<IdentityOptions>(options =>

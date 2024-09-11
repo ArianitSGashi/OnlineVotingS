@@ -7,7 +7,7 @@ namespace OnlineVotingS.Infrastructure.BackgroundServices;
 public class ElectionStatusUpdateService : BackgroundService
 {
     private readonly IServiceProvider _serviceProvider;
-    private readonly TimeSpan _interval = TimeSpan.FromSeconds(2); // Check every 30 seconds
+    private readonly TimeSpan _interval = TimeSpan.FromSeconds(2);
 
     public ElectionStatusUpdateService(IServiceProvider serviceProvider)
     {

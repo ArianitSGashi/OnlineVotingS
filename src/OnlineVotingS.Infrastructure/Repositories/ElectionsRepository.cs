@@ -19,9 +19,10 @@ public class ElectionRepository : GenericRepository<Elections>, IElectionReposit
         var currentTime = now.TimeOfDay;
 
         return await _dbSet.Where(e =>
-            e.Status == ElectionStatus.Active &&
-            ((e.StartDate < currentDate) || (e.StartDate == currentDate && e.StartTime <= currentTime)) &&
-            ((e.EndDate > currentDate) || (e.EndDate == currentDate && e.EndTime >= currentTime))
+            (e.Status == ElectionStatus.Active) ||
+            (e.Status != ElectionStatus.Completed &&
+             ((e.StartDate < currentDate) || (e.StartDate == currentDate && e.StartTime <= currentTime)) &&
+             ((e.EndDate > currentDate) || (e.EndDate == currentDate && e.EndTime >= currentTime)))
         ).ToListAsync();
     }
 
@@ -41,8 +42,21 @@ public class ElectionRepository : GenericRepository<Elections>, IElectionReposit
         var queryTime = date.TimeOfDay;
 
         return await _dbSet.Where(e =>
-            e.Status == ElectionStatus.Active &&
+            e.Status == ElectionStatus.Not_Active &&
             (e.StartDate > queryDate || (e.StartDate == queryDate && e.StartTime > queryTime))
+        ).ToListAsync();
+    }
+
+    public async Task<IEnumerable<Elections>> GetCompletableElectionsAsync()
+    {
+        var now = DateTime.Now;
+        var currentDate = DateOnly.FromDateTime(now);
+        var currentTime = now.TimeOfDay;
+
+        return await _dbSet.Where(e =>
+            e.Status == ElectionStatus.Active ||
+            (e.Status != ElectionStatus.Completed &&
+             ((e.EndDate < currentDate) || (e.EndDate == currentDate && e.EndTime <= currentTime)))
         ).ToListAsync();
     }
 }

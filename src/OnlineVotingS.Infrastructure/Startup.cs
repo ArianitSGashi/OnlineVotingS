@@ -7,7 +7,6 @@ using OnlineVotingS.Infrastructure.Persistence.Context;
 using OnlineVotingS.Domain.Models;
 using OnlineVotingS.Infrastructure.Repositories;
 using OnlineVotingS.Infrastructure.BackgroundServices;
-using OnlineVotingS.Application.Services.ElectionStatusServices;
 
 namespace OnlineVotingS.Infrastructure;
 
@@ -37,7 +36,6 @@ public static class Startup
         services.AddScoped<IVotesRepository, VotesRepository>();
         services.AddScoped<ICampaignRepository, CampaignRepository>();
         services.AddScoped<IRepliedComplaintsRepository, RepliedComplaintsRepository>();
-        services.AddScoped<IElectionStatusService, ElectionStatusService>();
         services.AddHostedService<ElectionStatusUpdateService>();
     }
 }

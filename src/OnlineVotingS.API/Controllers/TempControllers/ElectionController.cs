@@ -6,16 +6,19 @@ using OnlineVotingS.Application.Services.Election.Requests.Queries;
 using OnlineVotingS.Application.DTO.PostDTO;
 using OnlineVotingS.Application.DTO.PutDTO;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using OnlineVotingS.API.Validations;
 
 namespace OnlineVotingS.API.Controllers;
 
 public class ElectionController : Controller
 {
     private readonly IMediator _mediator;
+    private readonly IElectionValidation _electionValidation;
 
-    public ElectionController(IMediator mediator)
+    public ElectionController(IMediator mediator, IElectionValidation electionValidation)
     {
         _mediator = mediator;
+        _electionValidation = electionValidation;
     }
 
     public IActionResult GenerateElection()
@@ -26,29 +29,28 @@ public class ElectionController : Controller
     [HttpPost]
     public async Task<IActionResult> GenerateElection(GenerateElectionViewModel model)
     {
-        if (!ModelState.IsValid)
+        var (isValid, errors) = await _electionValidation.ValidateElectionAsync(model);
+        if (!isValid)
         {
+            foreach (var error in errors)
+            {
+                ModelState.AddModelError("", error);
+            }
             return View("~/Views/Admin/Election/GenerateElection.cshtml", model);
         }
+
         var electionDto = new ElectionsPostDTO
         {
             Title = model.Title,
             Description = model.Description,
             StartDate = model.StartDate.GetValueOrDefault(),
-            StartTime = model.StartTime,
+            StartTime = model.StartTime.GetValueOrDefault(),
             EndDate = model.StartDate.GetValueOrDefault(),
-            EndTime = model.EndTime
+            EndTime = model.EndTime.GetValueOrDefault()
         };
         var command = new CreateElectionsCommand(electionDto);
         var result = await _mediator.Send(command);
-        if (result != null)
-        {
-            TempData["SuccessMessage"] = $"Election '{model.Title}' has been successfully created.";
-            return RedirectToAction(nameof(ViewElection));
-        }
-
-        ModelState.AddModelError("", "An error occurred while creating the election. Please try again.");
-        return View("~/Views/Admin/Election/GenerateElection.cshtml", model);
+        return RedirectToAction(nameof(ViewElection));
     }
 
     public async Task<IActionResult> GetElectionDetails(int id)
@@ -87,10 +89,15 @@ public class ElectionController : Controller
     [HttpPost]
     public async Task<IActionResult> ModifyElection(ModifyElectionViewModel model)
     {
-        if (!ModelState.IsValid)
+        var (isValid, errors) = await _electionValidation.ValidateElectionAsync(model);
+        if (!isValid)
         {
+            foreach (var error in errors)
+            {
+                ModelState.AddModelError("", error);
+            }
             var elections = await _mediator.Send(new GetAllElectionsQuery());
-            ViewBag.Elections = elections;
+            ViewBag.Elections = new SelectList(elections, "ElectionID", "Title");
             return View("~/Views/Admin/Election/ModifyElection.cshtml", model);
         }
 
@@ -100,33 +107,23 @@ public class ElectionController : Controller
             Title = model.Title,
             Description = model.Description,
             StartDate = model.StartDate.GetValueOrDefault(),
-            StartTime = model.StartTime,
+            StartTime = model.StartTime.GetValueOrDefault(),
             EndDate = model.EndDate.GetValueOrDefault(),
-            EndTime = model.EndTime,
-            UpdatedAt = model.UpdatedAt
+            EndTime = model.EndTime.GetValueOrDefault(),
+            UpdatedAt = DateTime.UtcNow
         };
 
         var command = new UpdateElectionsCommand(electionDto);
         var result = await _mediator.Send(command);
-
-        if (result != null)
-        {
-            TempData["SuccessMessage"] = $"Election '{model.Title}' has been successfully updated.";
-            return RedirectToAction(nameof(ViewElection));
-        }
-
-        ModelState.AddModelError("", "An error occurred while updating the election. Please try again.");
-        var electionsForDropdown = await _mediator.Send(new GetAllElectionsQuery());
-        ViewBag.Elections = electionsForDropdown;
-        return View("~/Views/Admin/Election/ModifyElection.cshtml", model);
+        return RedirectToAction(nameof(ViewElection));
     }
 
     public async Task<IActionResult> CompleteElection()
     {
-        var activeElections = await _mediator.Send(new GetActiveElectionsQuery());
+        var completableElections = await _mediator.Send(new GetCompletableElectionsQuery());
         var model = new CompleteElectionViewModel
         {
-            OngoingElections = activeElections
+            OngoingElections = completableElections
                 .Select(e => new SelectListItem { Value = e.Title, Text = e.Title })
                 .ToList()
         };
@@ -136,24 +133,8 @@ public class ElectionController : Controller
     [HttpPost]
     public async Task<IActionResult> CompleteElection(CompleteElectionViewModel model)
     {
-        if (string.IsNullOrEmpty(model.SelectedTitle))
-        {
-            ModelState.AddModelError("SelectedTitle", "Please select an election to complete.");
-            return View("~/Views/Admin/Election/CompleteElection.cshtml", model);
-        }
-
         var command = new CompleteElectionCommand(model.SelectedTitle);
         var result = await _mediator.Send(command);
-
-        if (result)
-        {
-            TempData["SuccessMessage"] = $"Election '{model.SelectedTitle}' has been successfully completed.";
-        }
-        else
-        {
-            TempData["WarningMessage"] = $"Election '{model.SelectedTitle}' could not be completed. It may already be completed or not found.";
-        }
-
         return RedirectToAction(nameof(ViewElection));
     }
 
@@ -174,30 +155,8 @@ public class ElectionController : Controller
     [HttpPost]
     public async Task<IActionResult> DeleteElection(DeleteElectionViewModel model)
     {
-        if (!ModelState.IsValid)
-        {
-            // Refetch the list of elections if the model is invalid
-            var elections = await _mediator.Send(new GetAllElectionsQuery());
-            model.AvailableElections = elections.Select(e => new SelectListItem
-            {
-                Value = e.ElectionID.ToString(),
-                Text = $"{e.ElectionID} - {e.Title}"
-            }).ToList();
-            return View("~/Views/Admin/Election/DeleteElection.cshtml", model);
-        }
-
         var command = new DeleteElectionsCommand(model.SelectedElectionID);
         var result = await _mediator.Send(command);
-
-        if (result)
-        {
-            TempData["SuccessMessage"] = "Election has been successfully deleted.";
-        }
-        else
-        {
-            TempData["WarningMessage"] = "Election could not be deleted. It may not exist or there was an error.";
-        }
-
         return RedirectToAction(nameof(ViewElection));
     }
 
@@ -213,7 +172,7 @@ public class ElectionController : Controller
             StartTime = e.StartTime,
             EndDate = e.EndDate,
             EndTime = e.EndTime,
-            Status = e.Status  // Make sure this line is included
+            Status = e.Status
         }).ToList();
         return View("~/Views/Admin/Election/ViewElection.cshtml", model);
     }
