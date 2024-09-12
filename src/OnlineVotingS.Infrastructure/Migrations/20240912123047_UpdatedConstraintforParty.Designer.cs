@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using OnlineVotingS.Infrastructure.Persistence.Context;
 
@@ -11,9 +12,11 @@ using OnlineVotingS.Infrastructure.Persistence.Context;
 namespace OnlineVotingS.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240912123047_UpdatedConstraintforParty")]
+    partial class UpdatedConstraintforParty
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -243,7 +246,9 @@ namespace OnlineVotingS.Infrastructure.Migrations
 
                     b.HasKey("CandidateID");
 
-                    b.HasIndex("ElectionID", "Party")
+                    b.HasIndex("ElectionID");
+
+                    b.HasIndex("FullName", "ElectionID", "Party")
                         .IsUnique()
                         .HasFilter("[Party] IS NOT NULL");
 
@@ -436,8 +441,7 @@ namespace OnlineVotingS.Infrastructure.Migrations
 
                     b.HasIndex("ElectionID");
 
-                    b.HasIndex("UserID", "ElectionID")
-                        .IsUnique();
+                    b.HasIndex("UserID");
 
                     b.ToTable("Votes");
                 });

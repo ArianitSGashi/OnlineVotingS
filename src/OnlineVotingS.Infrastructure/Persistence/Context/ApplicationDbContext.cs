@@ -90,64 +90,70 @@ namespace OnlineVotingS.Infrastructure.Persistence.Context;
                       .OnDelete(DeleteBehavior.Restrict);
             });
 
-            // Candidate entity
-            modelBuilder.Entity<Candidates>(entity =>
-            {
-                entity.HasKey(c => c.CandidateID);
-                entity.Property(c => c.FullName).IsRequired().HasMaxLength(50);
-                entity.Property(c => c.Party).HasMaxLength(50);
-                entity.Property(c => c.Description).HasMaxLength(100);
-                entity.Property(c => c.Income).HasColumnType("decimal(10,2)");
-                entity.Property(c => c.Works).HasMaxLength(100);
+        // Candidate entity
+        modelBuilder.Entity<Candidates>(entity =>
+        {
+            entity.HasKey(c => c.CandidateID);
+            entity.Property(c => c.ElectionID).IsRequired();
+            entity.Property(c => c.FullName).IsRequired().HasMaxLength(50);
+            entity.Property(c => c.Party).HasMaxLength(50);
+            entity.Property(c => c.Description).HasMaxLength(100);
+            entity.Property(c => c.Income).HasColumnType("decimal(10,2)");
+            entity.Property(c => c.Works).HasMaxLength(100);
 
-                entity.HasOne(c => c.Elections)
-                      .WithMany(e => e.Candidates)
-                      .HasForeignKey(c => c.ElectionID)
-                      .OnDelete(DeleteBehavior.Cascade);
+            entity.HasOne(c => c.Elections)
+                  .WithMany(e => e.Candidates)
+                  .HasForeignKey(c => c.ElectionID)
+                  .OnDelete(DeleteBehavior.Cascade);
 
-                entity.HasMany(c => c.Votes)
-                      .WithOne(v => v.Candidates)
-                      .HasForeignKey(v => v.CandidateID)
-                      .OnDelete(DeleteBehavior.Restrict);
+            entity.HasMany(c => c.Votes)
+                  .WithOne(v => v.Candidates)
+                  .HasForeignKey(v => v.CandidateID)
+                  .OnDelete(DeleteBehavior.Restrict);
 
-                entity.HasMany(c => c.Results)
-                      .WithOne(r => r.Candidates)
-                      .HasForeignKey(r => r.CandidateID)
-                      .OnDelete(DeleteBehavior.Restrict);
+            entity.HasMany(c => c.Results)
+                  .WithOne(r => r.Candidates)
+                  .HasForeignKey(r => r.CandidateID)
+                  .OnDelete(DeleteBehavior.Restrict);
 
-                entity.HasMany(c => c.Campaigns)
-                      .WithOne(c => c.Candidates)
-                      .HasForeignKey(c => c.CandidateID)
-                      .OnDelete(DeleteBehavior.Restrict);
-            });
+            entity.HasMany(c => c.Campaigns)
+                  .WithOne(c => c.Candidates)
+                  .HasForeignKey(c => c.CandidateID)
+                  .OnDelete(DeleteBehavior.Restrict);
 
-            // Vote entity
-            modelBuilder.Entity<Votes>(entity =>
-            {
-                entity.HasKey(v => v.VoteID);
-                entity.Property(v => v.UserID).IsRequired();
-                entity.Property(v => v.VoteDate).IsRequired();
-                entity.Property(v => v.ElectionID).IsRequired();
-                entity.Property(v => v.CandidateID).IsRequired();
+            entity.HasIndex(c => new { c.ElectionID, c.Party }).IsUnique();
+        });
 
-                entity.HasOne(v => v.Elections)
-                      .WithMany(e => e.Votes)
-                      .HasForeignKey(v => v.ElectionID)
-                      .OnDelete(DeleteBehavior.Restrict);
+        // Vote entity
+        modelBuilder.Entity<Votes>(entity =>
+        {
+            entity.HasKey(v => v.VoteID);
+            entity.Property(v => v.UserID).IsRequired();
+            entity.Property(v => v.VoteDate).IsRequired();
+            entity.Property(v => v.ElectionID).IsRequired();
+            entity.Property(v => v.CandidateID).IsRequired();
 
-                entity.HasOne(v => v.Candidates)
-                      .WithMany(c => c.Votes)
-                      .HasForeignKey(v => v.CandidateID)
-                      .OnDelete(DeleteBehavior.Restrict);
+            entity.HasOne(v => v.Elections)
+                  .WithMany(e => e.Votes)
+                  .HasForeignKey(v => v.ElectionID)
+                  .OnDelete(DeleteBehavior.Restrict);
 
-                entity.HasOne(v => v.User)
-                      .WithMany()
-                      .HasForeignKey(v => v.UserID)
-                      .OnDelete(DeleteBehavior.Cascade);
-            });
+            entity.HasOne(v => v.Candidates)
+                  .WithMany(c => c.Votes)
+                  .HasForeignKey(v => v.CandidateID)
+                  .OnDelete(DeleteBehavior.Restrict);
 
-            // Result entity
-            modelBuilder.Entity<Result>(entity =>
+            entity.HasOne(v => v.User)
+                  .WithMany()
+                  .HasForeignKey(v => v.UserID)
+                  .OnDelete(DeleteBehavior.Cascade);
+
+            entity.HasIndex(v => new { v.UserID, v.ElectionID }).IsUnique();
+
+        });
+
+        // Result entity
+        modelBuilder.Entity<Result>(entity =>
             {
                 entity.HasKey(r => r.ResultID);
                 entity.Property(r => r.TotalVotes).IsRequired();

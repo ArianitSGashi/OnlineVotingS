@@ -16,4 +16,6 @@ public interface ICandidateRepository : IGenericRepository<Candidates>
     Task<IEnumerable<Candidates>> GetByMinIncomeAsync(decimal minIncome);
 
     Task<IEnumerable<Candidates>> GetByNameAsync(string name);
+
+    Task<bool> CandidateBelongsToElectionAsync(int candidateId, int electionId);
 }

@@ -33,4 +33,9 @@ public class VotesRepository : GenericRepository<Votes>, IVotesRepository
     {
         return await _dbSet.Where(v => v.VoteDate >= date).ToListAsync();
     }
+
+    public async Task<bool> HasUserVotedInElectionAsync(string userId, int electionId)
+    {
+        return await _dbSet.AnyAsync(v => v.UserID == userId && v.ElectionID == electionId);
+    }
 }

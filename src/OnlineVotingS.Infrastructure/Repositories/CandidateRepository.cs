@@ -33,4 +33,9 @@ public class CandidateRepository : GenericRepository<Candidates>, ICandidateRepo
     {
         return await _dbSet.Where(c => c.FullName.Contains(name)).ToListAsync();
     }
+
+    public async Task<bool> CandidateBelongsToElectionAsync(int candidateId, int electionId)
+    {
+        return await _dbSet.AnyAsync(c => c.CandidateID == candidateId && c.ElectionID == electionId);
+    }
 }
