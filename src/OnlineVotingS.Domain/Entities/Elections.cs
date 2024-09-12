@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations;
+using OnlineVotingS.Domain.Enums;
 
 namespace OnlineVotingS.Domain.Entities;
 
@@ -25,13 +21,25 @@ public class Elections
     [MaxLength(100)]
     public string? Description { get; set; }
     /// <summary>
-    /// Gets or sets the start date and time of the election.
+    /// Gets or sets the start date of the election.
     /// </summary>
-    public DateTime StartDate { get; set; }
+    public DateOnly StartDate { get; set; }
     /// <summary>
-    /// Gets or sets the end date and time of the election.
+    /// Gets or sets the start time of the election.
     /// </summary>
-    public DateTime EndDate { get; set; }
+    public TimeSpan StartTime { get; set; }
+    /// <summary>
+    /// Gets or sets the end date of the election.
+    /// </summary>
+    public DateOnly EndDate { get; set; }
+    /// <summary>
+    /// Gets or sets the end time of the election.
+    /// </summary>
+    public TimeSpan EndTime { get; set; }
+    /// <summary>
+    /// Gets or sets the status of the election.
+    /// </summary>
+    public ElectionStatus Status { get; set; }
     /// <summary>
     /// Gets or sets the date and time when the election was created.
     /// </summary>

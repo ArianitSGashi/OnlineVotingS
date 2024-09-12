@@ -1,4 +1,5 @@
 ﻿@model IEnumerable<OnlineVotingS.API.Models.AdminViewModels.ElectionViewModels.ViewElectionViewModel>
+@using OnlineVotingS.Domain.Enums
 @{
     Layout = null;
 }
@@ -8,12 +9,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>View Elections</title>
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet"> 
-    <link href="~/css/new-sidebar.css" rel="stylesheet"> 
-    <link href="~/css/Election/view-elections.css" rel="stylesheet"> 
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="~/css/new-sidebar.css" rel="stylesheet">
+    <link href="~/css/Election/view-elections.css" rel="stylesheet">
 </head>
 <body>
-    <!-- Sidebar Menu -->
     @await Html.PartialAsync("_NewSidebar")
     <div class="container-with-sidebar bg-light p-4 rounded">
         <h4 class="mb-4">Elections</h4>
@@ -30,7 +30,10 @@
                     <th>Title</th>
                     <th>Description</th>
                     <th>Start Date</th>
+                    <th>Start Time</th>
                     <th>End Date</th>
+                    <th>End Time</th>
+                    <th>Status</th>
                 </tr>
             </thead>
             <tbody id="electionTableBody">
@@ -40,8 +43,11 @@
                         <td>@election.ElectionID</td>
                         <td>@election.Title</td>
                         <td>@election.Description</td>
-                        <td>@election.StartDate.ToString("MM/dd/yyyy")</td> 
-                        <td>@election.EndDate.ToString("MM/dd/yyyy")</td> 
+                        <td>@election.StartDate.ToString("MM/dd/yyyy")</td>
+                        <td>@election.StartTime.ToString(@"hh\:mm")</td>
+                        <td>@election.EndDate.ToString("MM/dd/yyyy")</td>
+                        <td>@election.EndTime.ToString(@"hh\:mm")</td>
+                        <td>@election.Status</td>
                     </tr>
                 }
             </tbody>

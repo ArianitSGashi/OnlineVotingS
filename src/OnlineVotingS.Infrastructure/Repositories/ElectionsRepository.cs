@@ -1,10 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using OnlineVotingS.Domain.Entities;
+using OnlineVotingS.Domain.Enums;
 using OnlineVotingS.Domain.Interfaces;
 using OnlineVotingS.Infrastructure.Persistence.Context;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace OnlineVotingS.Infrastructure.Repositories;
 
@@ -16,16 +14,49 @@ public class ElectionRepository : GenericRepository<Elections>, IElectionReposit
 
     public async Task<IEnumerable<Elections>> GetActiveElectionsAsync()
     {
-        return await _dbSet.Where(e => e.StartDate <= DateTime.Now && e.EndDate >= DateTime.Now).ToListAsync();
+        var now = DateTime.Now;
+        var currentDate = DateOnly.FromDateTime(now);
+        var currentTime = now.TimeOfDay;
+
+        return await _dbSet.Where(e =>
+            (e.Status == ElectionStatus.Active) ||
+            (e.Status != ElectionStatus.Completed &&
+             ((e.StartDate < currentDate) || (e.StartDate == currentDate && e.StartTime <= currentTime)) &&
+             ((e.EndDate > currentDate) || (e.EndDate == currentDate && e.EndTime >= currentTime)))
+        ).ToListAsync();
     }
 
-    public async Task<IEnumerable<Elections>> GetByTitleAsync(string title)
+    public async Task<Elections> GetByTitleAsync(string title)
+    {
+        return await _dbSet.FirstOrDefaultAsync(e => e.Title == title);
+    }
+
+    public async Task<IEnumerable<Elections>> GetElectionsByTitleAsync(string title)
     {
         return await _dbSet.Where(e => e.Title.Contains(title)).ToListAsync();
     }
 
     public async Task<IEnumerable<Elections>> GetUpcomingElectionsAsync(DateTime date)
     {
-        return await _dbSet.Where(e => e.StartDate > date).ToListAsync();
+        var queryDate = DateOnly.FromDateTime(date);
+        var queryTime = date.TimeOfDay;
+
+        return await _dbSet.Where(e =>
+            e.Status == ElectionStatus.Not_Active &&
+            (e.StartDate > queryDate || (e.StartDate == queryDate && e.StartTime > queryTime))
+        ).ToListAsync();
+    }
+
+    public async Task<IEnumerable<Elections>> GetCompletableElectionsAsync()
+    {
+        var now = DateTime.Now;
+        var currentDate = DateOnly.FromDateTime(now);
+        var currentTime = now.TimeOfDay;
+
+        return await _dbSet.Where(e =>
+            e.Status == ElectionStatus.Active ||
+            (e.Status != ElectionStatus.Completed &&
+             ((e.EndDate < currentDate) || (e.EndDate == currentDate && e.EndTime <= currentTime)))
+        ).ToListAsync();
     }
 }
