@@ -16,4 +16,6 @@ public interface IVotesRepository : IGenericRepository<Votes>
     Task<IEnumerable<Votes>> GetByCandidateIDAsync(int candidateID);
 
     Task<IEnumerable<Votes>> GetRecentVotesAsync(DateTime date);
+
+    Task<bool> HasUserVotedInElectionAsync(string userId, int electionId);
 }

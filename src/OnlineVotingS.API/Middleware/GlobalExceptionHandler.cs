@@ -1,6 +1,7 @@
 ﻿using System.Net;
 using System.Text.Json;
 using Microsoft.AspNetCore.Mvc;
+using OnlineVotingS.Domain.CostumExceptions;
 
 namespace OnlineVotingS.API.Middleware;
 
@@ -35,6 +36,10 @@ public class GlobalExceptionHandler
 
         switch (exception)
         {
+            case DuplicateCandidateException:
+                status = HttpStatusCode.Conflict;
+                message = "Duplicate candidate";
+                break;
             case UnauthorizedAccessException:
                 status = HttpStatusCode.Unauthorized;
                 message = "Unauthorized access";
