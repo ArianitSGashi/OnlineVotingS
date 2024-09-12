@@ -20,16 +20,23 @@
 
     <div class="container-with-sidebar bg-light p-4 rounded">
         <h4 class="text-center mb-4">Generate Results</h4>
-
-        <form method="post" action="@Url.Action("GenerateResults", "Admin")" class="form-container">
-            <div class="mb-3">
-                <label for="SelectedElectionID" class="form-label">Select Election</label>
-                @Html.DropDownListFor(model => model.SelectedElectionID, Model.OngoingElections, "Select an election", new { @class = "form-control select-dropdown", id = "electionDropdown" })
+        @if (TempData["Message"] != null)
+        {
+            <div class="alert alert-danger">
+                @TempData["Message"]
             </div>
-
+        }
+        <form method="post" action="@Url.Action("GenerateResult")" class="form-container">
+            <label for="SelectedElectionID" class="form-label">Select Election</label>
+            @Html.DropDownListFor(model => model.SelectedElectionID,
+                     new SelectList(Model.OngoingElections, "ElectionID", "Title"),
+                     "Select an election",
+                     new { @class = "form-control select-dropdown", id = "electionDropdown" })
             <div class="mb-3">
                 <label for="SelectedCandidateID" class="form-label">Select Candidate</label>
-                @Html.DropDownListFor(model => model.SelectedCandidateID, new SelectList(Model.Candidates, "Value", "Text"), "Select a candidate", new { @class = "form-control select-dropdown", id = "candidateDropdown" })
+                <select id="candidateDropdown" name="CandidateId" class="form-control select-dropdown" disabled>
+                    <option>Select a candidate</option>
+                </select>
             </div>
 
             <button type="submit" class="btn btn-primary">Generate Results</button>
@@ -38,6 +45,26 @@
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
+        $(document).ready(function () {
+            $('#electionDropdown').change(function () {
+                var electionId = $(this).val();
+                var candidateDropdown = $('#candidateDropdown');
+
+                if (electionId) {
+                    $.getJSON('@Url.Action("GetCandidatesByElection")', { electionId: electionId }, function (data) {
+                        candidateDropdown.empty();
+                        candidateDropdown.append('<option>Select a candidate</option>');
+                        $.each(data, function (index, item) {
+                            candidateDropdown.append('<option value="' + item.candidateID + '">' + item.fullName + '</option>'); // Adjust for case-sensitivity
+                        });
+                        candidateDropdown.prop('disabled', false);
+                    });
+                } else {
+                    candidateDropdown.empty().append('<option>Select a candidate</option>').prop('disabled', true);
+                }
+            });
+        });
+
         $(document).ready(function () {
             $('#electionDropdown').change(function () {
                 var electionId = $(this).val();
