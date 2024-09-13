@@ -13,4 +13,5 @@ public interface IResultRepository : IGenericRepository<Result>
     Task<IEnumerable<Result>> GetByElectionIdAsync(int electionId);
     Task<IEnumerable<Result>> GetByCandidateIdAsync(int candidateId);
     Task<IEnumerable<Result>> GetByTotalVotesGreaterThanAsync(int votes);
+    Task<Result> GetResultByCandidateAndElectionAsync(int candidateId, int electionId);
 }

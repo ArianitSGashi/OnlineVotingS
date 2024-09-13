@@ -1,14 +1,10 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using OnlineVotingS.API.Models.AdminViewModels.ResultViewModels;
-using OnlineVotingS.Application.DTO.PostDTO;
 using OnlineVotingS.Application.Services.Candidate.Requests.Queries;
 using OnlineVotingS.Application.Services.Election.Requests.Queries;
 using OnlineVotingS.Application.Services.Results.Requests.Commands;
 using OnlineVotingS.Application.Services.Results.Requests.Queries;
-using OnlineVotingS.Application.Services.Vote.Requests.Queries;
-using OnlineVotingS.Domain.Entities;
-using OnlineVotingS.Domain.Interfaces;
 
 namespace OnlineVotingS.API.Controllers.TempControllers;
 
@@ -25,7 +21,6 @@ public class ResultController : Controller
     public async Task<IActionResult> GenerateResult()
     {
         var allElections = await _mediator.Send(new GetAllElectionsQuery());
-
         var model = new GenerateResultViewModel
         {
             OngoingElections = allElections.ToList(),
@@ -36,40 +31,8 @@ public class ResultController : Controller
     [HttpPost]
     public async Task<IActionResult> GenerateResult(int SelectedElectionID, int? CandidateId)
     {
-        bool resultExists = false;
-        var results = await _mediator.Send(new GetAllResultsQuery());
-        var votesForElection = await _mediator.Send(new GetVotesByElectionIDQuery(SelectedElectionID));
-        
-        if (CandidateId != null)
-        {
-            resultExists = results.Any(x=> x.CandidateID == CandidateId && x.ElectionID == SelectedElectionID);
-            votesForElection = votesForElection.Where(x => x.CandidateID == CandidateId);
-        }
-        else
-        {
-            resultExists = results.Any(x=> x.ElectionID == SelectedElectionID);
-        }
-        if (!resultExists)
-        {
-            var votesBasedOnCandidates = votesForElection.GroupBy(x => x.CandidateID);
-            foreach (var vote in votesBasedOnCandidates.ToList())
-            {
-                ResultPostDTO result = new ResultPostDTO()
-                {
-                    TotalVotes = vote.Count(),
-                    CandidateID = vote.Key,
-                    ElectionID = SelectedElectionID
-                };
-                await _mediator.Send(new CreateResultCommand(result));
-            }
-        }
-        else
-        {
-            TempData["Message"] = "Results for this election have already been generated.";
-            return RedirectToAction("GenerateResult");
-        }
-
-        return await ViewResult();
+        await _mediator.Send(new GenerateOrUpdateResultsCommand(SelectedElectionID, CandidateId));
+        return RedirectToAction("ViewResult");
     }
 
     [HttpGet]
