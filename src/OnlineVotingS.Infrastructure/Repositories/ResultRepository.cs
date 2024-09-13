@@ -28,4 +28,10 @@ public class ResultRepository : GenericRepository<Result>, IResultRepository
     {
         return await _dbSet.Where(r => r.TotalVotes > votes).ToListAsync();
     }
+
+    public async Task<Result> GetResultByCandidateAndElectionAsync(int candidateId, int electionId)
+    {
+        return await _dbSet
+            .FirstOrDefaultAsync(r => r.CandidateID == candidateId && r.ElectionID == electionId);
+    }
 }
