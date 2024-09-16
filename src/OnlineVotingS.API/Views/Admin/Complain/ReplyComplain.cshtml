@@ -33,30 +33,37 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
     <script>
-        $(document).ready(function () {
-            $('#replyComplaintForm').on('submit', function (e) {
-                e.preventDefault();
+    $(document).ready(function () {
+        $('#replyComplaintForm').on('submit', function (e) {
+            e.preventDefault();
 
-                var formData = {
-                    ComplaintID: $('#complaintId').val(),
-                    ReplyText: $('#replyText').val()
-                };
+            var formData = {
+                ComplaintID: parseInt($('#complaintId').val()),
+                ReplyText: $('#replyText').val(),
+                // ReplyDate is set server-side, no need to send it from the client
+            };
 
-                $.ajax({
-                    url: '/api/Complain/ReplyComplain',
-                    type: 'POST',
-                    contentType: 'application/json',
-                    data: JSON.stringify(formData),
-                    success: function (result) {
-                        alert(result);
-                        $('#replyComplaintForm')[0].reset();
-                    },
-                    error: function (xhr, status, error) {
-                        alert('An error occurred: ' + xhr.responseText);
+            $.ajax({
+                url: '/api/Complaints/Reply',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(formData),
+                success: function (result) {
+                    alert(result);
+                    $('#replyComplaintForm')[0].reset();
+                },
+                error: function (xhr, status, error) {
+                    let errorMessage = 'An error occurred.';
+                    if (xhr.responseJSON && xhr.responseJSON.message) {
+                        errorMessage = xhr.responseJSON.message;
+                    } else if (xhr.responseText) {
+                        errorMessage = xhr.responseText;
                     }
-                });
+                    alert('Error: ' + errorMessage);
+                }
             });
         });
-    </script>
+    });
+</script>
 </body>
 </html>

@@ -81,4 +81,28 @@ public class ComplaintsController : ControllerBase
         var result = await _mediator.Send(command);
         return NoContent();
     }
+    // New endpoint for replying to a complaint
+    [HttpPost("Reply")]
+    public async Task<IActionResult> ReplyComplaintAsync([FromBody] RepliedComplaintsPostDTO repliedComplaintDto)
+    {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
+        var command = new CreateRepliedComplaintCommand(repliedComplaintDto);
+        try
+        {
+            var result = await _mediator.Send(command);
+            return Ok("Reply sent successfully.");
+        }
+        catch (KeyNotFoundException knfEx)
+        {
+            return NotFound(knfEx.Message);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, "An error occurred while processing your request.");
+        }
+    }
 }
