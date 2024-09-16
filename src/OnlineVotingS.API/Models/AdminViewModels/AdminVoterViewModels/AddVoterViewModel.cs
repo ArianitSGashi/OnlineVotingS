@@ -17,7 +17,7 @@ public class AddVoterViewModel
     public string Name { get; set; } = string.Empty;
     public string FathersName { get; set; } = string.Empty;
     public Gender Gender { get; set; }
-    [MinimumAge(18, ErrorMessage = "You must be at least 18 years old.")]
+    [MinimumAge(18, ErrorMessage = "Must be at least 18 years old.")]
     public DateTime DateOfBirth { get; set; }
     public string Address { get; set; } = string.Empty;
     [RegularExpression(@"^[\d\+\-\s]+$", ErrorMessage = "Mobile number can only contain digits, spaces, and the characters + and -")]

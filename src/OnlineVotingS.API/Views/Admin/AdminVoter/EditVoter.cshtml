@@ -1,104 +1,116 @@
 ﻿@using OnlineVotingS.Domain.Enums;
 @model OnlineVotingS.API.Models.AdminViewModels.AdminVoterViewModels.EditVoterViewModel
-@{
-    Layout = null;
-}
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Edit Voter</title>
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet"> <!-- Bootstrap CSS -->
-    <link href="~/css/new-sidebar.css" rel="stylesheet"> <!-- Link to the sidebar CSS file -->
-    <link href="~/css/Candidate/edit-candidate.css" rel="stylesheet"> <!-- Link to the new CSS file -->
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="~/css/new-sidebar.css" rel="stylesheet">
+    <link href="~/css/Election/generateelection.css" rel="stylesheet">
 </head>
 <body>
-    <!-- Sidebar Menu -->
     @await Html.PartialAsync("_NewSidebar")
 
     <div class="container-with-sidebar bg-light p-4 rounded">
         <h4 class="mb-4">Edit Voter</h4>
-        <form method="post" action="/AdminVoter/EditVoter" class="form-container">
+        <div class="mb-3">
+            <label for="searchId" class="form-label">Enter Voter ID</label>
+            <input id="searchId" class="form-control" required />
+            <span id="searchError" class="text-danger">@Model.SearchError</span>
+        </div>
+        <button id="searchButton" class="btn btn-secondary mt-2">Search</button>
+        <form id="editForm" method="post" action="/AdminVoter/EditVoter" class="form-container" style="display:none;">
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+            <input asp-for="Id" type="hidden" />
             <div class="mb-3">
-                <label for="Id" class="form-label">Select Voter</label>
-                @Html.DropDownListFor(m => m.Id, Model.VoterList, "Select a Voter", new { @class = "form-control select-dropdown", required = true, id = "voterId" })
-                @Html.ValidationMessageFor(m => m.Id, "", new { @class = "text-danger" })
+                <label asp-for="UserName" class="form-label">UserName</label>
+                <input asp-for="UserName" class="form-control" required />
+                <span asp-validation-for="UserName" class="text-danger"></span>
             </div>
             <div class="mb-3">
-                <label for="UserName" class="form-label">UserName</label>
-                @Html.TextBoxFor(m => m.UserName, new { @class = "form-control", required = true })
-                @Html.ValidationMessageFor(m => m.UserName, "", new { @class = "text-danger" })
+                <label asp-for="Email" class="form-label">Email</label>
+                <input asp-for="Email" class="form-control" required />
+                <span asp-validation-for="Email" class="text-danger"></span>
             </div>
             <div class="mb-3">
-                <label for="email" class="form-label">Email</label>
-                @Html.TextBoxFor(m => m.Email, new { @class = "form-control", required = true })
-                @Html.ValidationMessageFor(m => m.Email, "", new { @class = "text-danger" })
+                <label asp-for="Name" class="form-label">Name</label>
+                <input asp-for="Name" class="form-control" required />
+                <span asp-validation-for="Name" class="text-danger"></span>
             </div>
             <div class="mb-3">
-                <label for="name" class="form-label">Name</label>
-                @Html.TextBoxFor(m => m.Name, new { @class = "form-control", required = true })
-                @Html.ValidationMessageFor(m => m.Name, "", new { @class = "text-danger" })
+                <label asp-for="FathersName" class="form-label">Father's Name</label>
+                <input asp-for="FathersName" class="form-control" required />
+                <span asp-validation-for="FathersName" class="text-danger"></span>
             </div>
             <div class="mb-3">
-                <label for="fathersName" class="form-label">Father's Name</label>
-                @Html.TextBoxFor(m => m.FathersName, new { @class = "form-control", required = true })
-                @Html.ValidationMessageFor(m => m.FathersName, "", new { @class = "text-danger" })
+                <label asp-for="Gender" class="form-label">Gender</label>
+                <select asp-for="Gender" asp-items="Html.GetEnumSelectList<Gender>()" class="form-control select-dropdown" required>
+                    <option value="">Select Gender</option>
+                </select>
+                <span asp-validation-for="Gender" class="text-danger"></span>
             </div>
             <div class="mb-3">
-                <label for="gender" class="form-label">Gender</label>
-                @Html.DropDownListFor(m => m.Gender, Enum.GetValues(typeof(Gender)).Cast<Gender>().Select(e => new SelectListItem { Value = e.ToString(), Text = e.ToString() }), "Select Gender", new { @class = "form-control select-dropdown", required = true })
-                @Html.ValidationMessageFor(m => m.Gender, "", new { @class = "text-danger" })
+                <label asp-for="DateOfBirth" class="form-label">Date of Birth</label>
+                <input asp-for="DateOfBirth" class="form-control" type="date" required />
+                <span asp-validation-for="DateOfBirth" class="text-danger"></span>
             </div>
             <div class="mb-3">
-                <label for="dateOfBirth" class="form-label">Date of Birth</label>
-                @Html.TextBoxFor(m => m.DateOfBirth, "{0:yyyy-MM-dd}", new { @class = "form-control", type = "date", required = true })
-                @Html.ValidationMessageFor(m => m.DateOfBirth, "", new { @class = "text-danger" })
+                <label asp-for="Address" class="form-label">Address</label>
+                <input asp-for="Address" class="form-control" required />
+                <span asp-validation-for="Address" class="text-danger"></span>
             </div>
             <div class="mb-3">
-                <label for="address" class="form-label">Address</label>
-                @Html.TextBoxFor(m => m.Address, new { @class = "form-control", required = true })
-                @Html.ValidationMessageFor(m => m.Address, "", new { @class = "text-danger" })
-            </div>
-            <div class="mb-3">
-                <label for="mobileNumber" class="form-label">Mobile Number</label>
-                @Html.TextBoxFor(m => m.MobileNumber, new { @class = "form-control", required = true })
-                @Html.ValidationMessageFor(m => m.MobileNumber, "", new { @class = "text-danger" })
+                <label asp-for="MobileNumber" class="form-label">Mobile Number</label>
+                <input asp-for="MobileNumber" class="form-control" required />
+                <span asp-validation-for="MobileNumber" class="text-danger"></span>
             </div>
             <button type="submit" class="btn btn-primary">Save Changes</button>
         </form>
     </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.3/jquery.validate.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/3.2.12/jquery.validate.unobtrusive.min.js"></script>
     <script>
         $(document).ready(function () {
-            $('#voterId').change(function () {
-                var selectedId = $(this).val();
-                if (selectedId) {
+            $('#searchButton').click(function () {
+                var voterId = $('#searchId').val();
+                if (voterId) {
                     $.ajax({
                         url: '/AdminVoter/GetVoterDetails',
                         type: 'GET',
-                        data: { id: selectedId },
+                        data: { id: voterId },
                         success: function (data) {
-                            $('#UserName').val(data.userName);
-                            $('#Email').val(data.email);
-                            $('#Name').val(data.name);
-                            $('#FathersName').val(data.fathersName);
-                            $('#Gender').val(data.gender);
-                            $('#DateOfBirth').val(data.dateOfBirth);
-                            $('#Address').val(data.address);
-                            $('#MobileNumber').val(data.mobileNumber);
+                            if (data.error) {
+                                $('#searchError').text(data.error);
+                                $('#editForm').hide();
+                            } else {
+                                $('#searchError').text('');
+                                $('#Id').val(voterId);
+                                $('#UserName').val(data.userName);
+                                $('#Email').val(data.email);
+                                $('#Name').val(data.name);
+                                $('#FathersName').val(data.fathersName);
+                                $('#Gender option').filter(function () {
+                                    return $(this).text() === data.gender;
+                                }).prop('selected', true);
+                                $('#DateOfBirth').val(data.dateOfBirth.split('T')[0]);
+                                $('#Address').val(data.address);
+                                $('#MobileNumber').val(data.mobileNumber);
+                                $('#editForm').show();
+                            }
                         },
-                        error: function () {
-                            alert('Error fetching voter details');
+                        error: function (xhr) {
+                            $('#searchError').text('Error fetching voter details');
+                            $('#editForm').hide();
                         }
                     });
                 }
             });
         });
     </script>
-
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
