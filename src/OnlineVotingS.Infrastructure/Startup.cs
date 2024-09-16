@@ -7,6 +7,8 @@ using OnlineVotingS.Infrastructure.Persistence.Context;
 using OnlineVotingS.Domain.Models;
 using OnlineVotingS.Infrastructure.Repositories;
 using OnlineVotingS.Infrastructure.BackgroundServices;
+using Microsoft.AspNetCore.Identity.UI.Services;
+using OnlineVotingS.Application.Services.Email;
 
 namespace OnlineVotingS.Infrastructure;
 
@@ -37,5 +39,6 @@ public static class Startup
         services.AddScoped<ICampaignRepository, CampaignRepository>();
         services.AddScoped<IRepliedComplaintsRepository, RepliedComplaintsRepository>();
         services.AddHostedService<ElectionStatusUpdateService>();
+        services.AddTransient<IEmailSender, EmailSender>();
     }
 }
