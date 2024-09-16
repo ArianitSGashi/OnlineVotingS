@@ -24,4 +24,6 @@ public class EditVoterViewModel
     public string Address { get; set; } = string.Empty;
     [RegularExpression(@"^[\d\+\-\s]+$", ErrorMessage = "Mobile number can only contain digits, spaces, and the characters + and -")]
     public string MobileNumber { get; set; } = string.Empty;
+    public string SearchError { get; set; } = string.Empty;
+
 }

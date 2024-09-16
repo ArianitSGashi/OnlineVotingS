@@ -1,15 +1,15 @@
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using OnlineVotingS.API.Models.AdminViewModels.CandidateViewModels;
-using OnlineVotingS.Application.DTO.PutDTO;
 using OnlineVotingS.Application.Services.Candidate.Requests.Commands;
 using OnlineVotingS.Application.Services.Candidate.Requests.Queries;
+using OnlineVotingS.Application.Services.Election.Requests.Queries;
+using OnlineVotingS.Application.DTO.PostDTO;
+using OnlineVotingS.Application.DTO.PutDTO;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
-namespace OnlineVotingS.API.Controllers.TempControllers;
+namespace OnlineVotingS.API.TempControllers;
 
-[ApiController]
-[Route("[controller]")]
 public class CandidateController : Controller
 {
     private readonly IMediator _mediator;
@@ -19,95 +19,161 @@ public class CandidateController : Controller
         _mediator = mediator;
     }
 
-    [HttpGet("AddCandidate")]
+    [HttpGet]
     public async Task<IActionResult> AddCandidate()
     {
-        var query = new GetAllCandidatesQuery();
-        var candidates = await _mediator.Send(query);
-
-        var model = new AddCandidateViewModel
+        var elections = await _mediator.Send(new GetAllElectionsQuery());
+        var viewModel = new AddCandidateViewModel
         {
-            Elections = candidates.Select(c => new SelectListItem
+            Elections = elections.Select(e => new SelectListItem
             {
-                Value = c.ElectionID.ToString(),
-                Text = c.ElectionID.ToString(),
+                Value = e.ElectionID.ToString(),
+                Text = e.Title
             }).ToList()
         };
-        return View("~/Views/Admin/Candidate/AddCandidate.cshtml", model);
+        return View("~/Views/Admin/Candidate/AddCandidate.cshtml", viewModel);
     }
 
-    [HttpGet("EditCandidate")]
-    public IActionResult EditCandidate()
+    [HttpPost]
+    public async Task<IActionResult> AddCandidate(AddCandidateViewModel model)
     {
-        return View("~/Views/Admin/Candidate/EditCandidate.cshtml");
+       
+        var candidateDto = new CandidatesPostDTO
+        {
+            ElectionID = model.ElectionID,
+            FullName = model.FullName,
+            Party = model.Party,
+            Description = model.Description,
+            Income = model.Income,
+            Works = model.Works
+        };
+
+        var command = new CreateCandidateCommand(candidateDto);
+        var result = await _mediator.Send(command);
+        return RedirectToAction(nameof(ViewCandidates));
     }
 
-    [HttpGet("DeleteCandidate")]
-    public IActionResult DeleteCandidate()
+    [HttpGet]
+    public async Task<IActionResult> EditCandidate()
     {
-        return View("~/Views/Admin/Candidate/DeleteCandidate.cshtml");
+        var candidates = await _mediator.Send(new GetAllCandidatesQuery());
+        var elections = await _mediator.Send(new GetAllElectionsQuery());
+        var model = new EditCandidateViewModel
+        {
+            CandidateList = candidates.Select(c => new SelectListItem
+            {
+                Value = c.CandidateID.ToString(),
+                Text = $"{c.CandidateID} - {c.FullName}"
+            }).ToList()
+        };
+        return View("~/Views/Admin/Candidate/EditCandidate.cshtml", model);
     }
 
-    [HttpGet("ViewCandidates")]
+    [HttpGet]
+    public async Task<IActionResult> GetCandidateDetails(int id)
+    {
+        var candidate = await _mediator.Send(new GetCandidateByIdQuery(id));
+        if (candidate == null)
+        {
+            return NotFound();
+        }
+        var candidateDetails = new
+        {
+            electionId = candidate.ElectionID,
+            fullName = candidate.FullName,
+            party = candidate.Party,
+            description = candidate.Description,
+            income = candidate.Income,
+            works = candidate.Works
+        };
+        return Json(candidateDetails);
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> EditCandidate(EditCandidateViewModel model)
+    {
+        if (ModelState.IsValid)
+        {
+            var command = new UpdateCandidateCommand(new CandidatesPutDTO
+            {
+                CandidateID = model.CandidateID,
+                ElectionID = model.ElectionID,
+                FullName = model.FullName,
+                Party = model.Party,
+                Description = model.Description,
+                Income = model.Income,
+                Works = model.Works
+            });
+
+            var result = await _mediator.Send(command);
+            if (result != null)
+            {
+                return RedirectToAction(nameof(ViewCandidates));
+            }
+            ModelState.AddModelError(string.Empty, "Failed to update candidate.");
+        }
+
+        // If we got this far, something failed; redisplay form
+        var candidates = await _mediator.Send(new GetAllCandidatesQuery());
+        var elections = await _mediator.Send(new GetAllElectionsQuery());
+        model.CandidateList = candidates.Select(c => new SelectListItem
+        {
+            Value = c.CandidateID.ToString(),
+            Text = $"{c.CandidateID} - {c.FullName}"
+        }).ToList();
+        return View("~/Views/Admin/Candidate/EditCandidate.cshtml", model);
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> DeleteCandidate()
+    {
+        var candidates = await _mediator.Send(new GetAllCandidatesQuery());
+        var viewModel = new DeleteCandidateViewModel
+        {
+            AvailableCandidates = candidates.Select(c => new SelectListItem
+            {
+                Value = c.CandidateID.ToString(),
+                Text = $"{c.CandidateID} - {c.FullName}"
+            }).ToList()
+        };
+        return View("~/Views/Admin/Candidate/DeleteCandidate.cshtml", viewModel);
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> DeleteCandidate(DeleteCandidateViewModel model)
+    {
+        if (ModelState.IsValid)
+        {
+            var command = new DeleteCandidateCommand(model.CandidateID);
+            await _mediator.Send(command);
+            return RedirectToAction(nameof(ViewCandidates));
+        }
+
+        // If we got this far, something failed; redisplay form
+        var candidates = await _mediator.Send(new GetAllCandidatesQuery());
+        model.AvailableCandidates = candidates.Select(c => new SelectListItem
+        {
+            Value = c.CandidateID.ToString(),
+            Text = $"{c.CandidateID} - {c.FullName}"
+        }).ToList();
+        return View("~/Views/Admin/Candidate/DeleteCandidate.cshtml", model);
+    }
+
+    [HttpGet]
     public async Task<IActionResult> ViewCandidates()
     {
-        var query = new GetAllCandidatesQuery();
-        var candidates = await _mediator.Send(query);
-
-        var model = candidates.Select(c => new ViewCandidatesViewModel
+        var candidates = await _mediator.Send(new GetAllCandidatesQuery());
+        var viewModel = candidates.Select(c => new ViewCandidatesViewModel
         {
-            CandidateID = c.CandidateID.ToString(),
-            ElectionID = c.ElectionID.ToString(),
+            CandidateID = c.CandidateID,
+            ElectionID = c.ElectionID,
             FullName = c.FullName,
             Party = c.Party,
             Description = c.Description,
-            Works = c.Works,
-            Income = c.Income ?? 0
+            Income = c.Income,
+            Works = c.Works
         }).ToList();
 
-        return View("~/Views/Admin/Candidate/ViewCandidates.cshtml", model);
-    }
-
-    [HttpGet("validate")]
-    public async Task<IActionResult> ValidateCandidate([FromQuery] int candidateId, [FromQuery] int electionId)
-    {
-        var query = new GetCandidateByIdQuery(candidateId);
-        var candidate = await _mediator.Send(query);
-
-        if (candidate == null)
-        {
-            return NotFound($"Candidate with ID {candidateId} not found.");
-        }
-
-        var isValid = candidate.ElectionID == electionId;
-        return Ok(new { isValid });
-    }
-
-    [HttpPut("UpdateCandidate")]
-    public async Task<IActionResult> UpdateAsync([FromBody] CandidatesPutDTO candidatesPut)
-    {
-        var command = new UpdateCandidateCommand(candidatesPut);
-        var result = await _mediator.Send(command);
-
-        if (result == null)
-        {
-            return NotFound($"Candidate with ID {candidatesPut.CandidateID} not found or Election ID does not match.");
-        }
-
-        return Ok(result);
-    }
-
-    [HttpDelete("{candidateId}")]
-    public async Task<IActionResult> DeleteCandidate(int candidateId)
-    {
-        var command = new DeleteCandidateCommand(candidateId);
-        var result = await _mediator.Send(command);
-
-        if (!result)
-        {
-            return NotFound($"Candidate with ID {candidateId} not found.");
-        }
-
-        return NoContent();
+        return View("~/Views/Admin/Candidate/ViewCandidates.cshtml", viewModel);
     }
 }

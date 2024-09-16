@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using OnlineVotingS.API.Models.AdminViewModels.AdminVoterViewModels;
 using OnlineVotingS.Domain.Models;
 
@@ -78,28 +77,23 @@ namespace OnlineVotingS.API.Controllers
             return View("~/Views/Admin/AdminVoter/AddVoter.cshtml", model);
         }
 
-        public async Task<IActionResult> EditVoter()
+        public IActionResult EditVoter()
         {
-            var voters = await _userManager.GetUsersInRoleAsync("Voter");
-            var model = new EditVoterViewModel
-            {
-                VoterList = voters.Select(v => new SelectListItem
-                {
-                    Value = v.Id,
-                    Text = $"{v.Id} - {v.Name}"
-                }).ToList()
-            };
-
-            return View("~/Views/Admin/AdminVoter/EditVoter.cshtml", model);
+            return View("~/Views/Admin/AdminVoter/EditVoter.cshtml", new EditVoterViewModel());
         }
 
         [HttpGet]
         public async Task<IActionResult> GetVoterDetails(string id)
         {
+            if (string.IsNullOrEmpty(id))
+            {
+                return Json(new { error = "Voter ID cannot be empty" });
+            }
+
             var user = await _userManager.FindByIdAsync(id);
             if (user == null)
             {
-                return NotFound();
+                return Json(new { error = "Voter not found" });
             }
 
             var voterDetails = new
@@ -117,7 +111,6 @@ namespace OnlineVotingS.API.Controllers
             return Json(voterDetails);
         }
 
-        // POST: /AdminVoter/EditVoter
         [HttpPost]
         public async Task<IActionResult> EditVoter(EditVoterViewModel model)
         {
@@ -128,7 +121,6 @@ namespace OnlineVotingS.API.Controllers
                 {
                     return NotFound();
                 }
-                user.Id = model.Id;
                 user.UserName = model.UserName;
                 user.Email = model.Email;
                 user.Name = model.Name;
@@ -152,20 +144,25 @@ namespace OnlineVotingS.API.Controllers
             return View("~/Views/Admin/AdminVoter/EditVoter.cshtml", model);
         }
 
-        // GET: /AdminVoter/DeleteVoter
+        [HttpGet]
         public IActionResult DeleteVoter()
         {
             return View("~/Views/Admin/AdminVoter/DeleteVoter.cshtml");
         }
 
-        // POST: /AdminVoter/DeleteVoter
         [HttpPost]
         public async Task<IActionResult> DeleteVoter(DeleteVoterViewModel model)
         {
+            if (!ModelState.IsValid)
+            {
+                return View("~/Views/Admin/AdminVoter/DeleteVoter.cshtml", model);
+            }
+
             var user = await _userManager.FindByIdAsync(model.Id);
             if (user == null)
             {
-                return NotFound();
+                ModelState.AddModelError("", "Voter not found.");
+                return View("~/Views/Admin/AdminVoter/DeleteVoter.cshtml", model);
             }
 
             var result = await _userManager.DeleteAsync(user);
@@ -176,7 +173,7 @@ namespace OnlineVotingS.API.Controllers
 
             foreach (var error in result.Errors)
             {
-                ModelState.AddModelError(string.Empty, error.Description);
+                ModelState.AddModelError("", error.Description);
             }
 
             return View("~/Views/Admin/AdminVoter/DeleteVoter.cshtml", model);
