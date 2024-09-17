@@ -7,7 +7,7 @@ public class CandidateViewModel
     public string FullName { get; set; } = string.Empty;
     public string Party { get; set; } = string.Empty;
     public string Description { get; set; } = string.Empty;
-    public decimal Income { get; set; }
+    public decimal? Income { get; set; }  // Change this to allow null
     public string Works { get; set; } = string.Empty;
 }
 

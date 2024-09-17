@@ -56,10 +56,9 @@
     <div class="hero-section text-center">
         <div class="container">
             <h1 class="display-4">Candidates</h1>
-            <input type="text" id="electionSearch" placeholder="Search by Candidate ID, Full Name, or Party" class="form-control">
-            <button id="searchButton" class="btn btn-primary mt-2">Search</button>
+            <input type="text" id="candidateSearch" placeholder="Search by Candidate ID, Full Name, or Party" class="form-control">
 
-            <table class="table table-hover mt-4" id="electionTable">
+            <table class="table table-hover mt-4" id="candidateTable">
                 <thead class="thead-dark">
                     <tr>
                         <th>Candidate ID</th>
@@ -121,20 +120,14 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
 
-    <!-- Search Script -->
+    <!-- Real-Time Search Script -->
     <script>
         $(document).ready(function () {
-            $("#searchButton").on("click", function () {
-                var value = $("#electionSearch").val().toLowerCase();
-                $("#electionTable tbody tr").filter(function () {
-                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+            $("#candidateSearch").on("input", function () {
+                var value = $(this).val().toLowerCase();
+                $("#candidateTable tbody tr").filter(function () {
+                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
                 });
-            });
-
-            $("#electionSearch").on("keyup", function (event) {
-                if (event.keyCode === 13) { // 13 is the Enter key
-                    $("#searchButton").click();
-                }
             });
         });
     </script>

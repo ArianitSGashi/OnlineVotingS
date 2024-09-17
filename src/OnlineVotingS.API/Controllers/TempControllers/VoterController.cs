@@ -1,43 +1,55 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using OnlineVotingS.API.Models.VoterViewModels;
+using System.Linq;
+using System.Threading.Tasks;
+using OnlineVotingS.Infrastructure.Persistence.Context;
 
-namespace OnlineVotingS.API.Controllers.TempControllers;
-
-[Authorize(Policy = "RequireVoterRole")]
-public class VoterController : Controller
+namespace OnlineVotingS.API.Controllers.TempControllers
 {
     [Authorize(Policy = "RequireVoterRole")]
-    public IActionResult VoterDashboard()
+    public class VoterController : Controller
     {
-        return View();
-    }
+        private readonly ApplicationDbContext _context;  // Inject the DbContext
 
-    // GET: /Voter/Candidates
-    public IActionResult CandidatePage()
-    {
-        // This is where you'd pull data from the database.
+        public VoterController(ApplicationDbContext context)
+        {
+            _context = context;  // Set the DbContext in the constructor
+        }
 
-        // For now, we'll mock up some data to illustrate.
-        var candidates = new List<CandidateViewModel>
-    {
-        new CandidateViewModel { CandidateID = 1, ElectionID = 101, FullName = "John Doe", Party = "Independent", Description = "Lorem ipsum dolor sit amet.", Income = 50000, Works = "Public services" },
-        new CandidateViewModel { CandidateID = 2, ElectionID = 101, FullName = "Jane Smith", Party = "Democrat", Description = "Consectetur adipiscing elit.", Income = 70000, Works = "Health care" },
-        new CandidateViewModel { CandidateID = 1, ElectionID = 101, FullName = "John Doe", Party = "Independent", Description = "Lorem ipsum dolor sit amet.", Income = 50000, Works = "Public services" },
-        new CandidateViewModel { CandidateID = 2, ElectionID = 101, FullName = "Jane Smith", Party = "Democrat", Description = "Consectetur adipiscing elit.", Income = 70000, Works = "Health care" },
-        new CandidateViewModel { CandidateID = 1, ElectionID = 101, FullName = "John Doe", Party = "Independent", Description = "Lorem ipsum dolor sit amet.", Income = 50000, Works = "Public services" },
-        new CandidateViewModel { CandidateID = 2, ElectionID = 101, FullName = "Jane Smith", Party = "Democrat", Description = "Consectetur adipiscing elit.", Income = 70000, Works = "Health care" },
-    };
+        [Authorize(Policy = "RequireVoterRole")]
+        public IActionResult VoterDashboard()
+        {
+            return View();
+        }
 
-        return View(candidates);
-    }
+        // GET: /Voter/Candidates
+        public async Task<IActionResult> CandidatePage()
+        {
+            // Fetch candidates from the database using EF Core
+            var candidates = await _context.Candidates
+                .Select(c => new CandidateViewModel
+                {
+                    CandidateID = c.CandidateID,
+                    ElectionID = c.ElectionID,
+                    FullName = c.FullName,
+                    Party = c.Party,
+                    Description = c.Description,
+                    Income = c.Income,  // Include Income here
+                    Works = c.Works
 
-    public IActionResult ElectionPage()
-    {
-        // This is where you'd pull data from the database.
+                }).ToListAsync();
 
-        // For now, we'll mock up some data to illustrate.
-        var elections = new List<ElectionsViewModel>
+            return View(candidates);
+        }
+
+        public IActionResult ElectionPage()
+        {
+            // This is where you'd pull data from the database.
+
+            // For now, we'll mock up some data to illustrate.
+            var elections = new List<ElectionsViewModel>
     {
         new ElectionsViewModel { ElectionID = 1, Title = "Presidential Election", Description = "Election to choose the next president.", StartDate = new DateTime(2024, 11, 5), EndDate = new DateTime(2024, 11, 6) },
         new ElectionsViewModel { ElectionID = 2, Title = "Senate Election", Description = "Election to fill senate seats.", StartDate = new DateTime(2024, 11, 5), EndDate = new DateTime(2024, 11, 6) },
@@ -46,48 +58,49 @@ public class VoterController : Controller
         new ElectionsViewModel { ElectionID = 5, Title = "Mayoral Election", Description = "Election to choose the next mayor.", StartDate = new DateTime(2024, 11, 20), EndDate = new DateTime(2024, 11, 21) }
     };
 
-        return View(elections);
-    }
+            return View(elections);
+        }
 
-    public IActionResult ComplainPage()
-    {
-        // Here you can add logic to fetch any necessary data for the ComplainPage,
-        // such as a list of elections if needed for a dropdown.
-
-        // For now, we're just returning an empty ComplainViewModel.
-        var complainViewModel = new ComplainViewModel
+        public IActionResult ComplainPage()
         {
-            ElectionID = 0,  // Set a default value or fetch available elections
-            ComplaintText = string.Empty
-        };
+            // Here you can add logic to fetch any necessary data for the ComplainPage,
+            // such as a list of elections if needed for a dropdown.
 
-        return View(complainViewModel);
-    }
+            // For now, we're just returning an empty ComplainViewModel.
+            var complainViewModel = new ComplainViewModel
+            {
+                ElectionID = 0,  // Set a default value or fetch available elections
+                ComplaintText = string.Empty
+            };
 
-    public IActionResult RepliedComplaintsPage()
-    {
-        // This is where you'd pull data from the database.
-        // Mocking up data for now.
+            return View(complainViewModel);
+        }
 
-        var repliedComplaints = new List<RepliedComplaintsViewModel>
+        public IActionResult RepliedComplaintsPage()
+        {
+            // This is where you'd pull data from the database.
+            // Mocking up data for now.
+
+            var repliedComplaints = new List<RepliedComplaintsViewModel>
     {
         new RepliedComplaintsViewModel { RepliedComplaintID = 1, ComplaintID = 101, ComplaintText = "Issue with voting", ReplyText = "Resolved the issue.", ReplyDate = DateTime.Now.AddDays(-2) },
         new RepliedComplaintsViewModel { RepliedComplaintID = 2, ComplaintID = 102, ComplaintText = "Delay in results", ReplyText = "Results will be announced soon.", ReplyDate = DateTime.Now.AddDays(-1) }
     };
 
-        return View(repliedComplaints);
-    }
+            return View(repliedComplaints);
+        }
 
-    public IActionResult VotePage(int electionId)
-    {
-        // Mock data for candidates belonging to the specific election
-        var candidates = new List<CandidateViewModel>
+        public IActionResult VotePage(int electionId)
+        {
+            // Mock data for candidates belonging to the specific election
+            var candidates = new List<CandidateViewModel>
     {
         new CandidateViewModel { CandidateID = 1, ElectionID = electionId, FullName = "John Doe", Party = "Independent", Description = "Lorem ipsum dolor sit amet.", Income = 50000, Works = "Public services" },
         new CandidateViewModel { CandidateID = 2, ElectionID = electionId, FullName = "Jane Smith", Party = "Democrat", Description = "Consectetur adipiscing elit.", Income = 70000, Works = "Health care" }
     };
 
-        // Pass the candidates to the view
-        return View(candidates);
+            // Pass the candidates to the view
+            return View(candidates);
+        }
     }
 }
