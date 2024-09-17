@@ -16,7 +16,17 @@
             </a>
             <div class="d-flex align-items-center">
                 <span class="text-white me-3">MIKASA</span>
-                <img src="https://via.placeholder.com/30" alt="Profile Image" class="rounded-circle">
+                
+                <!-- Dropdown for Profile Image -->
+                <div class="dropdown">
+                    <a href="#" class="d-flex align-items-center" id="profileDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                        <img src="https://via.placeholder.com/30" alt="Profile Image" class="rounded-circle">
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="profileDropdown">
+                        <li><a class="dropdown-item"  href="@Url.Action("ChangePassword", "Auth")">ChangePassword</a></li>
+                        
+                    </ul>
+                </div>
             </div>
         </div>
     </nav>
