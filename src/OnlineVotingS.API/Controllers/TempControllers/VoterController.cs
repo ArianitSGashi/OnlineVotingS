@@ -76,18 +76,22 @@ namespace OnlineVotingS.API.Controllers.TempControllers
             return View(complainViewModel);
         }
 
-        public IActionResult RepliedComplaintsPage()
+        [HttpGet]
+        public async Task<IActionResult> RepliedComplaintsPage()
         {
-            // This is where you'd pull data from the database.
-            // Mocking up data for now.
+            // Fetch replied complaints directly from the database using EF Core
+            var repliedComplaints = await _context.RepliedComplaints
+                .Select(rc => new RepliedComplaintsViewModel
+                {
+                    RepliedComplaintID = rc.RepliedComplaintID,
+                    ComplaintID = rc.ComplaintID,
+                    ComplaintText = rc.Complaint.ComplaintText, // Assuming a relationship exists with Complaint
+                    ReplyText = rc.ReplyText,
+                    ReplyDate = rc.ReplyDate
+                })
+                .ToListAsync();
 
-            var repliedComplaints = new List<RepliedComplaintsViewModel>
-    {
-        new RepliedComplaintsViewModel { RepliedComplaintID = 1, ComplaintID = 101, ComplaintText = "Issue with voting", ReplyText = "Resolved the issue.", ReplyDate = DateTime.Now.AddDays(-2) },
-        new RepliedComplaintsViewModel { RepliedComplaintID = 2, ComplaintID = 102, ComplaintText = "Delay in results", ReplyText = "Results will be announced soon.", ReplyDate = DateTime.Now.AddDays(-1) }
-    };
-
-            return View(repliedComplaints);
+            return View(repliedComplaints);  // Passing the data to the view
         }
 
         public IActionResult VotePage(int electionId)
