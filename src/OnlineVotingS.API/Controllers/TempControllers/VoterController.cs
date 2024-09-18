@@ -5,6 +5,14 @@ using OnlineVotingS.API.Models.VoterViewModels;
 using System.Linq;
 using System.Threading.Tasks;
 using OnlineVotingS.Infrastructure.Persistence.Context;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using OnlineVotingS.Application.Services.Election.Requests.Queries;
+using MediatR;
+using OnlineVotingS.API.Models.AdminViewModels.ComplaintViewModels;
+using OnlineVotingS.Application.DTO.PostDTO;
+using OnlineVotingS.Application.Services.Complaint.Requests.Commands;
+using Microsoft.AspNetCore.Identity;
+using OnlineVotingS.Domain.Models;
 
 namespace OnlineVotingS.API.Controllers.TempControllers
 {
@@ -12,10 +20,14 @@ namespace OnlineVotingS.API.Controllers.TempControllers
     public class VoterController : Controller
     {
         private readonly ApplicationDbContext _context;  // Inject the DbContext
+        private readonly IMediator _mediator;
+        private readonly UserManager<ApplicationUser> _userManager;
 
-        public VoterController(ApplicationDbContext context)
+        public VoterController(ApplicationDbContext context, IMediator mediator, UserManager<ApplicationUser> userManager)
         {
             _context = context;  // Set the DbContext in the constructor
+            _mediator = mediator;
+            _userManager = userManager;
         }
 
         [Authorize(Policy = "RequireVoterRole")]
@@ -44,6 +56,27 @@ namespace OnlineVotingS.API.Controllers.TempControllers
             return View(candidates);
         }
 
+        [HttpPost]
+        public async Task<IActionResult> SubmitComplain(ComplaintViewModel model)
+        {
+            var complaint = new ComplaintsPostDTO
+            {
+                ElectionID = model.ElectionID,
+                ComplaintText = model.ComplaintText,
+            };
+
+            if (User.Identity!.IsAuthenticated)
+            {
+                var userId = _userManager.GetUserId(User);
+
+                complaint.UserID = userId!;
+            }
+            var command = new CreateComplaintCommand(complaint);
+            await _mediator.Send(command);
+
+            return RedirectToAction("ComplainPage");
+        }
+
         public IActionResult ElectionPage()
         {
             // This is where you'd pull data from the database.
@@ -61,16 +94,20 @@ namespace OnlineVotingS.API.Controllers.TempControllers
             return View(elections);
         }
 
-        public IActionResult ComplainPage()
+        public async Task<IActionResult> ComplainPage()
         {
-            // Here you can add logic to fetch any necessary data for the ComplainPage,
-            // such as a list of elections if needed for a dropdown.
+            var allElections = await _mediator.Send(new GetAllElectionsQuery());
+            var elections = allElections.Select(e => new SelectListItem
+            {
+                Value = e.ElectionID.ToString(),
+                Text = e.Title
+            });
 
-            // For now, we're just returning an empty ComplainViewModel.
             var complainViewModel = new ComplainViewModel
             {
                 ElectionID = 0,  // Set a default value or fetch available elections
-                ComplaintText = string.Empty
+                ComplaintText = string.Empty,
+                Elections = elections,
             };
 
             return View(complainViewModel);
