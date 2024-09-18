@@ -59,8 +59,8 @@
             <div class="form-container mt-4">
                 <form method="post" action="@Url.Action("SubmitComplain", "Voter")">
                     <div class="form-group">
-                        <label for="electionId">Election ID</label>
-                        @Html.TextBoxFor(m => m.ElectionID, new { @class = "form-control", placeholder = "Enter Election ID", required = true })
+                        <label for="electionId">Election</label>
+                        @Html.DropDownListFor(m => m.ElectionID, Model.Elections, "Select an election", new { @class = "form-control", required = true })
                         @Html.ValidationMessageFor(m => m.ElectionID, "", new { @class = "text-danger" })
                     </div>
                     <div class="form-group">

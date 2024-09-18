@@ -1,4 +1,6 @@
-﻿namespace OnlineVotingS.API.Models.VoterViewModels;
+﻿using Microsoft.AspNetCore.Mvc.Rendering;
+
+namespace OnlineVotingS.API.Models.VoterViewModels;
 
 public class ComplainViewModel
 {
@@ -7,4 +9,5 @@ public class ComplainViewModel
     public int ElectionID { get; set; }
     public string ComplaintText { get; set; } = string.Empty;
     public DateTime ComplaintDate { get; set; }
+    public IEnumerable<SelectListItem> Elections { get; set; }
 }
