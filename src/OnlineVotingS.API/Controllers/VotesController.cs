@@ -34,13 +34,13 @@ public class VotesController : ControllerBase
         return Ok(vote);
     }
 
-    [HttpGet("user/{userId?}")]
-    public async Task<IActionResult> GetVotesByUserIdAsync(string userId)
-    {
-        var query = new GetVotesByUserIDQuery(userId);
-        var votes = await _mediator.Send(query);
-        return Ok(votes);
-    }
+    //[HttpGet("user/{userId?}")]
+    //public async Task<IActionResult> GetVotesByUserIdAsync(string userId)
+    //{
+    //    var query = new GetVotesByUserIDQuery(userId);
+    //    var votes = await _mediator.Send(query);
+    //    return Ok(votes);
+    //}
 
     [HttpGet("election/{electionId}")]
     public async Task<IActionResult> GetVotesByElectionIdAsync(int electionId)

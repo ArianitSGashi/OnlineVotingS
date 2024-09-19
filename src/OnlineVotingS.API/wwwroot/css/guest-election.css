@@ -34,7 +34,6 @@ body {
     background-image: url('/images/Election.jpg'); /* Replace with your image path */
     background-size: cover;
     background-position: center;
-    height: 100vh;
     display: flex;
     align-items: center;
     justify-content: center;

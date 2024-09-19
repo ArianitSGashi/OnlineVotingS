@@ -1,10 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using OnlineVotingS.API.Models.VoterViewModels;
-using System.Linq;
-using System.Threading.Tasks;
-using OnlineVotingS.Infrastructure.Persistence.Context;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using OnlineVotingS.Application.Services.Election.Requests.Queries;
 using MediatR;
@@ -13,88 +9,151 @@ using OnlineVotingS.Application.DTO.PostDTO;
 using OnlineVotingS.Application.Services.Complaint.Requests.Commands;
 using Microsoft.AspNetCore.Identity;
 using OnlineVotingS.Domain.Models;
+using OnlineVotingS.Application.Services.Candidate.Requests.Queries;
+using OnlineVotingS.Application.Services.RepliedComplaint.Requests.Queries;
+using OnlineVotingS.Application.Services.Complaint.Requests.Queries;
+using OnlineVotingS.Application.Services.Vote.Requests.Queries;
+using OnlineVotingS.Domain.Enums;
+using OnlineVotingS.Application.Services.Vote.Requests.Commands;
+using OnlineVotingS.Domain.CostumExceptions;
+using OnlineVotingS.API.Models;
+using System.Diagnostics;
 
-namespace OnlineVotingS.API.Controllers.TempControllers
+namespace OnlineVotingS.API.Controllers.TempControllers;
+
+[Authorize(Policy = "RequireVoterRole")]
+public class VoterController : Controller
 {
+    private readonly IMediator _mediator;
+    private readonly UserManager<ApplicationUser> _userManager;
+
+    public VoterController(IMediator mediator, UserManager<ApplicationUser> userManager)
+    {
+        _mediator = mediator;
+        _userManager = userManager;
+    }
+
     [Authorize(Policy = "RequireVoterRole")]
-    public class VoterController : Controller
+    public IActionResult VoterDashboard()
     {
-        private readonly ApplicationDbContext _context;  // Inject the DbContext
-        private readonly IMediator _mediator;
-        private readonly UserManager<ApplicationUser> _userManager;
+        return View();
+    }
 
-        public VoterController(ApplicationDbContext context, IMediator mediator, UserManager<ApplicationUser> userManager)
+    [HttpGet]
+    public async Task<IActionResult> CandidatePage()
+    {
+        var candidates = await _mediator.Send(new GetAllCandidatesQuery());
+        var viewModel = candidates.Select(c => new CandidateViewModel
         {
-            _context = context;  // Set the DbContext in the constructor
-            _mediator = mediator;
-            _userManager = userManager;
-        }
+            CandidateID = c.CandidateID,
+            ElectionID = c.ElectionID,
+            FullName = c.FullName,
+            Party = c.Party,
+            Description = c.Description,
+            Income = c.Income,
+            Works = c.Works
+        }).ToList();
 
-        [Authorize(Policy = "RequireVoterRole")]
-        public IActionResult VoterDashboard()
-        {
-            return View();
-        }
+        return View("~/Views/Voter/CandidatePage.cshtml", viewModel);
+    }
 
-        // GET: /Voter/Candidates
-        public async Task<IActionResult> CandidatePage()
-        {
-            // Fetch candidates from the database using EF Core
-            var candidates = await _context.Candidates
-                .Select(c => new CandidateViewModel
+    [HttpGet]
+    public async Task<IActionResult> ElectionPage()
+    {
+    
+            var elections = await _mediator.Send(new GetAllElectionsQuery());
+            var userId = _userManager.GetUserId(User);
+            var viewModel = new List<ElectionsViewModel>();
+
+            foreach (var election in elections)
+            {
+                var hasVoted = await _mediator.Send(new GetVotesByUserIDQuery(userId, election.ElectionID));
+
+                viewModel.Add(new ElectionsViewModel
                 {
-                    CandidateID = c.CandidateID,
-                    ElectionID = c.ElectionID,
-                    FullName = c.FullName,
-                    Party = c.Party,
-                    Description = c.Description,
-                    Income = c.Income,  // Include Income here
-                    Works = c.Works
-
-                }).ToListAsync();
-
-            return View(candidates);
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> SubmitComplain(ComplaintViewModel model)
-        {
-            var complaint = new ComplaintsPostDTO
-            {
-                ElectionID = model.ElectionID,
-                ComplaintText = model.ComplaintText,
-            };
-
-            if (User.Identity!.IsAuthenticated)
-            {
-                var userId = _userManager.GetUserId(User);
-
-                complaint.UserID = userId!;
+                    ElectionID = election.ElectionID,
+                    Title = election.Title ?? string.Empty,
+                    Description = election.Description ?? string.Empty,
+                    StartDate = election.StartDate,
+                    StartTime = election.StartTime,
+                    EndDate = election.EndDate,
+                    EndTime = election.EndTime,
+                    Status = election.Status,
+                    UserHasVoted = hasVoted
+                });
             }
-            var command = new CreateComplaintCommand(complaint);
-            await _mediator.Send(command);
 
-            return RedirectToAction("ComplainPage");
-        }
+            ViewBag.VoteMessage = TempData["VoteMessage"];
+            ViewBag.VoteMessageType = TempData["VoteMessageType"];
 
-        public IActionResult ElectionPage()
-        {
-            // This is where you'd pull data from the database.
+            return View(viewModel);
+        
+    }
 
-            // For now, we'll mock up some data to illustrate.
-            var elections = new List<ElectionsViewModel>
+    [HttpGet]
+    public async Task<IActionResult> VotePage(int electionId)
     {
-        new ElectionsViewModel { ElectionID = 1, Title = "Presidential Election", Description = "Election to choose the next president.", StartDate = new DateTime(2024, 11, 5), EndDate = new DateTime(2024, 11, 6) },
-        new ElectionsViewModel { ElectionID = 2, Title = "Senate Election", Description = "Election to fill senate seats.", StartDate = new DateTime(2024, 11, 5), EndDate = new DateTime(2024, 11, 6) },
-        new ElectionsViewModel { ElectionID = 3, Title = "Local Council Election", Description = "Election to elect local council members.", StartDate = new DateTime(2024, 12, 1), EndDate = new DateTime(2024, 12, 2) },
-        new ElectionsViewModel { ElectionID = 4, Title = "School Board Election", Description = "Election to elect school board members.", StartDate = new DateTime(2024, 12, 10), EndDate = new DateTime(2024, 12, 11) },
-        new ElectionsViewModel { ElectionID = 5, Title = "Mayoral Election", Description = "Election to choose the next mayor.", StartDate = new DateTime(2024, 11, 20), EndDate = new DateTime(2024, 11, 21) }
-    };
+        var election = await _mediator.Send(new GetElectionsByIdQuery(electionId));
 
-            return View(elections);
+        if (election.Status != ElectionStatus.Active)
+        {
+            return RedirectToAction("ElectionPage");
         }
 
-        public async Task<IActionResult> ComplainPage()
+        var candidates = await _mediator.Send(new GetCandidatesByElectionIdQuery(electionId));
+        var viewModel = candidates.Select(c => new CandidateViewModel
+        {
+            CandidateID = c.CandidateID,
+            ElectionID = c.ElectionID,
+            FullName = c.FullName,
+            Party = c.Party,
+            Description = c.Description,
+            Income = c.Income,
+            Works = c.Works
+        }).ToList();
+
+        return View(viewModel);
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> CastVote(int candidateId, int electionId)
+    {
+        var userId = _userManager.GetUserId(User);
+
+        var voteDto = new VotesPostDTO
+        {
+            UserID = userId,
+            ElectionID = electionId,
+            CandidateID = candidateId,
+            VoteDate = DateTime.UtcNow
+        };
+
+        var command = new CreateVoteCommand(voteDto);
+
+        try
+        {
+            await _mediator.Send(command);
+            TempData["VoteMessage"] = "Your vote has been cast successfully!";
+            TempData["VoteMessageType"] = "success";
+        }
+        catch (InvalidVoteException ex)
+        {
+            TempData["VoteMessage"] = ex.Message;
+            TempData["VoteMessageType"] = "error";
+        }
+        catch (Exception)
+        {
+            TempData["VoteMessage"] = "An error occurred while casting your vote. Please try again.";
+            TempData["VoteMessageType"] = "error";
+        }
+
+        return RedirectToAction("ElectionPage");
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> ComplainPage()
+    {
+        try
         {
             var allElections = await _mediator.Send(new GetAllElectionsQuery());
             var elections = allElections.Select(e => new SelectListItem
@@ -105,43 +164,106 @@ namespace OnlineVotingS.API.Controllers.TempControllers
 
             var complainViewModel = new ComplainViewModel
             {
-                ElectionID = 0,  // Set a default value or fetch available elections
+                ElectionID = 0,
                 ComplaintText = string.Empty,
                 Elections = elections,
             };
 
             return View(complainViewModel);
         }
-
-        [HttpGet]
-        public async Task<IActionResult> RepliedComplaintsPage()
+        catch (Exception)
         {
-            // Fetch replied complaints directly from the database using EF Core
-            var repliedComplaints = await _context.RepliedComplaints
-                .Select(rc => new RepliedComplaintsViewModel
-                {
-                    RepliedComplaintID = rc.RepliedComplaintID,
-                    ComplaintID = rc.ComplaintID,
-                    ComplaintText = rc.Complaint.ComplaintText, // Assuming a relationship exists with Complaint
-                    ReplyText = rc.ReplyText,
-                    ReplyDate = rc.ReplyDate
-                })
-                .ToListAsync();
-
-            return View(repliedComplaints);  // Passing the data to the view
+            TempData["ErrorMessage"] = "Unable to load elections. Please try again later.";
+            return View(new ComplainViewModel());
         }
+    }
 
-        public IActionResult VotePage(int electionId)
-        {
-            // Mock data for candidates belonging to the specific election
-            var candidates = new List<CandidateViewModel>
+    [HttpPost]
+    public async Task<IActionResult> SubmitComplain(ComplainViewModel model)
     {
-        new CandidateViewModel { CandidateID = 1, ElectionID = electionId, FullName = "John Doe", Party = "Independent", Description = "Lorem ipsum dolor sit amet.", Income = 50000, Works = "Public services" },
-        new CandidateViewModel { CandidateID = 2, ElectionID = electionId, FullName = "Jane Smith", Party = "Democrat", Description = "Consectetur adipiscing elit.", Income = 70000, Works = "Health care" }
-    };
-
-            // Pass the candidates to the view
-            return View(candidates);
+        if (!ModelState.IsValid)
+        {
+            var allElections = await _mediator.Send(new GetAllElectionsQuery());
+            model.Elections = allElections.Select(e => new SelectListItem
+            {
+                Value = e.ElectionID.ToString(),
+                Text = e.Title
+            });
+            return View("ComplainPage", model);
         }
+
+        if (!User.Identity!.IsAuthenticated)
+        {
+            return RedirectToAction("Login", "Account");
+        }
+
+        var userId = _userManager.GetUserId(User);
+        if (string.IsNullOrEmpty(userId))
+        {
+            ModelState.AddModelError("", "Unable to process your request. Please try again later.");
+            return View("ComplainPage", model);
+        }
+
+        try
+        {
+            var complaint = new ComplaintsPostDTO
+            {
+                ElectionID = model.ElectionID,
+                ComplaintText = model.ComplaintText,
+                UserID = userId
+            };
+
+            var command = new CreateComplaintCommand(complaint);
+            await _mediator.Send(command);
+
+            TempData["SuccessMessage"] = "Your complaint has been successfully submitted.";
+            return RedirectToAction("ComplainPage");
+        }
+        catch (Exception ex)
+        { 
+
+            ModelState.AddModelError("", "An error occurred while submitting your complaint. Please try again.");
+            var allElections = await _mediator.Send(new GetAllElectionsQuery());
+            model.Elections = allElections.Select(e => new SelectListItem
+            {
+                Value = e.ElectionID.ToString(),
+                Text = e.Title
+            });
+
+            return View("ComplainPage", model);
+        }
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> RepliedComplaintsPage()
+    {
+        if (User.Identity!.IsAuthenticated)
+        {
+            var userId = _userManager.GetUserId(User);
+
+            // Get all complaints for the current user
+            var userComplaints = await _mediator.Send(new GetComplaintsByUserIdCommand(userId));
+
+            var viewModel = new List<RepliedComplaintsViewModel>();
+
+            foreach (var complaint in userComplaints)
+            {
+                var replies = await _mediator.Send(new GetRepliedComplaintsByComplaintIDQuery(complaint.ComplaintID));
+
+                viewModel.AddRange(replies.Select(r => new RepliedComplaintsViewModel
+                {
+                    RepliedComplaintID = r.RepliedComplaintID,
+                    ComplaintID = r.ComplaintID,
+                    ComplaintText = complaint.ComplaintText,
+                    ComplaintDate = complaint.ComplaintDate,
+                    ReplyText = r.ReplyText,
+                    ReplyDate = r.ReplyDate,
+                }));
+            }
+
+            return View("~/Views/Voter/RepliedComplaintsPage.cshtml", viewModel);
+        }
+
+        return RedirectToAction("Login", "Account"); // Redirect to login if not authenticated
     }
 }

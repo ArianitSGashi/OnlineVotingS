@@ -1,158 +1,255 @@
-﻿@model IEnumerable<OnlineVotingS.API.Models.VoterViewModels.ElectionsViewModel>
-
-@{
+﻿@{
     Layout = null;
 }
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Election Page</title>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-    <link href="~/css/voter-election.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="~/css/guest-election.css" rel="stylesheet">
+    <style>
+        .modal-content {
+            border: none;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .modal-header {
+            border-bottom: none;
+            padding: 20px 20px 10px;
+        }
+
+            .modal-header.success-header {
+                background-color: #28a745;
+                color: white;
+            }
+
+            .modal-header.error-header {
+                background-color: #dc3545;
+                color: white;
+            }
+
+        .modal-body {
+            padding: 20px;
+        }
+
+        .modal-footer {
+            border-top: none;
+            padding: 10px 20px 20px;
+        }
+
+        #voteConfirmationMessage {
+            font-size: 16px;
+            color: #333;
+        }
+
+        .close {
+            color: white;
+            opacity: 0.8;
+        }
+
+            .close:hover {
+                color: white;
+                opacity: 1;
+            }
+    </style>
 </head>
+
 <body>
-    <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg navbar-dark">
-        <a class="navbar-brand" href="@Url.Action("VoterDashboard", "Voter")">Online Voting System</a>
-        <div class="collapse navbar-collapse">
-            <ul class="navbar-nav ml-auto">
-                <li class="nav-item">
-                    <a class="nav-link" href="@Url.Action("VoterDashboard", "Voter")">Home</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">Profile</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="@Url.Action("CandidatePage", "Voter")">Candidate</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="@Url.Action("ElectionPage", "Voter")">Election</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="@Url.Action("ComplainPage", "Voter")">Complain</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="@Url.Action("RepliedComplaintsPage", "Voter")">Replied Complaints</a>
-                </li>
-            </ul>
-            <form asp-controller="Auth" asp-action="Logout" method="post" class="d-inline">
-                <button type="submit" class="btn btn-danger ml-2">Logout</button>
-            </form>
-            <div class="dropdown ml-3">
-                <button class="btn btn-dark dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-expanded="false">
-                    <i class="fas fa-user"></i> OVS
+<nav class="navbar navbar-expand-lg navbar-dark">
+        <a class="navbar-brand" href="@Url.Action("VoterDashboard", "Voter")">
+            <i class="fas fa-vote-yea"></i> Online Voting System
+        </a>
+    <div class="collapse navbar-collapse">
+        <ul class="navbar-nav ml-auto">
+            <li class="nav-item">
+                <a class="nav-link" href="@Url.Action("VoterDashboard", "Voter")"><i class="fas fa-home"></i> Home</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#">Profile</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="@Url.Action("CandidatePage", "Voter")"><i class="fas fa-users"></i> Candidates</a>
+            </li>
+                 
+            <li class="nav-item">
+                <a class="nav-link" href="@Url.Action("ElectionPage", "Voter")"><i class="fas fa-poll"></i> Elections</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="@Url.Action("ComplainPage", "Voter")"><i class="fas fa-comment-alt"></i> Complain</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="@Url.Action("RepliedComplaintsPage", "Voter")"><i class="fas fa-reply"></i> Replied Complaints</a>
+            </li>
+        </ul>
+            <form asp-controller="Auth" asp-action="Logout" method="post" class="d-flex">
+                <button type="submit" class="btn btn-outline-light">
+                    <i class="fas fa-sign-out-alt"></i> Logout
                 </button>
-                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                    <a class="dropdown-item" href="#">Profile</a>
-                    <a class="dropdown-item" href="#">Settings</a>
-                    <a class="dropdown-item" href="#">Logout</a>
-                </div>
-            </div>
-        </div>
-    </nav>
+            </form>
+    </div>
+</nav>
+<div class="hero-section text-center" style="height: auto !important;">
+    <div class="container">
+        <h1 class="display-4">Elections</h1>
+        <input type="text" id="electionSearch" class="form-control" placeholder="Search by Election ID, Title, or Description">
+        <button id="searchButton" class="btn btn-primary" type="button">
+            <i class="fas fa-search"></i> Search
+        </button>
 
-    <!-- Election Table Section -->
-    <div class="hero-section text-center">
-        <div class="container">
-            <h1 class="display-4">Elections</h1>
-            <input type="text" id="electionSearch" placeholder="Search by Election ID, Title, or Description" class="form-control">
-            <button id="searchButton" class="btn btn-primary mt-2">Search</button>
-
-            <table class="table table-hover mt-4" id="electionTable">
+        <div class="table-responsive mt-4" style="overflow-x: auto !important;">
+            <table class="table table-hover" id="electionTable">
                 <thead class="thead-dark">
                     <tr>
-                        <th>Election ID</th>
+                        <th>ID</th>
                         <th>Title</th>
                         <th>Description</th>
                         <th>Start Date</th>
+                        <th>Start Time</th>
                         <th>End Date</th>
+                        <th>End Time</th>
+                        <th>Status</th>
                         <th>Action</th>
                     </tr>
                 </thead>
                 <tbody>
                     @foreach (var election in Model)
                     {
-                        var hasVoted = election.UserHasVoted; // Property indicating if the user has voted in this election
-                        var isCompleted = election.IsCompleted; // Property indicating if the election is completed
                         <tr>
                             <td>@election.ElectionID</td>
                             <td>@election.Title</td>
                             <td>@election.Description</td>
-                            <td>@election.StartDate.ToString("g")</td>
-                            <td>@election.EndDate.ToString("g")</td>
+                            <td>@election.StartDate.ToString("d")</td>
+                            <td>@election.StartTime.ToString(@"hh\:mm")</td>
+                            <td>@election.EndDate.ToString("d")</td>
+                            <td>@election.EndTime.ToString(@"hh\:mm")</td>
                             <td>
-                                @if (isCompleted)
-                                {
-                                    <button class="btn btn-danger" disabled>Completed</button>
-                                }
-                                else if (hasVoted)
-                                {
-                                    <button class="btn btn-secondary" disabled>Voted</button>
-                                }
-                                else
-                                {
-                                    <a href="@Url.Action("VotePage", "Voter", new { electionId = election.ElectionID })" class="btn btn-primary">Vote</a>
-                                }
+                                <span class="badge @(election.Status == OnlineVotingS.Domain.Enums.ElectionStatus.Active ? "bg-success" : election.Status == OnlineVotingS.Domain.Enums.ElectionStatus.Completed ? "bg-danger" : "bg-secondary")">
+                                    @election.Status
+                                </span>
                             </td>
+                                <td>
+                                    @if (election.Status == OnlineVotingS.Domain.Enums.ElectionStatus.Completed)
+                                    {
+                                        <button class="btn btn-sm btn-danger" disabled>Completed</button>
+                                    }
+                                    else if (election.Status == OnlineVotingS.Domain.Enums.ElectionStatus.Not_Active)
+                                    {
+                                        <button class="btn btn-sm btn-secondary" disabled>Not Active</button>
+                                    }
+                                    else if (election.Status == OnlineVotingS.Domain.Enums.ElectionStatus.Active)
+                                    {
+                                        <a href="@Url.Action("VotePage", "Voter", new { electionId = election.ElectionID })" class="btn btn-sm btn-primary">
+                                            <i class="fas fa-vote-yea"></i> Vote
+                                        </a>
+                                    }
+                                </td>
                         </tr>
                     }
                 </tbody>
             </table>
-
         </div>
     </div>
-
-    <!-- Footer -->
-    <div class="footer">
+</div>
+    <footer class="footer">
         <div class="container">
             <div class="row">
-                <div class="col-lg-6 col-md-6">
-                    <h5>Useful Links</h5>
+                <div class="col-md-4">
+                    <h5>About Us</h5>
+                    <p>We are dedicated to providing a secure and transparent online voting platform for all citizens.</p>
+                </div>
+                <div class="col-md-4">
+                    <h5>Quick Links</h5>
                     <ul class="list-unstyled">
-                        <li><a href="/">Home</a></li>
-                        <li><a href="#">About Us</a></li>
-                        <li><a href="#">Services</a></li>
-                        <li><a href="#">Terms of Service</a></li>
-                        <li><a href="#">Privacy Policy</a></li>
+                        <li><a href="/"><i class="fas fa-home"></i> Home</a></li>
+                        <li><a href="#"><i class="fas fa-info-circle"></i> About Us</a></li>
+                        <li><a href="#"><i class="fas fa-cogs"></i> Services</a></li>
+                        <li><a href="#"><i class="fas fa-file-contract"></i> Terms of Service</a></li>
+                        <li><a href="#"><i class="fas fa-user-secret"></i> Privacy Policy</a></li>
                     </ul>
                 </div>
-                <div class="col-lg-6 col-md-6">
+                <div class="col-md-4">
                     <h5>Contact Us</h5>
-                    <p>Email: info@example.com</p>
-                    <ul class="list-inline">
-                        <li class="list-inline-item"><a href="#"><i class="fab fa-twitter"></i></a></li>
-                        <li class="list-inline-item"><a href="#"><i class="fab fa-facebook"></i></a></li>
-                        <li class="list-inline-item"><a href="#"><i class="fab fa-instagram"></i></a></li>
-                        <li class="list-inline-item"><a href="#"><i class="fab fa-google"></i></a></li>
-                        <li class="list-inline-item"><a href="#"><i class="fab fa-linkedin"></i></a></li>
-                    </ul>
+                    <p><i class="fas fa-envelope"></i> Email: info@onlinevoting.com</p>
+                    <p><i class="fas fa-phone"></i> Phone: +1 (123) 456-7890</p>
+                    <div class="social-icons">
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-facebook"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-linkedin"></i></a>
+                    </div>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="col-md-12 text-center">
+                    <p>&copy; 2024 Online Voting System. All rights reserved.</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+    <div class="modal fade" id="voteConfirmationModal" tabindex="-1" role="dialog" aria-labelledby="voteConfirmationModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header" id="modalHeader">
+                    <h5 class="modal-title" id="voteConfirmationModalLabel">Alert</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p id="voteConfirmationMessage" class="mb-0"></p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                 </div>
             </div>
         </div>
     </div>
 
+
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
-
-    <!-- Search Script -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        $(document).ready(function () {
-            $("#searchButton").on("click", function () {
-                var value = $("#electionSearch").val().toLowerCase();
-                $("#electionTable tbody tr").filter(function () {
-                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
-                });
-            });
-
-            $("#electionSearch").on("keyup", function (event) {
-                if (event.keyCode === 13) { // 13 is the Enter key
-                    $("#searchButton").click();
-                }
-            });
+       $(document).ready(function () {
+    // Existing search functionality
+    $("#searchButton").on("click", function () {
+        var value = $("#electionSearch").val().toLowerCase();
+        $("#electionTable tbody tr").filter(function () {
+            $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
         });
+    });
+
+    $("#electionSearch").on("keyup", function (event) {
+        if (event.keyCode === 13) {
+            $("#searchButton").click();
+        }
+    });
+
+    // Modal functionality
+    var voteMessage = '@ViewBag.VoteMessage';
+    var voteMessageType = '@ViewBag.VoteMessageType';
+    if (voteMessage) {
+        $('#voteConfirmationMessage').text(voteMessage);
+        if (voteMessageType === 'success') {
+            $('#modalHeader').removeClass('bg-danger').addClass('bg-success');
+            $('#voteConfirmationModalLabel').text('Success');
+        } else {
+            $('#modalHeader').removeClass('bg-success').addClass('bg-danger');
+            $('#voteConfirmationModalLabel').text('Alert');
+        }
+        $('#voteConfirmationModal').modal('show');
+    }
+
+    // Add event listeners for modal close buttons
+    $('.modal .close, .modal .btn-secondary').on('click', function() {
+        $('#voteConfirmationModal').modal('hide');
+    });
+});
     </script>
 </body>
 </html>
