@@ -6,27 +6,26 @@ using OnlineVotingS.Domain.Interfaces;
 
 namespace OnlineVotingS.Application.Services.Vote.Handlers.Queries;
 
-public class GetVotesByUserIDQueryHandler : IRequestHandler<GetVotesByUserIDQuery, IEnumerable<Votes>>
+public class GetVotesByUserIDQueryHandler : IRequestHandler<GetVotesByUserIDQuery, bool>
 {
-        private readonly IVotesRepository _votesRepository;
-        private readonly ILogger<GetVotesByUserIDQueryHandler> _logger;
+    private readonly IVotesRepository _votesRepository;
+    private readonly ILogger<GetVotesByUserIDQueryHandler> _logger;
 
-        public GetVotesByUserIDQueryHandler(IVotesRepository votesRepository, ILogger<GetVotesByUserIDQueryHandler> logger)
-        {
-            _votesRepository = votesRepository;
-            _logger = logger;
-        }
+    public GetVotesByUserIDQueryHandler(IVotesRepository votesRepository, ILogger<GetVotesByUserIDQueryHandler> logger)
+    {
+        _votesRepository = votesRepository;
+        _logger = logger;
+    }
 
-    public async Task<IEnumerable<Votes>> Handle(GetVotesByUserIDQuery request, CancellationToken cancellationToken)
+    public async Task<bool> Handle(GetVotesByUserIDQuery request, CancellationToken cancellationToken)
     {
         try
         {
-            var votes = await _votesRepository.GetByUserIDAsync(request.UserID);
-            return votes;
+            return await _votesRepository.HasUserVotedInElectionAsync(request.UserID, request.ElectionID);
         }
         catch (Exception ex)
         {
-            _logger.LogError("An error occurred while fetching votes for user ID {UserID}: {ErrorMessage}", request.UserID, ex.Message);
+            _logger.LogError("An error occurred while checking if user ID {UserID} has voted in election ID {ElectionID}: {ErrorMessage}", request.UserID, request.ElectionID, ex.Message);
             throw;
         }
     }

@@ -3,12 +3,14 @@ using OnlineVotingS.Domain.Entities;
 
 namespace OnlineVotingS.Application.Services.Vote.Requests.Queries;
 
-public class GetVotesByUserIDQuery : IRequest<IEnumerable<Votes>>
+public class GetVotesByUserIDQuery : IRequest<bool>
 {
-     public string UserID { get; }
+    public string UserID { get; }
+    public int ElectionID { get; }
 
-     public GetVotesByUserIDQuery(string userID)
-     {
-         UserID = userID;
-     }
+    public GetVotesByUserIDQuery(string userId, int electionId)
+    {
+        UserID = userId;
+        ElectionID = electionId;
+    }
 }
