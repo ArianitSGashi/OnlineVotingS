@@ -1,146 +1,112 @@
-﻿<!DOCTYPE html>
+﻿@{
+    Layout = null;
+}
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Online Voting System - Elections</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="~/css/voter-election.css" rel="stylesheet">
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="~/css/guest-election.css" rel="stylesheet">
 </head>
+
 <body>
-    <header>
-        <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
-            <div class="container">
-                <a class="navbar-brand" href="@Url.Action("VoterDashboard", "Voter")">
-                    <i class="fas fa-vote-yea"></i> Online Voting System
-                </a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="collapse navbar-collapse" id="navbarNav">
-                    <ul class="navbar-nav ms-auto">
-                        <li class="nav-item">
-                            <a class="nav-link" href="@Url.Action("VoterDashboard", "Voter")">
-                                <i class="fas fa-home"></i> Home
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#">
-                                <i class="fas fa-user"></i> Profile
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="@Url.Action("CandidatePage", "Voter")">
-                                <i class="fas fa-users"></i> Candidates
-                            </a>
-                        </li>
-                        <li class="nav-item active">
-                            <a class="nav-link" href="@Url.Action("ElectionPage", "Voter")">
-                                <i class="fas fa-poll"></i> Elections
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="@Url.Action("ComplainPage", "Voter")">
-                                <i class="fas fa-comment-alt"></i> Complain
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="@Url.Action("RepliedComplaintsPage", "Voter")">
-                                <i class="fas fa-reply"></i> Replied Complaints
-                            </a>
-                        </li>
-                    </ul>
-                    <form asp-controller="Auth" asp-action="Logout" method="post" class="d-flex">
-                        <button type="submit" class="btn btn-outline-light">
-                            <i class="fas fa-sign-out-alt"></i> Logout
-                        </button>
-                    </form>
-                </div>
-            </div>
-        </nav>
-    </header>
+<nav class="navbar navbar-expand-lg navbar-dark">
+    <a class="navbar-brand" href="@Url.Action("GuestDashboard", "Guest")">Online Voting System</a>
+    <div class="collapse navbar-collapse">
+        <ul class="navbar-nav ml-auto">
+            <li class="nav-item">
+                <a class="nav-link" href="@Url.Action("VoterDashboard", "Voter")"><i class="fas fa-home"></i> Home</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#">Profile</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="@Url.Action("CandidatePage", "Voter")"><i class="fas fa-users"></i> Candidates</a>
+            </li>
+                 
+            <li class="nav-item">
+                <a class="nav-link" href="@Url.Action("ElectionPage", "Voter")"><i class="fas fa-poll"></i> Elections</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="@Url.Action("ComplainPage", "Voter")"><i class="fas fa-comment-alt"></i> Complain</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="@Url.Action("RepliedComplaintsPage", "Voter")"><i class="fas fa-reply"></i> Replied Complaints</a>
+            </li>
+        </ul>
+        <button class="btn btn-primary ml-2" onclick="location.href='@Url.Action("Login", "Auth")'">Login</button>
+    </div>
+</nav>
+<div class="hero-section text-center" style="height: auto !important;">
+    <div class="container">
+        <h1 class="display-4">Elections</h1>
+        <input type="text" id="electionSearch" class="form-control" placeholder="Search by Election ID, Title, or Description">
+        <button id="searchButton" class="btn btn-primary" type="button">
+            <i class="fas fa-search"></i> Search
+        </button>
 
-    <main class="hero-background">
-        <div class="container">
-            <section class="hero-section">
-                <h1 class="mb-4">Elections</h1>
-                <div class="search-container">
-                    <div class="input-group">
-                        <input type="text" id="electionSearch" class="form-control" placeholder="Search by Election ID, Title, or Description">
-                        <button id="searchButton" class="btn btn-primary" type="button">
-                            <i class="fas fa-search"></i> Search
-                        </button>
-                    </div>
-                </div>
-            </section>
-
-            <section class="content-section">
-                <div class="table-responsive">
-                    <table class="table table-hover" id="electionTable">
-                        <thead>
-                            <tr>
-                                <th>ID</th>
-                                <th>Title</th>
-                                <th>Description</th>
-                                <th>Start Date</th>
-                                <th>Start Time</th>
-                                <th>End Date</th>
-                                <th>End Time</th>
-                                <th>Status</th>
-                                <th>Action</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach (var election in Model)
-                            {
-                                <tr>
-                                    <td>@election.ElectionID</td>
-                                    <td>@election.Title</td>
-                                    <td>@election.Description</td>
-                                    <td>@election.StartDate.ToString("d")</td>
-                                    <td>@election.StartTime.ToString(@"hh\:mm")</td>
-                                    <td>@election.EndDate.ToString("d")</td>
-                                    <td>@election.EndTime.ToString(@"hh\:mm")</td>
-                                    <td>
-                                        <span class="badge @(election.Status == OnlineVotingS.Domain.Enums.ElectionStatus.Active ? "bg-success" :
-                                                        election.Status == OnlineVotingS.Domain.Enums.ElectionStatus.Completed ? "bg-danger" : "bg-secondary")">
-                                            @election.Status
-                                        </span>
-                                    </td>
-                                    <td>
-                                        @if (election.Status == OnlineVotingS.Domain.Enums.ElectionStatus.Completed)
-                                        {
-                                            <button class="btn btn-sm btn-outline-secondary" disabled>Completed</button>
-                                        }
-                                        else if (election.Status == OnlineVotingS.Domain.Enums.ElectionStatus.Not_Active)
-                                        {
-                                            <button class="btn btn-sm btn-outline-secondary" disabled>Not Active</button>
-                                        }
-                                        else if (election.Status == OnlineVotingS.Domain.Enums.ElectionStatus.Active)
-                                        {
-                                            if (election.UserHasVoted)
-                                            {
-                                                <button class="btn btn-sm btn-outline-success" disabled>Voted</button>
-                                            }
-                                            else
-                                            {
-                                                <a href="@Url.Action("VotePage", "Voter", new { electionId = election.ElectionID })" class="btn btn-sm btn-primary">
-                                                    <i class="fas fa-vote-yea"></i> Vote
-                                                </a>
-                                            }
-                                        }
-                                    </td>
-                                </tr>
-                            }
-                        </tbody>
-                    </table>
-                </div>
-            </section>
+        <div class="table-responsive mt-4" style="overflow-x: auto !important;">
+            <table class="table table-hover" id="electionTable">
+                <thead class="thead-dark">
+                    <tr>
+                        <th>ID</th>
+                        <th>Title</th>
+                        <th>Description</th>
+                        <th>Start Date</th>
+                        <th>Start Time</th>
+                        <th>End Date</th>
+                        <th>End Time</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var election in Model)
+                    {
+                        <tr>
+                            <td>@election.ElectionID</td>
+                            <td>@election.Title</td>
+                            <td>@election.Description</td>
+                            <td>@election.StartDate.ToString("d")</td>
+                            <td>@election.StartTime.ToString(@"hh\:mm")</td>
+                            <td>@election.EndDate.ToString("d")</td>
+                            <td>@election.EndTime.ToString(@"hh\:mm")</td>
+                            <td>
+                                <span class="badge @(election.Status == OnlineVotingS.Domain.Enums.ElectionStatus.Active ? "bg-success" : election.Status == OnlineVotingS.Domain.Enums.ElectionStatus.Completed ? "bg-danger" : "bg-secondary")">
+                                    @election.Status
+                                </span>
+                            </td>
+                            <td>
+                                @if (election.Status == OnlineVotingS.Domain.Enums.ElectionStatus.Completed)
+                                {
+                                    <button class="btn btn-sm btn-outline-secondary" disabled>Completed</button>
+                                }
+                                else if (election.Status == OnlineVotingS.Domain.Enums.ElectionStatus.Not_Active)
+                                {
+                                    <button class="btn btn-sm btn-outline-secondary" disabled>Not Active</button>
+                                }
+                                else if (election.Status == OnlineVotingS.Domain.Enums.ElectionStatus.Active)
+                                {
+                                    if (election.UserHasVoted)
+                                    {
+                                        <button class="btn btn-sm btn-outline-success" disabled>Voted</button>
+                                    }
+                                    else
+                                    {
+                                        <a href="@Url.Action("VotePage", "Voter", new { electionId = election.ElectionID })" class="btn btn-sm btn-primary">
+                                            <i class="fas fa-vote-yea"></i> Vote
+                                        </a>
+                                    }
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
         </div>
-    </main>
-
+    </div>
+</div>
     <footer class="footer">
         <div class="container">
             <div class="row">
