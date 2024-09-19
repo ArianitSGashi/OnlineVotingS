@@ -7,12 +7,63 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="~/css/guest-election.css" rel="stylesheet">
+    <style>
+        .modal-content {
+            border: none;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .modal-header {
+            border-bottom: none;
+            padding: 20px 20px 10px;
+        }
+
+            .modal-header.success-header {
+                background-color: #28a745;
+                color: white;
+            }
+
+            .modal-header.error-header {
+                background-color: #dc3545;
+                color: white;
+            }
+
+        .modal-body {
+            padding: 20px;
+        }
+
+        .modal-footer {
+            border-top: none;
+            padding: 10px 20px 20px;
+        }
+
+        #voteConfirmationMessage {
+            font-size: 16px;
+            color: #333;
+        }
+
+        .close {
+            color: white;
+            opacity: 0.8;
+        }
+
+            .close:hover {
+                color: white;
+                opacity: 1;
+            }
+    </style>
 </head>
 
 <body>
 <nav class="navbar navbar-expand-lg navbar-dark">
-    <a class="navbar-brand" href="@Url.Action("GuestDashboard", "Guest")">Online Voting System</a>
+        <a class="navbar-brand" href="@Url.Action("VoterDashboard", "Voter")">
+            <i class="fas fa-vote-yea"></i> Online Voting System
+        </a>
     <div class="collapse navbar-collapse">
         <ul class="navbar-nav ml-auto">
             <li class="nav-item">
@@ -35,7 +86,11 @@
                 <a class="nav-link" href="@Url.Action("RepliedComplaintsPage", "Voter")"><i class="fas fa-reply"></i> Replied Complaints</a>
             </li>
         </ul>
-        <button class="btn btn-primary ml-2" onclick="location.href='@Url.Action("Login", "Auth")'">Login</button>
+            <form asp-controller="Auth" asp-action="Logout" method="post" class="d-flex">
+                <button type="submit" class="btn btn-outline-light">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </button>
+            </form>
     </div>
 </nav>
 <div class="hero-section text-center" style="height: auto !important;">
@@ -77,29 +132,22 @@
                                     @election.Status
                                 </span>
                             </td>
-                            <td>
-                                @if (election.Status == OnlineVotingS.Domain.Enums.ElectionStatus.Completed)
-                                {
-                                    <button class="btn btn-sm btn-outline-secondary" disabled>Completed</button>
-                                }
-                                else if (election.Status == OnlineVotingS.Domain.Enums.ElectionStatus.Not_Active)
-                                {
-                                    <button class="btn btn-sm btn-outline-secondary" disabled>Not Active</button>
-                                }
-                                else if (election.Status == OnlineVotingS.Domain.Enums.ElectionStatus.Active)
-                                {
-                                    if (election.UserHasVoted)
+                                <td>
+                                    @if (election.Status == OnlineVotingS.Domain.Enums.ElectionStatus.Completed)
                                     {
-                                        <button class="btn btn-sm btn-outline-success" disabled>Voted</button>
+                                        <button class="btn btn-sm btn-danger" disabled>Completed</button>
                                     }
-                                    else
+                                    else if (election.Status == OnlineVotingS.Domain.Enums.ElectionStatus.Not_Active)
+                                    {
+                                        <button class="btn btn-sm btn-secondary" disabled>Not Active</button>
+                                    }
+                                    else if (election.Status == OnlineVotingS.Domain.Enums.ElectionStatus.Active)
                                     {
                                         <a href="@Url.Action("VotePage", "Voter", new { electionId = election.ElectionID })" class="btn btn-sm btn-primary">
                                             <i class="fas fa-vote-yea"></i> Vote
                                         </a>
                                     }
-                                }
-                            </td>
+                                </td>
                         </tr>
                     }
                 </tbody>
@@ -144,9 +192,64 @@
             </div>
         </div>
     </footer>
+    <div class="modal fade" id="voteConfirmationModal" tabindex="-1" role="dialog" aria-labelledby="voteConfirmationModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header" id="modalHeader">
+                    <h5 class="modal-title" id="voteConfirmationModalLabel">Alert</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p id="voteConfirmationMessage" class="mb-0"></p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/election-page.js"></script>
+    <script>
+       $(document).ready(function () {
+    // Existing search functionality
+    $("#searchButton").on("click", function () {
+        var value = $("#electionSearch").val().toLowerCase();
+        $("#electionTable tbody tr").filter(function () {
+            $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+        });
+    });
+
+    $("#electionSearch").on("keyup", function (event) {
+        if (event.keyCode === 13) {
+            $("#searchButton").click();
+        }
+    });
+
+    // Modal functionality
+    var voteMessage = '@ViewBag.VoteMessage';
+    var voteMessageType = '@ViewBag.VoteMessageType';
+    if (voteMessage) {
+        $('#voteConfirmationMessage').text(voteMessage);
+        if (voteMessageType === 'success') {
+            $('#modalHeader').removeClass('bg-danger').addClass('bg-success');
+            $('#voteConfirmationModalLabel').text('Success');
+        } else {
+            $('#modalHeader').removeClass('bg-success').addClass('bg-danger');
+            $('#voteConfirmationModalLabel').text('Alert');
+        }
+        $('#voteConfirmationModal').modal('show');
+    }
+
+    // Add event listeners for modal close buttons
+    $('.modal .close, .modal .btn-secondary').on('click', function() {
+        $('#voteConfirmationModal').modal('hide');
+    });
+});
+    </script>
 </body>
 </html>

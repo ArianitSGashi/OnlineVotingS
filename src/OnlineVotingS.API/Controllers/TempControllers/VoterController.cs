@@ -153,42 +153,85 @@ public class VoterController : Controller
     [HttpGet]
     public async Task<IActionResult> ComplainPage()
     {
-        var allElections = await _mediator.Send(new GetAllElectionsQuery());
-        var elections = allElections.Select(e => new SelectListItem
+        try
         {
-            Value = e.ElectionID.ToString(),
-            Text = e.Title
-        });
+            var allElections = await _mediator.Send(new GetAllElectionsQuery());
+            var elections = allElections.Select(e => new SelectListItem
+            {
+                Value = e.ElectionID.ToString(),
+                Text = e.Title
+            });
 
-        var complainViewModel = new ComplainViewModel
+            var complainViewModel = new ComplainViewModel
+            {
+                ElectionID = 0,
+                ComplaintText = string.Empty,
+                Elections = elections,
+            };
+
+            return View(complainViewModel);
+        }
+        catch (Exception)
         {
-            ElectionID = 0,  // Set a default value or fetch available elections
-            ComplaintText = string.Empty,
-            Elections = elections,
-        };
-
-        return View(complainViewModel);
+            TempData["ErrorMessage"] = "Unable to load elections. Please try again later.";
+            return View(new ComplainViewModel());
+        }
     }
 
     [HttpPost]
-    public async Task<IActionResult> SubmitComplain(ComplaintViewModel model)
+    public async Task<IActionResult> SubmitComplain(ComplainViewModel model)
     {
-        var complaint = new ComplaintsPostDTO
+        if (!ModelState.IsValid)
         {
-            ElectionID = model.ElectionID,
-            ComplaintText = model.ComplaintText,
-        };
-
-        if (User.Identity!.IsAuthenticated)
-        {
-            var userId = _userManager.GetUserId(User);
-
-            complaint.UserID = userId!;
+            var allElections = await _mediator.Send(new GetAllElectionsQuery());
+            model.Elections = allElections.Select(e => new SelectListItem
+            {
+                Value = e.ElectionID.ToString(),
+                Text = e.Title
+            });
+            return View("ComplainPage", model);
         }
-        var command = new CreateComplaintCommand(complaint);
-        await _mediator.Send(command);
 
-        return RedirectToAction("ComplainPage");
+        if (!User.Identity!.IsAuthenticated)
+        {
+            return RedirectToAction("Login", "Account");
+        }
+
+        var userId = _userManager.GetUserId(User);
+        if (string.IsNullOrEmpty(userId))
+        {
+            ModelState.AddModelError("", "Unable to process your request. Please try again later.");
+            return View("ComplainPage", model);
+        }
+
+        try
+        {
+            var complaint = new ComplaintsPostDTO
+            {
+                ElectionID = model.ElectionID,
+                ComplaintText = model.ComplaintText,
+                UserID = userId
+            };
+
+            var command = new CreateComplaintCommand(complaint);
+            await _mediator.Send(command);
+
+            TempData["SuccessMessage"] = "Your complaint has been successfully submitted.";
+            return RedirectToAction("ComplainPage");
+        }
+        catch (Exception ex)
+        { 
+
+            ModelState.AddModelError("", "An error occurred while submitting your complaint. Please try again.");
+            var allElections = await _mediator.Send(new GetAllElectionsQuery());
+            model.Elections = allElections.Select(e => new SelectListItem
+            {
+                Value = e.ElectionID.ToString(),
+                Text = e.Title
+            });
+
+            return View("ComplainPage", model);
+        }
     }
 
     [HttpGet]

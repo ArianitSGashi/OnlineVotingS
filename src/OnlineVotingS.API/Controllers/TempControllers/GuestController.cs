@@ -1,47 +1,78 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using MediatR;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using OnlineVotingS.API.Models.GuestViewModels;
+using OnlineVotingS.Application.Services.Candidate.Requests.Queries;
+using OnlineVotingS.Application.Services.Election.Requests.Queries;
+using OnlineVotingS.Application.Services.Vote.Requests.Queries;
+using OnlineVotingS.Domain.Models;
 
 namespace OnlineVotingS.API.Controllers.TempControllers;
 
 public class GuestController : Controller
 {
+
+    private readonly IMediator _mediator;
+    private readonly UserManager<ApplicationUser> _userManager;
+
+    public GuestController(IMediator mediator, UserManager<ApplicationUser> userManager)
+    {
+        _mediator = mediator;
+        _userManager = userManager;
+    }
     public IActionResult GuestDashboard()
     {
         return View();
     }
 
-    public IActionResult CandidatePage()
+    [HttpGet]
+    public async Task<IActionResult> CandidatePage()
     {
-        // This is where you'd pull data from the database.
+        var candidates = await _mediator.Send(new GetAllCandidatesQuery());
+        var viewModel = candidates.Select(c => new CandidateViewModel
+        {
+            CandidateID = c.CandidateID,
+            ElectionID = c.ElectionID,
+            FullName = c.FullName,
+            Party = c.Party,
+            Description = c.Description,
+            Income = c.Income,
+            Works = c.Works
+        }).ToList();
 
-        // For now, we'll mock up some data to illustrate.
-        var candidates = new List<CandidateViewModel>
-    {
-        new CandidateViewModel { CandidateID = 1, ElectionID = 101, FullName = "John Doe", Party = "Independent", Description = "Lorem ipsum dolor sit amet.", Income = 50000, Works = "Public services" },
-        new CandidateViewModel { CandidateID = 2, ElectionID = 101, FullName = "Jane Smith", Party = "Democrat", Description = "Consectetur adipiscing elit.", Income = 70000, Works = "Health care" },
-        new CandidateViewModel { CandidateID = 1, ElectionID = 101, FullName = "John Doe", Party = "Independent", Description = "Lorem ipsum dolor sit amet.", Income = 50000, Works = "Public services" },
-        new CandidateViewModel { CandidateID = 2, ElectionID = 101, FullName = "Jane Smith", Party = "Democrat", Description = "Consectetur adipiscing elit.", Income = 70000, Works = "Health care" },
-        new CandidateViewModel { CandidateID = 1, ElectionID = 101, FullName = "John Doe", Party = "Independent", Description = "Lorem ipsum dolor sit amet.", Income = 50000, Works = "Public services" },
-        new CandidateViewModel { CandidateID = 2, ElectionID = 101, FullName = "Jane Smith", Party = "Democrat", Description = "Consectetur adipiscing elit.", Income = 70000, Works = "Health care" },
-    };
-
-        return View(candidates);
+        return View("~/Views/Guest/CandidatePage.cshtml", viewModel);
     }
 
-    public IActionResult ElectionPage()
+    [HttpGet]
+    public async Task<IActionResult> ElectionPage()
     {
-        // This is where you'd pull data from the database.
 
-        // For now, we'll mock up some data to illustrate.
-        var elections = new List<ElectionsViewModel>
-    {
-        new ElectionsViewModel { ElectionID = 1, Title = "Presidential Election", Description = "Election to choose the next president.", StartDate = new DateTime(2024, 11, 5), EndDate = new DateTime(2024, 11, 6) },
-        new ElectionsViewModel { ElectionID = 2, Title = "Senate Election", Description = "Election to fill senate seats.", StartDate = new DateTime(2024, 11, 5), EndDate = new DateTime(2024, 11, 6) },
-        new ElectionsViewModel { ElectionID = 3, Title = "Local Council Election", Description = "Election to elect local council members.", StartDate = new DateTime(2024, 12, 1), EndDate = new DateTime(2024, 12, 2) },
-        new ElectionsViewModel { ElectionID = 4, Title = "School Board Election", Description = "Election to elect school board members.", StartDate = new DateTime(2024, 12, 10), EndDate = new DateTime(2024, 12, 11) },
-        new ElectionsViewModel { ElectionID = 5, Title = "Mayoral Election", Description = "Election to choose the next mayor.", StartDate = new DateTime(2024, 11, 20), EndDate = new DateTime(2024, 11, 21) }
-    };
+        var elections = await _mediator.Send(new GetAllElectionsQuery());
+        var userId = _userManager.GetUserId(User);
+        var viewModel = new List<ElectionsViewModel>();
 
-        return View(elections);
+        foreach (var election in elections)
+        {
+            var hasVoted = await _mediator.Send(new GetVotesByUserIDQuery(userId, election.ElectionID));
+
+            viewModel.Add(new ElectionsViewModel
+            {
+                ElectionID = election.ElectionID,
+                Title = election.Title ?? string.Empty,
+                Description = election.Description ?? string.Empty,
+                StartDate = election.StartDate,
+                StartTime = election.StartTime,
+                EndDate = election.EndDate,
+                EndTime = election.EndTime,
+                Status = election.Status,
+                UserHasVoted = hasVoted
+            });
+        }
+
+        ViewBag.VoteMessage = TempData["VoteMessage"];
+        ViewBag.VoteMessageType = TempData["VoteMessageType"];
+
+        return View(viewModel);
+
     }
 }
