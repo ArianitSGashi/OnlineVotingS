@@ -62,8 +62,14 @@ public class CampaignController : ControllerBase
     public async Task<IActionResult> CreateCampaignAsync([FromBody] CampaignPostDTO campaignDto)
     {
         var command = new CreateCampaignCommand(campaignDto);
-        var campaign = await _mediator.Send(command);
-        return CreatedAtAction(nameof(GetCampaignByIdAsync), new { id = campaign.CampaignID }, campaign);
+        var result = await _mediator.Send(command);
+
+        if (result.IsSuccess)
+        {
+            var campaign = result.Value;
+            return CreatedAtAction(nameof(GetCampaignByIdAsync), new { id = campaign.CampaignID }, campaign);
+        }
+        return BadRequest(result.Errors);
     }
 
     [HttpPut]

@@ -62,8 +62,14 @@ public class RepliedComplaintsController : ControllerBase
     public async Task<IActionResult> CreateRepliedComplaintAsync([FromBody] RepliedComplaintsPostDTO repliedComplaintDto)
     {
         var command = new CreateRepliedComplaintCommand(repliedComplaintDto);
-        var repliedComplaint = await _mediator.Send(command);
-        return CreatedAtAction(nameof(GetRepliedComplaintByIdAsync), new { id = repliedComplaint.RepliedComplaintID }, repliedComplaint);
+        var result = await _mediator.Send(command);
+
+        if (result.IsSuccess)
+        {
+            var repliedComplaint = result.Value;
+            return CreatedAtAction(nameof(GetRepliedComplaintByIdAsync), new { id = repliedComplaint.RepliedComplaintID }, repliedComplaint);
+        }
+        return BadRequest(result.Errors);
     }
 
     [HttpPut]

@@ -13,6 +13,4 @@ namespace OnlineVotingS.Application.DTO.PostDTO;
         public string? Description { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
-
-       // TODO: Add properties for the date and time of the created at and last update.
     }

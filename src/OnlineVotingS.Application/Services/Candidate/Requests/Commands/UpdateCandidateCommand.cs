@@ -1,10 +1,11 @@
-﻿using MediatR;
+﻿using FluentResults;
+using MediatR;
 using OnlineVotingS.Application.DTO.PutDTO;
 using OnlineVotingS.Domain.Entities;
 
 namespace OnlineVotingS.Application.Services.Candidate.Requests.Commands;
 
-public class UpdateCandidateCommand : IRequest<Candidates>
+public class UpdateCandidateCommand : IRequest<Result<Candidates>>
 {
     public CandidatesPutDTO CandidateDto { get; }
 

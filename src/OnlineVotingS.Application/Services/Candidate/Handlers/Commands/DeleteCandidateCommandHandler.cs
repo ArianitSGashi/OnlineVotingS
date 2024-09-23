@@ -1,11 +1,12 @@
-﻿using MediatR;
+﻿using FluentResults;
+using MediatR;
 using Microsoft.Extensions.Logging;
 using OnlineVotingS.Application.Services.Candidate.Requests.Commands;
 using OnlineVotingS.Domain.Interfaces;
 
 namespace OnlineVotingS.Application.Services.Candidate.Handlers.Commands;
 
-public class DeleteCandidateCommandHandler : IRequestHandler<DeleteCandidateCommand, bool>
+public class DeleteCandidateCommandHandler : IRequestHandler<DeleteCandidateCommand, FluentResults.Result>
 {
     private readonly ICandidateRepository _candidateRepository;
     private readonly ILogger<DeleteCandidateCommandHandler> _logger;
@@ -16,22 +17,23 @@ public class DeleteCandidateCommandHandler : IRequestHandler<DeleteCandidateComm
         _logger = logger;
     }
 
-    public async Task<bool> Handle(DeleteCandidateCommand request, CancellationToken cancellationToken)
+    public async Task<FluentResults.Result> Handle(DeleteCandidateCommand request, CancellationToken cancellationToken)
     {
         try
         {
             var exists = await _candidateRepository.ExistsAsync(request.CandidateId);
             if (!exists)
             {
-                throw new KeyNotFoundException($"Candidate with ID {request.CandidateId} not found.");
+                return FluentResults.Result.Fail($"Candidate with ID {request.CandidateId} not found.");
             }
+
             await _candidateRepository.DeleteAsync(request.CandidateId);
-            return true;
+            return FluentResults.Result.Ok();
         }
         catch (Exception ex)
         {
             _logger.LogError("An error occurred while deleting the candidate with ID {CandidateId}: {ErrorMessage}", request.CandidateId, ex.Message);
-            throw;
+            return FluentResults.Result.Fail(new ExceptionalError(ex));
         }
     }
 }

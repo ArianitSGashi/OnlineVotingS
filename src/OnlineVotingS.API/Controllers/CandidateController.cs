@@ -71,7 +71,14 @@ public class CandidateController : ControllerBase
     {
         var command = new CreateCandidateCommand(candidatesPost);
         var result = await _mediator.Send(command);
-        return CreatedAtAction(nameof(GetByIdAsync), new { candidateId = result.CandidateID }, result);
+
+        if (result.IsSuccess)
+        {
+            var candidate = result.Value;
+            return CreatedAtAction(nameof(GetByIdAsync), new { candidateId = candidate.CandidateID }, candidate);
+        }
+
+        return BadRequest(result.Errors); 
     }
 
     [HttpPut]

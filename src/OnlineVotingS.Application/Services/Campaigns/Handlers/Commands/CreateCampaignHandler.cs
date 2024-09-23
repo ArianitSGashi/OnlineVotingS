@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using FluentResults;
+using AutoMapper;
 using MediatR;
 using Microsoft.Extensions.Logging;
 using OnlineVotingS.Application.Services.Campaigns.Requests.Commands;
@@ -7,7 +8,7 @@ using OnlineVotingS.Domain.Interfaces;
 
 namespace OnlineVotingS.Application.Services.Campaigns.Handlers.Commands;
 
-public class CreateCampaignHandler : IRequestHandler<CreateCampaignCommand, Campaign>
+public class CreateCampaignHandler : IRequestHandler<CreateCampaignCommand, FluentResults.Result<Campaign>>
 {
     private readonly ICampaignRepository _campaignRepository;
     private readonly IMapper _mapper;
@@ -20,18 +21,18 @@ public class CreateCampaignHandler : IRequestHandler<CreateCampaignCommand, Camp
         _logger = logger;
     }
 
-    public async Task<Campaign> Handle(CreateCampaignCommand request, CancellationToken cancellationToken)
+    public async Task<FluentResults.Result<Campaign>> Handle(CreateCampaignCommand request, CancellationToken cancellationToken)
     {
         try
         {
             var campaign = _mapper.Map<Campaign>(request.CampaignDto);
             await _campaignRepository.AddAsync(campaign);
-            return campaign;
+            return FluentResults.Result.Ok(campaign);
         }
         catch (Exception ex)
         {
             _logger.LogError("An error occurred while creating a campaign: {ErrorMessage}", ex.Message);
-            throw;
+            return FluentResults.Result.Fail(new ExceptionalError(ex));
         }
     }
 }
