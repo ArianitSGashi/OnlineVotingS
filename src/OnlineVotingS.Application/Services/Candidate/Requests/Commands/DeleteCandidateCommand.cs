@@ -3,7 +3,7 @@ using MediatR;
 
 namespace OnlineVotingS.Application.Services.Candidate.Requests.Commands;
 
-public class DeleteCandidateCommand : IRequest<Result>
+public class DeleteCandidateCommand : IRequest<Result<bool>>
 {
     public int CandidateId { get; }
 

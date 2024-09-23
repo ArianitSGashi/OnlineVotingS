@@ -5,10 +5,12 @@ using Microsoft.Extensions.Logging;
 using OnlineVotingS.Application.Services.Feedbacks.Requests.Commands;
 using OnlineVotingS.Domain.Entities;
 using OnlineVotingS.Domain.Interfaces;
+using OnlineVotingS.Domain.Errors;
+using static FluentResults.Result;
 
 namespace OnlineVotingS.Application.Services.Feedbacks.Handlers.Commands;
 
-public class CreateFeedbackHandler : IRequestHandler<CreateFeedbackCommand, FluentResults.Result<Feedback>>
+public class CreateFeedbackHandler : IRequestHandler<CreateFeedbackCommand, Result<Feedback>>
 {
     private readonly IFeedbackRepository _feedbackRepository;
     private readonly IMapper _mapper;
@@ -21,7 +23,7 @@ public class CreateFeedbackHandler : IRequestHandler<CreateFeedbackCommand, Flue
         _logger = logger;
     }
 
-    public async Task<FluentResults.Result<Feedback>> Handle(CreateFeedbackCommand request, CancellationToken cancellationToken)
+    public async Task<Result<Feedback>> Handle(CreateFeedbackCommand request, CancellationToken cancellationToken)
     {
         try
         {
@@ -29,12 +31,12 @@ public class CreateFeedbackHandler : IRequestHandler<CreateFeedbackCommand, Flue
             await _feedbackRepository.AddAsync(feedback);
 
             _logger.LogInformation("Feedback created successfully with ID: {FeedbackId}", feedback);
-            return FluentResults.Result.Ok(feedback); 
+            return Ok(feedback);
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "An error occurred while creating feedback: {ErrorMessage}", ex.Message);
-            return FluentResults.Result.Fail(new ExceptionalError(ex)); 
+            return new Result<Feedback>().WithError(ErrorCodes.FEEDBACK_CREATION_FAILED.ToString());
         }
     }
 }

@@ -5,10 +5,12 @@ using Microsoft.Extensions.Logging;
 using OnlineVotingS.Application.Services.Feedbacks.Requests.Commands;
 using OnlineVotingS.Domain.Entities;
 using OnlineVotingS.Domain.Interfaces;
+using OnlineVotingS.Domain.Errors;
+using static FluentResults.Result;
 
 namespace OnlineVotingS.Application.Services.Feedbacks.Handlers.Commands;
 
-public class UpdateFeedbackHandler : IRequestHandler<UpdateFeedbackCommand, FluentResults.Result<Feedback>>
+public class UpdateFeedbackHandler : IRequestHandler<UpdateFeedbackCommand, Result<Feedback>>
 {
     private readonly IFeedbackRepository _feedbackRepository;
     private readonly IMapper _mapper;
@@ -21,7 +23,7 @@ public class UpdateFeedbackHandler : IRequestHandler<UpdateFeedbackCommand, Flue
         _logger = logger;
     }
 
-    public async Task<FluentResults.Result<Feedback>> Handle(UpdateFeedbackCommand request, CancellationToken cancellationToken)
+    public async Task<Result<Feedback>> Handle(UpdateFeedbackCommand request, CancellationToken cancellationToken)
     {
         try
         {
@@ -30,18 +32,17 @@ public class UpdateFeedbackHandler : IRequestHandler<UpdateFeedbackCommand, Flue
             {
                 var errorMessage = $"Feedback with ID {request.FeedbackDto.FeedbackID} not found.";
                 _logger.LogWarning(errorMessage);
-                return FluentResults.Result.Fail(errorMessage); 
+                return new Result<Feedback>().WithError(ErrorCodes.FEEDBACK_NOT_FOUND.ToString());
             }
 
             _mapper.Map(request.FeedbackDto, feedback);
             await _feedbackRepository.UpdateAsync(feedback);
-            _logger.LogInformation("Feedback with ID {FeedbackId} updated successfully.", feedback.FeedbackID);
-            return FluentResults.Result.Ok(feedback); 
+            return Ok(feedback);
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "An error occurred while updating the feedback with ID {FeedbackId}: {ErrorMessage}", request.FeedbackDto.FeedbackID, ex.Message);
-            return FluentResults.Result.Fail(new ExceptionalError(ex)); 
+            return new Result<Feedback>().WithError(ErrorCodes.FEEDBACK_UPDATE_FAILED.ToString());
         }
     }
 }

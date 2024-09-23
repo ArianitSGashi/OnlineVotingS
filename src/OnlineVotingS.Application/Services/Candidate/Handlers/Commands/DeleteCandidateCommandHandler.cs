@@ -2,11 +2,12 @@
 using MediatR;
 using Microsoft.Extensions.Logging;
 using OnlineVotingS.Application.Services.Candidate.Requests.Commands;
+using OnlineVotingS.Domain.Errors;
 using OnlineVotingS.Domain.Interfaces;
 
 namespace OnlineVotingS.Application.Services.Candidate.Handlers.Commands;
 
-public class DeleteCandidateCommandHandler : IRequestHandler<DeleteCandidateCommand, FluentResults.Result>
+public class DeleteCandidateCommandHandler : IRequestHandler<DeleteCandidateCommand, Result<bool>>
 {
     private readonly ICandidateRepository _candidateRepository;
     private readonly ILogger<DeleteCandidateCommandHandler> _logger;
@@ -17,23 +18,22 @@ public class DeleteCandidateCommandHandler : IRequestHandler<DeleteCandidateComm
         _logger = logger;
     }
 
-    public async Task<FluentResults.Result> Handle(DeleteCandidateCommand request, CancellationToken cancellationToken)
+    public async Task<Result<bool>> Handle(DeleteCandidateCommand request, CancellationToken cancellationToken)
     {
         try
         {
             var exists = await _candidateRepository.ExistsAsync(request.CandidateId);
             if (!exists)
             {
-                return FluentResults.Result.Fail($"Candidate with ID {request.CandidateId} not found.");
+                return new Result().WithError(ErrorCodes.CANDIDATE_NOT_FOUND.ToString());
             }
-
             await _candidateRepository.DeleteAsync(request.CandidateId);
-            return FluentResults.Result.Ok();
+            return Result.Ok(true);
         }
         catch (Exception ex)
         {
-            _logger.LogError("An error occurred while deleting the candidate with ID {CandidateId}: {ErrorMessage}", request.CandidateId, ex.Message);
-            return FluentResults.Result.Fail(new ExceptionalError(ex));
+            _logger.LogError(ex, $"An error occurred while deleting the candidate with ID '{request.CandidateId}': {ex.Message}");
+            return new Result().WithError(ErrorCodes.CANDIDATE_DELETION_FAILED.ToString());
         }
     }
 }

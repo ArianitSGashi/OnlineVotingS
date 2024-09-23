@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using static FluentResults.Result;
+using AutoMapper;
 using FluentResults;
 using MediatR;
 using Microsoft.Extensions.Logging;
@@ -7,10 +8,11 @@ using OnlineVotingS.Application.DTO.PutDTO;
 using OnlineVotingS.Application.Services.Results.Requests.Commands;
 using OnlineVotingS.Application.Services.Vote.Requests.Queries;
 using OnlineVotingS.Domain.Interfaces;
+using OnlineVotingS.Domain.Errors;
 
 namespace OnlineVotingS.Application.Services.Results.Handlers.Commands;
 
-public class GenerateOrUpdateResultsHandler : IRequestHandler<GenerateOrUpdateResultsCommand, FluentResults.Result>
+public class GenerateOrUpdateResultsHandler : IRequestHandler<GenerateOrUpdateResultsCommand, Result>
 {
     private readonly IMediator _mediator;
     private readonly IResultRepository _resultRepository;
@@ -23,7 +25,7 @@ public class GenerateOrUpdateResultsHandler : IRequestHandler<GenerateOrUpdateRe
         _logger = logger;
     }
 
-    public async Task<FluentResults.Result> Handle(GenerateOrUpdateResultsCommand request, CancellationToken cancellationToken)
+    public async Task<Result> Handle(GenerateOrUpdateResultsCommand request, CancellationToken cancellationToken)
     {
         try
         {
@@ -52,8 +54,7 @@ public class GenerateOrUpdateResultsHandler : IRequestHandler<GenerateOrUpdateRe
 
                     if (updateResult.IsFailed)
                     {
-                        _logger.LogError("Failed to update result for CandidateID: {CandidateID}", voteGroup.Key);
-                        return FluentResults.Result.Fail("Failed to update existing result.");
+                        return new Result().WithError("Failed to update existing result.");
                     }
                 }
                 else
@@ -67,18 +68,17 @@ public class GenerateOrUpdateResultsHandler : IRequestHandler<GenerateOrUpdateRe
 
                     if (createResult.IsFailed)
                     {
-                        _logger.LogError("Failed to create result for CandidateID: {CandidateID}", voteGroup.Key);
-                        return FluentResults.Result.Fail("Failed to create new result.");
+                        return new Result().WithError("Failed to create new result.");
                     }
                 }
             }
 
-            return FluentResults.Result.Ok(); 
+            return Ok();
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "An error occurred while generating or updating results for ElectionID: {ElectionID}", request.ElectionID);
-            return  FluentResults.Result.Fail(new ExceptionalError(ex));  
+            return new Result().WithError(ErrorCodes.RESULT_UPDATE_FAILED.ToString());
         }
     }
 }

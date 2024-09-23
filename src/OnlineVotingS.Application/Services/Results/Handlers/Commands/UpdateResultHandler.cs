@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using static FluentResults.Result;
+using AutoMapper;
 using FluentResults;
 using MediatR;
 using Microsoft.Extensions.Logging;
@@ -8,6 +9,7 @@ using OnlineVotingS.Domain.Interfaces;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using OnlineVotingS.Domain.Errors;
 
 namespace OnlineVotingS.Application.Services.Results.Handlers.Commands;
 
@@ -33,18 +35,17 @@ public class UpdateResultHandler : IRequestHandler<UpdateResultCommand, Result<O
             {
                 var errorMessage = $"Result with ID {request.ResultDto.ResultID} not found.";
                 _logger.LogWarning(errorMessage);
-                return FluentResults.Result.Fail(errorMessage);  
+                return new Result<OnlineVotingS.Domain.Entities.Result>().WithError(errorMessage);
             }
 
             _mapper.Map(request.ResultDto, existingResult);
             await _resultRepository.UpdateAsync(existingResult);
-            _logger.LogInformation("Result with ID {ResultId} was successfully updated.", request.ResultDto.ResultID);
-            return FluentResults.Result.Ok(existingResult);  
+            return Ok(existingResult);
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "An error occurred while updating the result with ID {ResultId}", request.ResultDto.ResultID);
-            return FluentResults.Result.Fail(new ExceptionalError(ex));  
+            return new Result<OnlineVotingS.Domain.Entities.Result>().WithError(ErrorCodes.RESULT_UPDATE_FAILED.ToString());
         }
     }
 }

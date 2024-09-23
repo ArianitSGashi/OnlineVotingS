@@ -3,10 +3,12 @@ using MediatR;
 using Microsoft.Extensions.Logging;
 using OnlineVotingS.Application.Services.Feedbacks.Requests.Commands;
 using OnlineVotingS.Domain.Interfaces;
+using OnlineVotingS.Domain.Errors;
+using static FluentResults.Result;
 
 namespace OnlineVotingS.Application.Services.Feedbacks.Handlers.Commands;
 
-public class DeleteFeedbackHandler : IRequestHandler<DeleteFeedbackCommand, FluentResults.Result<bool>>
+public class DeleteFeedbackHandler : IRequestHandler<DeleteFeedbackCommand, Result<bool>>
 {
     private readonly IFeedbackRepository _feedbackRepository;
     private readonly ILogger<DeleteFeedbackHandler> _logger;
@@ -17,7 +19,7 @@ public class DeleteFeedbackHandler : IRequestHandler<DeleteFeedbackCommand, Flue
         _logger = logger;
     }
 
-    public async Task<FluentResults.Result<bool>> Handle(DeleteFeedbackCommand request, CancellationToken cancellationToken)
+    public async Task<Result<bool>> Handle(DeleteFeedbackCommand request, CancellationToken cancellationToken)
     {
         try
         {
@@ -26,17 +28,16 @@ public class DeleteFeedbackHandler : IRequestHandler<DeleteFeedbackCommand, Flue
             {
                 var errorMessage = $"Feedback with ID {request.FeedbackId} not found.";
                 _logger.LogWarning(errorMessage);
-                return FluentResults.Result.Fail(errorMessage);
+                return new Result<bool>().WithError(ErrorCodes.FEEDBACK_NOT_FOUND.ToString());
             }
 
             await _feedbackRepository.DeleteAsync(request.FeedbackId);
-            _logger.LogInformation("Feedback with ID {FeedbackId} deleted successfully.", request.FeedbackId);
-            return FluentResults.Result.Ok(true); 
+            return Ok(true);
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "An error occurred while deleting the feedback with ID {FeedbackId}: {ErrorMessage}", request.FeedbackId, ex.Message);
-            return FluentResults.Result.Fail(new ExceptionalError(ex)); 
+            return new Result<bool>().WithError(ErrorCodes.FEEDBACK_DELETION_FAILED.ToString());
         }
     }
 }

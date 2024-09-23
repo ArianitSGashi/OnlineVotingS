@@ -1,14 +1,16 @@
-﻿using FluentResults;
+﻿using static FluentResults.Result;
 using AutoMapper;
 using MediatR;
 using Microsoft.Extensions.Logging;
 using OnlineVotingS.Application.Services.Campaigns.Requests.Commands;
 using OnlineVotingS.Domain.Entities;
 using OnlineVotingS.Domain.Interfaces;
+using FluentResults;
+using OnlineVotingS.Domain.Errors;
 
 namespace OnlineVotingS.Application.Services.Campaigns.Handlers.Commands;
 
-public class CreateCampaignHandler : IRequestHandler<CreateCampaignCommand, FluentResults.Result<Campaign>>
+public class CreateCampaignHandler : IRequestHandler<CreateCampaignCommand, Result<Campaign>>
 {
     private readonly ICampaignRepository _campaignRepository;
     private readonly IMapper _mapper;
@@ -21,18 +23,18 @@ public class CreateCampaignHandler : IRequestHandler<CreateCampaignCommand, Flue
         _logger = logger;
     }
 
-    public async Task<FluentResults.Result<Campaign>> Handle(CreateCampaignCommand request, CancellationToken cancellationToken)
+    public async Task<Result<Campaign>> Handle(CreateCampaignCommand request, CancellationToken cancellationToken)
     {
         try
         {
             var campaign = _mapper.Map<Campaign>(request.CampaignDto);
             await _campaignRepository.AddAsync(campaign);
-            return FluentResults.Result.Ok(campaign);
+            return Ok(campaign);
         }
         catch (Exception ex)
         {
-            _logger.LogError("An error occurred while creating a campaign: {ErrorMessage}", ex.Message);
-            return FluentResults.Result.Fail(new ExceptionalError(ex));
+            _logger.LogError(ex, "An error occurred while creating a campaign: {ErrorMessage}", ex.Message);
+            return new Result<Campaign>().WithError(ErrorCodes.CAMPAIGN_CREATION_FAILED.ToString());
         }
     }
 }

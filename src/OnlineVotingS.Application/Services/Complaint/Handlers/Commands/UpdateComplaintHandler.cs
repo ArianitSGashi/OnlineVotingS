@@ -1,15 +1,16 @@
 ﻿using FluentResults;
+using static FluentResults.Result;
 using AutoMapper;
 using MediatR;
 using Microsoft.Extensions.Logging;
 using OnlineVotingS.Application.Services.Complaint.Requests.Commands;
 using OnlineVotingS.Domain.Entities;
 using OnlineVotingS.Domain.Interfaces;
-using OnlineVotingS.Domain.CostumExceptions;
+using OnlineVotingS.Domain.Errors;
 
 namespace OnlineVotingS.Application.Services.Complaint.Handlers.Commands;
 
-public class UpdateComplaintHandler : IRequestHandler<UpdateComplaintCommand, FluentResults.Result<Complaints>>
+public class UpdateComplaintHandler : IRequestHandler<UpdateComplaintCommand, Result<Complaints>>
 {
     private readonly IComplaintRepository _complaintRepository;
     private readonly IMapper _mapper;
@@ -22,25 +23,24 @@ public class UpdateComplaintHandler : IRequestHandler<UpdateComplaintCommand, Fl
         _logger = logger;
     }
 
-    public async Task<FluentResults.Result<Complaints>> Handle(UpdateComplaintCommand request, CancellationToken cancellationToken)
+    public async Task<Result<Complaints>> Handle(UpdateComplaintCommand request, CancellationToken cancellationToken)
     {
+        var complaint = await _complaintRepository.GetByIdAsync(request.ComplaintsPutDTO.ComplaintID);
+        if (complaint == null)
+        {
+            return new Result<Complaints>().WithError(ErrorCodes.COMPLAIN_NOT_FOUND.ToString());
+        }
+
         try
         {
-            var complaint = await _complaintRepository.GetByIdAsync(request.ComplaintsPutDTO.ComplaintID);
-            if (complaint == null)
-            {
-                var errorMessage = $"Complaint with ID: {request.ComplaintsPutDTO.ComplaintID} not found.";
-                return FluentResults.Result.Fail(new ExceptionalError(new KeyNotFoundException(errorMessage)));
-            }
-
             _mapper.Map(request.ComplaintsPutDTO, complaint);
             await _complaintRepository.UpdateAsync(complaint);
-            return FluentResults.Result.Ok(complaint);
+            return Ok(complaint);
         }
         catch (Exception ex)
         {
             _logger.LogError("An error occurred while updating the complaint with ComplaintID: {ComplaintId}: {ErrorMessage}", request.ComplaintsPutDTO.ComplaintID, ex.Message);
-            return FluentResults.Result.Fail(new ExceptionalError(ex));
+            return new Result<Complaints>().WithError(ErrorCodes.COMPLAIN_NOT_FOUND.ToString());
         }
     }
 }
