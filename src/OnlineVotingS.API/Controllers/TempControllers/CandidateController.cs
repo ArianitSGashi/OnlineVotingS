@@ -1,12 +1,13 @@
+using FluentResults;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using OnlineVotingS.API.Models.AdminViewModels.CandidateViewModels;
 using OnlineVotingS.Application.Services.Candidate.Requests.Commands;
 using OnlineVotingS.Application.Services.Candidate.Requests.Queries;
 using OnlineVotingS.Application.Services.Election.Requests.Queries;
 using OnlineVotingS.Application.DTO.PostDTO;
 using OnlineVotingS.Application.DTO.PutDTO;
-using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace OnlineVotingS.API.Controllers.TempControllers;
 
@@ -26,7 +27,7 @@ public class CandidateController : Controller
 
         if (electionsResult.IsFailed)
         {
-            return View("Error", electionsResult.Errors);
+            return HandleErrorResult(electionsResult);
         }
 
         var viewModel = new AddCandidateViewModel
@@ -59,8 +60,7 @@ public class CandidateController : Controller
 
         if (result.IsFailed)
         {
-            ModelState.AddModelError(string.Empty, "Failed to create candidate.");
-            return View("~/Views/Admin/Candidate/AddCandidate.cshtml", model);
+            return HandleErrorResult(result, model, "~/Views/Admin/Candidate/AddCandidate.cshtml");
         }
 
         return RedirectToAction(nameof(ViewCandidates));
@@ -74,7 +74,7 @@ public class CandidateController : Controller
 
         if (candidatesResult.IsFailed || electionsResult.IsFailed)
         {
-            return View("Error", candidatesResult.Errors.Concat(electionsResult.Errors));
+            return HandleErrorResult(candidatesResult, electionsResult);
         }
 
         var model = new EditCandidateViewModel
@@ -95,7 +95,7 @@ public class CandidateController : Controller
 
         if (candidateResult.IsFailed)
         {
-            return NotFound();
+            return HandleErrorResult(candidateResult);
         }
 
         var candidate = candidateResult.Value;
@@ -132,16 +132,15 @@ public class CandidateController : Controller
             {
                 return RedirectToAction(nameof(ViewCandidates));
             }
-            ModelState.AddModelError(string.Empty, "Failed to update candidate.");
+            return HandleErrorResult(result, model, "~/Views/Admin/Candidate/EditCandidate.cshtml");
         }
 
-        // If we got this far, something failed; redisplay form
         var candidatesResult = await _mediator.Send(new GetAllCandidatesQuery());
         var electionsResult = await _mediator.Send(new GetAllElectionsQuery());
 
         if (candidatesResult.IsFailed || electionsResult.IsFailed)
         {
-            return View("Error", candidatesResult.Errors.Concat(electionsResult.Errors));
+            return HandleErrorResult(candidatesResult, electionsResult);
         }
 
         model.CandidateList = candidatesResult.Value.Select(c => new SelectListItem
@@ -159,7 +158,7 @@ public class CandidateController : Controller
 
         if (candidatesResult.IsFailed)
         {
-            return View("Error", candidatesResult.Errors);
+            return HandleErrorResult(candidatesResult);
         }
 
         var viewModel = new DeleteCandidateViewModel
@@ -185,15 +184,14 @@ public class CandidateController : Controller
             {
                 return RedirectToAction(nameof(ViewCandidates));
             }
-            ModelState.AddModelError(string.Empty, "Failed to delete candidate.");
+            return HandleErrorResult(result, model, "~/Views/Admin/Candidate/DeleteCandidate.cshtml");
         }
 
-        // If we got this far, something failed; redisplay form
         var candidatesResult = await _mediator.Send(new GetAllCandidatesQuery());
 
         if (candidatesResult.IsFailed)
         {
-            return View("Error", candidatesResult.Errors);
+            return HandleErrorResult(candidatesResult);
         }
 
         model.AvailableCandidates = candidatesResult.Value.Select(c => new SelectListItem
@@ -211,7 +209,7 @@ public class CandidateController : Controller
 
         if (candidatesResult.IsFailed)
         {
-            return View("Error", candidatesResult.Errors);
+            return HandleErrorResult(candidatesResult);
         }
 
         var viewModel = candidatesResult.Value.Select(c => new ViewCandidatesViewModel
@@ -226,5 +224,19 @@ public class CandidateController : Controller
         }).ToList();
 
         return View("~/Views/Admin/Candidate/ViewCandidates.cshtml", viewModel);
+    }
+
+    private IActionResult HandleErrorResult<T>(Result<T> result, object? model = null, string? viewPath = null)
+    {
+        foreach (var error in result.Errors)
+        {
+            ModelState.AddModelError(string.Empty, error.Message);
+        }
+
+        if (model != null && viewPath != null)
+        {
+            return View(viewPath, model);
+        }
+        return View("Error");
     }
 }

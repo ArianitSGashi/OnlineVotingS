@@ -1,19 +1,20 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using FluentResults;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using OnlineVotingS.API.Models.VoterViewModels;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using OnlineVotingS.Application.Services.Election.Requests.Queries;
-using MediatR;
-using OnlineVotingS.Application.DTO.PostDTO;
-using OnlineVotingS.Application.Services.Complaint.Requests.Commands;
 using Microsoft.AspNetCore.Identity;
-using OnlineVotingS.Domain.Models;
+using MediatR;
+using OnlineVotingS.API.Models.VoterViewModels;
+using OnlineVotingS.Application.Services.Election.Requests.Queries;
 using OnlineVotingS.Application.Services.Candidate.Requests.Queries;
-using OnlineVotingS.Application.Services.RepliedComplaint.Requests.Queries;
-using OnlineVotingS.Application.Services.Complaint.Requests.Queries;
 using OnlineVotingS.Application.Services.Vote.Requests.Queries;
-using OnlineVotingS.Domain.Enums;
 using OnlineVotingS.Application.Services.Vote.Requests.Commands;
+using OnlineVotingS.Application.Services.Complaint.Requests.Commands;
+using OnlineVotingS.Application.Services.Complaint.Requests.Queries;
+using OnlineVotingS.Application.Services.RepliedComplaint.Requests.Queries;
+using OnlineVotingS.Application.DTO.PostDTO;
+using OnlineVotingS.Domain.Models;
+using OnlineVotingS.Domain.Enums;
 using OnlineVotingS.Domain.CostumExceptions;
 
 namespace OnlineVotingS.API.Controllers.TempControllers;
@@ -42,7 +43,7 @@ public class VoterController : Controller
         var result = await _mediator.Send(new GetAllCandidatesQuery());
         if (result.IsFailed)
         {
-            return View("Error", result.Errors);
+            return HandleErrorResult(result);
         }
 
         var viewModel = result.Value.Select(c => new CandidateViewModel
@@ -65,7 +66,7 @@ public class VoterController : Controller
         var electionsResult = await _mediator.Send(new GetAllElectionsQuery());
         if (electionsResult.IsFailed)
         {
-            return View("Error", electionsResult.Errors);
+            return HandleErrorResult(electionsResult);
         }
 
         var userId = _userManager.GetUserId(User);
@@ -102,7 +103,7 @@ public class VoterController : Controller
         var electionResult = await _mediator.Send(new GetElectionsByIdQuery(electionId));
         if (electionResult.IsFailed)
         {
-            return View("Error", electionResult.Errors);
+            return HandleErrorResult(electionResult);
         }
 
         if (electionResult.Value.Status != ElectionStatus.Active)
@@ -113,7 +114,7 @@ public class VoterController : Controller
         var candidatesResult = await _mediator.Send(new GetCandidatesByElectionIdQuery(electionId));
         if (candidatesResult.IsFailed)
         {
-            return View("Error", candidatesResult.Errors);
+            return HandleErrorResult(candidatesResult);
         }
 
         var viewModel = candidatesResult.Value.Select(c => new CandidateViewModel
@@ -155,19 +156,18 @@ public class VoterController : Controller
             }
             else
             {
-                TempData["VoteMessage"] = "You have already voted in this election!";
-                TempData["VoteMessageType"] = "error";
+                return HandleErrorResult(result);
             }
         }
         catch (InvalidVoteException ex)
         {
-            TempData["VoteMessage"] = ex.Message;
-            TempData["VoteMessageType"] = "error";
+            ModelState.AddModelError("", ex.Message);
+            return View("Error");
         }
         catch (Exception)
         {
-            TempData["VoteMessage"] = "An error occurred while casting your vote. Please try again.";
-            TempData["VoteMessageType"] = "error";
+            ModelState.AddModelError("", "An error occurred while casting your vote. Please try again.");
+            return View("Error");
         }
 
         return RedirectToAction("ElectionPage");
@@ -176,35 +176,26 @@ public class VoterController : Controller
     [HttpGet]
     public async Task<IActionResult> ComplainPage()
     {
-        try
+        var allElectionsResult = await _mediator.Send(new GetAllElectionsQuery());
+        if (allElectionsResult.IsFailed)
         {
-            var allElectionsResult = await _mediator.Send(new GetAllElectionsQuery());
-            if (allElectionsResult.IsFailed)
-            {
-                TempData["ErrorMessage"] = "Unable to load elections. Please try again later.";
-                return View(new ComplainViewModel());
-            }
-
-            var elections = allElectionsResult.Value.Select(e => new SelectListItem
-            {
-                Value = e.ElectionID.ToString(),
-                Text = e.Title
-            });
-
-            var complainViewModel = new ComplainViewModel
-            {
-                ElectionID = 0,
-                ComplaintText = string.Empty,
-                Elections = elections,
-            };
-
-            return View(complainViewModel);
+            return HandleErrorResult(allElectionsResult);
         }
-        catch (Exception)
+
+        var elections = allElectionsResult.Value.Select(e => new SelectListItem
         {
-            TempData["ErrorMessage"] = "Unable to load elections. Please try again later.";
-            return View(new ComplainViewModel());
-        }
+            Value = e.ElectionID.ToString(),
+            Text = e.Title
+        });
+
+        var complainViewModel = new ComplainViewModel
+        {
+            ElectionID = 0,
+            ComplaintText = string.Empty,
+            Elections = elections,
+        };
+
+        return View(complainViewModel);
     }
 
     [HttpPost]
@@ -236,80 +227,75 @@ public class VoterController : Controller
             return View("ComplainPage", model);
         }
 
-        try
+        var complaint = new ComplaintsPostDTO
         {
-            var complaint = new ComplaintsPostDTO
-            {
-                ElectionID = model.ElectionID,
-                ComplaintText = model.ComplaintText,
-                UserID = userId
-            };
+            ElectionID = model.ElectionID,
+            ComplaintText = model.ComplaintText,
+            UserID = userId
+        };
 
-            var command = new CreateComplaintCommand(complaint);
-            var result = await _mediator.Send(command);
+        var command = new CreateComplaintCommand(complaint);
+        var result = await _mediator.Send(command);
 
-            if (result.IsSuccess)
-            {
-                TempData["SuccessMessage"] = "Your complaint has been successfully submitted.";
-                return RedirectToAction("ComplainPage");
-            }
-            else
-            {
-                ModelState.AddModelError("", "Failed to submit your complaint. Please try again.");
-                return View("ComplainPage", model);
-            }
-        }
-        catch (Exception)
+        if (result.IsFailed)
         {
-            ModelState.AddModelError("", "An error occurred while submitting your complaint. Please try again.");
-            var allElectionsResult = await _mediator.Send(new GetAllElectionsQuery());
-            if (allElectionsResult.IsSuccess)
-            {
-                model.Elections = allElectionsResult.Value.Select(e => new SelectListItem
-                {
-                    Value = e.ElectionID.ToString(),
-                    Text = e.Title
-                });
-            }
-            return View("ComplainPage", model);
+            return HandleErrorResult(result, model, "ComplainPage");
         }
+
+        TempData["SuccessMessage"] = "Your complaint has been successfully submitted.";
+        return RedirectToAction("ComplainPage");
     }
 
     [HttpGet]
     public async Task<IActionResult> RepliedComplaintsPage()
     {
-        if (User.Identity!.IsAuthenticated)
+        if (!User.Identity!.IsAuthenticated)
         {
-            var userId = _userManager.GetUserId(User);
-
-            var userComplaintsResult = await _mediator.Send(new GetComplaintsByUserIdCommand(userId));
-            if (userComplaintsResult.IsFailed)
-            {
-                return View("Error", userComplaintsResult.Errors);
-            }
-
-            var viewModel = new List<RepliedComplaintsViewModel>();
-
-            foreach (var complaint in userComplaintsResult.Value)
-            {
-                var repliesResult = await _mediator.Send(new GetRepliedComplaintsByComplaintIDQuery(complaint.ComplaintID));
-                if (repliesResult.IsSuccess)
-                {
-                    viewModel.AddRange(repliesResult.Value.Select(r => new RepliedComplaintsViewModel
-                    {
-                        RepliedComplaintID = r.RepliedComplaintID,
-                        ComplaintID = r.ComplaintID,
-                        ComplaintText = complaint.ComplaintText,
-                        ComplaintDate = complaint.ComplaintDate,
-                        ReplyText = r.ReplyText,
-                        ReplyDate = r.ReplyDate,
-                    }));
-                }
-            }
-
-            return View("~/Views/Voter/RepliedComplaintsPage.cshtml", viewModel);
+            return RedirectToAction("Login", "Account");
         }
 
-        return RedirectToAction("Login", "Account");
+        var userId = _userManager.GetUserId(User);
+
+        var userComplaintsResult = await _mediator.Send(new GetComplaintsByUserIdCommand(userId));
+        if (userComplaintsResult.IsFailed)
+        {
+            return HandleErrorResult(userComplaintsResult);
+        }
+
+        var viewModel = new List<RepliedComplaintsViewModel>();
+
+        foreach (var complaint in userComplaintsResult.Value)
+        {
+            var repliesResult = await _mediator.Send(new GetRepliedComplaintsByComplaintIDQuery(complaint.ComplaintID));
+            if (repliesResult.IsSuccess)
+            {
+                viewModel.AddRange(repliesResult.Value.Select(r => new RepliedComplaintsViewModel
+                {
+                    RepliedComplaintID = r.RepliedComplaintID,
+                    ComplaintID = r.ComplaintID,
+                    ComplaintText = complaint.ComplaintText,
+                    ComplaintDate = complaint.ComplaintDate,
+                    ReplyText = r.ReplyText,
+                    ReplyDate = r.ReplyDate,
+                }));
+            }
+        }
+
+        return View("~/Views/Voter/RepliedComplaintsPage.cshtml", viewModel);
+    }
+
+    private IActionResult HandleErrorResult<T>(Result<T> result, object? model = null, string? viewName = null)
+    {
+        foreach (var error in result.Errors)
+        {
+            ModelState.AddModelError("", error.Message);
+        }
+
+        if (model != null && !string.IsNullOrEmpty(viewName))
+        {
+            return View(viewName, model);
+        }
+
+        return View("Error");
     }
 }

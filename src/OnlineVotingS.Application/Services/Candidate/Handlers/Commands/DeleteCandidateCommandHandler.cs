@@ -5,20 +5,16 @@ using OnlineVotingS.Application.Services.Candidate.Requests.Commands;
 using OnlineVotingS.Domain.Errors;
 using OnlineVotingS.Domain.Interfaces;
 using static FluentResults.Result;
-
 namespace OnlineVotingS.Application.Services.Candidate.Handlers.Commands;
-
 public class DeleteCandidateCommandHandler : IRequestHandler<DeleteCandidateCommand, Result<bool>>
 {
     private readonly ICandidateRepository _candidateRepository;
     private readonly ILogger<DeleteCandidateCommandHandler> _logger;
-
     public DeleteCandidateCommandHandler(ICandidateRepository candidateRepository, ILogger<DeleteCandidateCommandHandler> logger)
     {
         _candidateRepository = candidateRepository;
         _logger = logger;
     }
-
     public async Task<Result<bool>> Handle(DeleteCandidateCommand request, CancellationToken cancellationToken)
     {
         try

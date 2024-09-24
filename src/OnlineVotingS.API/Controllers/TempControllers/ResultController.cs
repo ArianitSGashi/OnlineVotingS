@@ -1,4 +1,5 @@
-﻿using MediatR;
+﻿using FluentResults;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using OnlineVotingS.API.Models.AdminViewModels.ResultViewModels;
 using OnlineVotingS.Application.Services.Candidate.Requests.Queries;
@@ -23,7 +24,7 @@ public class ResultController : Controller
         var allElectionsResult = await _mediator.Send(new GetAllElectionsQuery());
         if (allElectionsResult.IsFailed)
         {
-            return View("Error", allElectionsResult.Errors);
+            return HandleErrorResult(allElectionsResult);
         }
 
         var model = new GenerateResultViewModel
@@ -39,7 +40,7 @@ public class ResultController : Controller
         var result = await _mediator.Send(new GenerateOrUpdateResultsCommand(SelectedElectionID, CandidateId));
         if (result.IsFailed)
         {
-            return View("Error", result.Errors);
+            return HandleErrorResult(result);
         }
         return RedirectToAction("ViewResult");
     }
@@ -50,7 +51,7 @@ public class ResultController : Controller
         var candidatesResult = await _mediator.Send(new GetCandidatesByElectionIdQuery(electionId));
         if (candidatesResult.IsFailed)
         {
-            return Json(new { error = "Failed to retrieve candidates" });
+            return Json(new { error = "Failed to retrieve candidates", details = candidatesResult.Errors.Select(e => e.Message) });
         }
         return Json(candidatesResult.Value);
     }
@@ -60,10 +61,9 @@ public class ResultController : Controller
     {
         var model = new List<ViewResultViewModel>();
         var allResultsResult = await _mediator.Send(new GetAllResultsQuery());
-
         if (allResultsResult.IsFailed)
         {
-            return View("Error", allResultsResult.Errors);
+            return HandleErrorResult(allResultsResult);
         }
 
         foreach (var item in allResultsResult.Value)
@@ -71,20 +71,32 @@ public class ResultController : Controller
             var candidateResult = await _mediator.Send(new GetCandidateByIdQuery(item.CandidateID));
             var electionResult = await _mediator.Send(new GetElectionsByIdQuery(item.ElectionID));
 
-            if (candidateResult.IsSuccess && electionResult.IsSuccess)
+            if (candidateResult.IsFailed || electionResult.IsFailed)
             {
-                model.Add(new ViewResultViewModel
-                {
-                    ResultID = item.ResultID,
-                    CandidateID = candidateResult.Value.CandidateID,
-                    CandidateName = candidateResult.Value.FullName,
-                    ElectionID = electionResult.Value.ElectionID,
-                    ElectionTitle = electionResult.Value.Title,
-                    TotalVotes = item.TotalVotes
-                });
+                continue; 
             }
+
+            model.Add(new ViewResultViewModel
+            {
+                ResultID = item.ResultID,
+                CandidateID = candidateResult.Value.CandidateID,
+                CandidateName = candidateResult.Value.FullName,
+                ElectionID = electionResult.Value.ElectionID,
+                ElectionTitle = electionResult.Value.Title,
+                TotalVotes = item.TotalVotes
+            });
         }
 
         return View("~/Views/Admin/Result/ViewResult.cshtml", model);
+    }
+
+    private IActionResult HandleErrorResult<T>(Result<T> result)
+    {
+        foreach (var error in result.Errors)
+        {
+            ModelState.AddModelError(string.Empty, error.Message);
+        }
+
+        return View("Error");
     }
 }

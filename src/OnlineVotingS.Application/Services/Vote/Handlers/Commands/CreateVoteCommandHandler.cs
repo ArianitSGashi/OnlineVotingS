@@ -35,7 +35,7 @@ public class CreateVoteCommandHandler : IRequestHandler<CreateVoteCommand, Resul
         {
             if (await _votesRepository.HasUserVotedInElectionAsync(request.VoteDto.UserID, request.VoteDto.ElectionID))
             {
-                return new Result<Votes>().WithError(ErrorCodes.VOTE_ALREADY_COMPLETED.ToString());
+                return new Result<Votes>().WithError(ErrorCodes.VOTE_ALREADY_CASTED_IN_THIS_ELECTION.ToString());
             }
 
             var candidateBelongsToElection = await _candidateRepository.CandidateBelongsToElectionAsync(request.VoteDto.CandidateID, request.VoteDto.ElectionID);

@@ -1,4 +1,5 @@
-﻿using MediatR;
+﻿using FluentResults;
+using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using OnlineVotingS.API.Models.GuestViewModels;
@@ -31,7 +32,7 @@ public class GuestController : Controller
         var result = await _mediator.Send(new GetAllCandidatesQuery());
         if (result.IsFailed)
         {
-            return View("Error", result.Errors);
+            return HandleErrorResult(result);
         }
 
         var viewModel = result.Value.Select(c => new CandidateViewModel
@@ -54,7 +55,7 @@ public class GuestController : Controller
         var electionsResult = await _mediator.Send(new GetAllElectionsQuery());
         if (electionsResult.IsFailed)
         {
-            return View("Error", electionsResult.Errors);
+            return HandleErrorResult(electionsResult);
         }
 
         var userId = _userManager.GetUserId(User);
@@ -81,6 +82,17 @@ public class GuestController : Controller
 
         ViewBag.VoteMessage = TempData["VoteMessage"];
         ViewBag.VoteMessageType = TempData["VoteMessageType"];
+
         return View(viewModel);
+    }
+
+    private IActionResult HandleErrorResult<T>(Result<T> result)
+    {
+        foreach (var error in result.Errors)
+        {
+            ModelState.AddModelError(string.Empty, error.Message);
+        }
+
+        return View("Error");
     }
 }

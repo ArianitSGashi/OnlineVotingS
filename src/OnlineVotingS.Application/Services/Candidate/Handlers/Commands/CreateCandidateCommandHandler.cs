@@ -45,7 +45,7 @@ public class CreateCandidateCommandHandler : IRequestHandler<CreateCandidateComm
         catch (DbUpdateException ex) when (ex.InnerException is SqlException sqlEx &&
                                            (sqlEx.Number == 2601 || sqlEx.Number == 2627))
         {
-            var errorMessage = $"A candidate with the name '{request.CandidateDto.FullName}' already exists in election {request.CandidateDto.ElectionID} for party {request.CandidateDto.Party}.";
+            var errorMessage = $"A candidate already exists in election {request.CandidateDto.ElectionID} for party {request.CandidateDto.Party}.";
             return new Result<Candidates>().WithError(new DuplicateCandidateException(errorMessage).Message);
         }
         catch (Exception ex)

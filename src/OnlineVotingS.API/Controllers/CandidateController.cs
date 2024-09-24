@@ -4,6 +4,7 @@ using OnlineVotingS.Application.DTO.PostDTO;
 using OnlineVotingS.Application.DTO.PutDTO;
 using OnlineVotingS.Application.Services.Candidate.Requests.Commands;
 using OnlineVotingS.Application.Services.Candidate.Requests.Queries;
+using OnlineVotingS.Domain.Errors;
 
 namespace OnlineVotingS.API.Controllers;
 
@@ -94,6 +95,27 @@ public class CandidateController : ControllerBase
     {
         var command = new DeleteCandidateCommand(candidateId);
         var result = await _mediator.Send(command);
-        return NoContent();
+
+        if (result.IsSuccess)
+        {
+            return NoContent();
+        }
+
+        var error = result.Errors.FirstOrDefault();
+        if (error != null)
+        {
+            switch (error.Message)
+            {
+                case nameof(ErrorCodes.CANDIDATE_NOT_FOUND):
+                    return NotFound(new { message = "Candidate not found", candidateId });
+                case nameof(ErrorCodes.CANDIDATE_DELETION_FAILED):
+                    return StatusCode(StatusCodes.Status500InternalServerError,
+                        new { message = "Failed to delete candidate", candidateId });
+                default:
+                    return BadRequest(new { message = error.Message, candidateId });
+            }
+        }
+
+        return BadRequest(new { message = "An unknown error occurred", candidateId });
     }
 }

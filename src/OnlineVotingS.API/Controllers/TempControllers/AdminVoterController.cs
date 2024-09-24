@@ -18,13 +18,11 @@ namespace OnlineVotingS.API.Controllers.TempControllers
             _logger = logger;
         }
 
-        // GET: /AdminVoter/AddVoter
         public IActionResult AddVoter()
         {
             return View("~/Views/Admin/AdminVoter/AddVoter.cshtml");
         }
 
-        // POST: /AdminVoter/AddVoter
         [HttpPost]
         public async Task<IActionResult> AddVoter(AddVoterViewModel model)
         {

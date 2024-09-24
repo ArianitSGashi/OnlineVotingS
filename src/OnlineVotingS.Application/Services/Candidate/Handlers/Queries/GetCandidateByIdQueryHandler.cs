@@ -27,14 +27,17 @@ public class GetCandidateByIdQueryHandler : IRequestHandler<GetCandidateByIdQuer
             var candidate = await _candidateRepository.GetByIdAsync(request.CandidateId);
             if (candidate == null)
             {
-                return new Result<Candidates>().WithError(ErrorCodes.CANDIDATE_NOT_FOUND.ToString());
+                return new Result<Candidates>().WithError(new Error(ErrorCodes.CANDIDATE_NOT_FOUND.ToString())
+                    .WithMetadata("CandidateId", request.CandidateId));
             }
             return Ok(candidate);
         }
         catch (Exception ex)
         {
             _logger.LogError("An error occurred while retrieving candidate with ID {CandidateId}: {ErrorMessage}", request.CandidateId, ex.Message);
-            return new Result<Candidates>().WithError(ErrorCodes.CANDIDATE_NOT_FOUND.ToString());
+            return new Result<Candidates>().WithError(new Error(ErrorCodes.CANDIDATE_NOT_FOUND.ToString())
+                .WithMetadata("CandidateId", request.CandidateId)
+                .WithMetadata("ExceptionMessage", ex.Message));
         }
     }
 }
