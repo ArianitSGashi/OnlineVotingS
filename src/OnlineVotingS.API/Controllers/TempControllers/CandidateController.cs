@@ -22,15 +22,23 @@ public class CandidateController : Controller
     [HttpGet]
     public async Task<IActionResult> AddCandidate()
     {
-        var elections = await _mediator.Send(new GetAllElectionsQuery());
+        var electionsResult = await _mediator.Send(new GetAllElectionsQuery());
+
+        if (electionsResult.IsFailed)
+        {
+            // Handle the error, perhaps log it and return an error view
+            return View("Error", electionsResult.Errors);
+        }
+
         var viewModel = new AddCandidateViewModel
         {
-            Elections = elections.Select(e => new SelectListItem
+            Elections = electionsResult.Value.Select(e => new SelectListItem
             {
                 Value = e.ElectionID.ToString(),
                 Text = e.Title
             }).ToList()
         };
+
         return View("~/Views/Admin/Candidate/AddCandidate.cshtml", viewModel);
     }
 

@@ -40,7 +40,7 @@ public class UpdateComplaintHandler : IRequestHandler<UpdateComplaintCommand, Re
         catch (Exception ex)
         {
             _logger.LogError("An error occurred while updating the complaint with ComplaintID: {ComplaintId}: {ErrorMessage}", request.ComplaintsPutDTO.ComplaintID, ex.Message);
-            return new Result<Complaints>().WithError(ErrorCodes.COMPLAIN_NOT_FOUND.ToString());
+            return new Result<Complaints>().WithError(ErrorCodes.COMPLAIN_UPDATE_FAILED.ToString());
         }
     }
 }

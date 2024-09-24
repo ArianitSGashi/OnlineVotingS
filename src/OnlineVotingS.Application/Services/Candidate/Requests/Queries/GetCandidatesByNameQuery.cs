@@ -1,9 +1,10 @@
 ﻿using MediatR;
 using OnlineVotingS.Domain.Entities;
+using FluentResults;
 
 namespace OnlineVotingS.Application.Services.Candidate.Requests.Queries;
 
-public class GetCandidatesByNameQuery : IRequest<IEnumerable<Candidates>>
+public class GetCandidatesByNameQuery : IRequest<Result<IEnumerable<Candidates>>>
 {
     public string FullName { get;} 
 

@@ -1,12 +1,15 @@
-﻿using MediatR;
+﻿using FluentResults;
+using MediatR;
 using Microsoft.Extensions.Logging;
 using OnlineVotingS.Application.Services.Candidate.Requests.Queries;
 using OnlineVotingS.Domain.Entities;
 using OnlineVotingS.Domain.Interfaces;
+using OnlineVotingS.Domain.Errors;
+using static FluentResults.Result;
 
 namespace OnlineVotingS.Application.Services.Candidate.Handlers.Queries;
 
-public class GetCandidateByIdQueryHandler : IRequestHandler<GetCandidateByIdQuery, Candidates>
+public class GetCandidateByIdQueryHandler : IRequestHandler<GetCandidateByIdQuery, Result<Candidates>>
 {
     private readonly ICandidateRepository _candidateRepository;
     private readonly ILogger<GetCandidateByIdQueryHandler> _logger;
@@ -17,21 +20,21 @@ public class GetCandidateByIdQueryHandler : IRequestHandler<GetCandidateByIdQuer
         _logger = logger;
     }
 
-    public async Task<Candidates> Handle(GetCandidateByIdQuery request, CancellationToken cancellationToken)
+    public async Task<Result<Candidates>> Handle(GetCandidateByIdQuery request, CancellationToken cancellationToken)
     {
         try
         {
             var candidate = await _candidateRepository.GetByIdAsync(request.CandidateId);
             if (candidate == null)
             {
-                throw new KeyNotFoundException($"Candidate with ID {request.CandidateId} not found.");
+                return new Result<Candidates>().WithError(ErrorCodes.CANDIDATE_NOT_FOUND.ToString());
             }
-            return candidate;
+            return Ok(candidate);
         }
         catch (Exception ex)
         {
             _logger.LogError("An error occurred while retrieving candidate with ID {CandidateId}: {ErrorMessage}", request.CandidateId, ex.Message);
-            throw;
+            return new Result<Candidates>().WithError(ErrorCodes.CANDIDATE_NOT_FOUND.ToString());
         }
     }
 }

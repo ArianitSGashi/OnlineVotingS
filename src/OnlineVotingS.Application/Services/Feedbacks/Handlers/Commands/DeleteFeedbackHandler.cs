@@ -27,8 +27,7 @@ public class DeleteFeedbackHandler : IRequestHandler<DeleteFeedbackCommand, Resu
             if (!exists)
             {
                 var errorMessage = $"Feedback with ID {request.FeedbackId} not found.";
-                _logger.LogWarning(errorMessage);
-                return new Result<bool>().WithError(ErrorCodes.FEEDBACK_NOT_FOUND.ToString());
+                return new Result<bool>().WithError(errorMessage);
             }
 
             await _feedbackRepository.DeleteAsync(request.FeedbackId);

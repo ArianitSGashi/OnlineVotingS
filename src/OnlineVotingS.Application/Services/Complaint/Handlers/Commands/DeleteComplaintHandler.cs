@@ -35,7 +35,7 @@ public class DeleteComplaintHandler : IRequestHandler<DeleteComplaintCommand, Re
         catch (Exception ex)
         {
             _logger.LogError("An error occurred while deleting complaint with ComplaintID: {ComplaintId}: {ErrorMessage}", request.ComplaintId, ex.Message);
-            return new Result<bool>().WithError(ErrorCodes.COMPLAIN_NOT_FOUND.ToString());
+            return new Result<bool>().WithError(ErrorCodes.COMPLAIN_DELETION_FAILED.ToString());
         }
     }
 }

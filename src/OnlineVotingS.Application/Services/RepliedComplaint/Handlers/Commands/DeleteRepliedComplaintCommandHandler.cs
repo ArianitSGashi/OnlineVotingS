@@ -8,7 +8,7 @@ using OnlineVotingS.Domain.Interfaces;
 
 namespace OnlineVotingS.Application.Services.RepliedComplaint.Handlers.Commands;
 
-public class DeleteRepliedComplaintCommandHandler : IRequestHandler<DeleteRepliedComplaintCommand, Result>
+public class DeleteRepliedComplaintCommandHandler : IRequestHandler<DeleteRepliedComplaintCommand, Result<bool>>
 {
     private readonly IRepliedComplaintsRepository _repliedComplaintsRepository;
     private readonly ILogger<DeleteRepliedComplaintCommandHandler> _logger;
@@ -19,7 +19,7 @@ public class DeleteRepliedComplaintCommandHandler : IRequestHandler<DeleteReplie
         _logger = logger;
     }
 
-    public async Task<Result> Handle(DeleteRepliedComplaintCommand request, CancellationToken cancellationToken)
+    public async Task<Result<bool>> Handle(DeleteRepliedComplaintCommand request, CancellationToken cancellationToken)
     {
         try
         {
@@ -27,17 +27,16 @@ public class DeleteRepliedComplaintCommandHandler : IRequestHandler<DeleteReplie
             if (!exists)
             {
                 var errorMessage = $"Replied complaint with ID {request.RepliedComplaintId} not found.";
-                _logger.LogWarning(errorMessage);
-                return new Result().WithError(errorMessage);
+                return new Result<bool>().WithError(errorMessage);
             }
 
             await _repliedComplaintsRepository.DeleteAsync(request.RepliedComplaintId);
-            return Ok();
+            return Ok(true);
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "An error occurred while deleting the replied complaint with ID {RepliedComplaintId}", request.RepliedComplaintId);
-            return new Result().WithError(ErrorCodes.FEEDBACK_DELETION_FAILED.ToString());
+            return new Result<bool>().WithError(ErrorCodes.REPLIED_COMPLAINT_DELETION_FAILED.ToString());
         }
     }
 }

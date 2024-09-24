@@ -34,7 +34,7 @@ public class CreateRepliedComplaintCommandHandler : IRequestHandler<CreateReplie
         catch (Exception ex)
         {
             _logger.LogError("An error occurred while creating a replied complaint: {ErrorMessage}", ex.Message);
-            return new Result<RepliedComplaints>().WithError(ErrorCodes.FEEDBACK_CREATION_FAILED.ToString());
+            return new Result<RepliedComplaints>().WithError(ErrorCodes.REPLIED_COMPLAINT_CREATION_FAILED.ToString());
         }
     }
 }

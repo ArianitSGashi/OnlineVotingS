@@ -24,7 +24,7 @@ public class CompleteElectionHandler : IRequestHandler<CompleteElectionCommand, 
     {
         if (string.IsNullOrEmpty(request.Title))
         {
-            return new Result().WithError(ErrorCodes.ELECTION_NOT_FOUND.ToString());
+            return new Result<bool>().WithError(ErrorCodes.ELECTION_NOT_FOUND.ToString());
         }
 
         try
@@ -32,17 +32,17 @@ public class CompleteElectionHandler : IRequestHandler<CompleteElectionCommand, 
             var election = await _electionsRepository.GetByTitleAsync(request.Title);
             if (election == null)
             {
-                return new Result().WithError(ErrorCodes.ELECTION_NOT_FOUND.ToString());
+                return new Result<bool>().WithError(ErrorCodes.ELECTION_NOT_FOUND.ToString());
             }
 
             if (election.Status == ElectionStatus.Completed)
             {
-                return new Result().WithError(ErrorCodes.ELECTION_ALREADY_COMPLETED.ToString());
+                return new Result<bool>().WithError(ErrorCodes.ELECTION_ALREADY_COMPLETED.ToString());
             }
 
             if (election.Status == ElectionStatus.Not_Active)
             {
-                return new Result().WithError(ErrorCodes.ELECTION_NOT_ACTIVE.ToString());
+                return new Result<bool>().WithError(ErrorCodes.ELECTION_NOT_ACTIVE.ToString());
             }
 
             election.Status = ElectionStatus.Completed;
@@ -54,7 +54,7 @@ public class CompleteElectionHandler : IRequestHandler<CompleteElectionCommand, 
         catch (Exception ex)
         {
             _logger.LogError(ex, "An error occurred while completing the election");
-            return new Result().WithError(ErrorCodes.ELECTION_NOT_FOUND.ToString());
+            return new Result<bool>().WithError(ErrorCodes.ELECTION_COMPLETION_FAILED.ToString());
         }
     }
 }

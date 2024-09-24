@@ -6,7 +6,6 @@ using Microsoft.Extensions.Logging;
 using OnlineVotingS.Application.Services.Complaint.Requests.Commands;
 using OnlineVotingS.Domain.Entities;
 using OnlineVotingS.Domain.Interfaces;
-using OnlineVotingS.Domain.CostumExceptions;
 using OnlineVotingS.Domain.Errors;
 
 namespace OnlineVotingS.Application.Services.Complaint.Handlers.Commands;
@@ -47,7 +46,7 @@ public class CreateRepliedComplaintHandler : IRequestHandler<CreateRepliedCompla
         catch (Exception ex)
         {
             _logger.LogError(ex, "An error occurred while creating the replied complaint.");
-            return new Result<RepliedComplaints>().WithError(ErrorCodes.COMPLAIN_NOT_FOUND.ToString());
+            return new Result<RepliedComplaints>().WithError(ErrorCodes.REPLIED_COMPLAINT_CREATION_FAILED.ToString());
         }
     }
 }

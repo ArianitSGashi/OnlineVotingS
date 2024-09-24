@@ -7,7 +7,6 @@ using Microsoft.Extensions.Logging;
 using OnlineVotingS.Application.Services.Complaint.Requests.Commands;
 using OnlineVotingS.Domain.Entities;
 using OnlineVotingS.Domain.Interfaces;
-using OnlineVotingS.Domain.CostumExceptions;
 using OnlineVotingS.Domain.Errors;
 
 namespace OnlineVotingS.Application.Services.Complaint.Handlers.Commands;
@@ -41,7 +40,7 @@ public class CreateComplaintHandler : IRequestHandler<CreateComplaintCommand, Re
         catch (Exception ex)
         {
             _logger.LogError(ex, "An error occurred while creating the complaint.");
-            return new Result<Complaints>().WithError(ErrorCodes.COMPLAIN_NOT_FOUND.ToString());
+            return new Result<Complaints>().WithError(ErrorCodes.COMPLAIN_CREATION_FAILED.ToString());
         }
     }
 }

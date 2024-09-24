@@ -31,8 +31,7 @@ public class UpdateFeedbackHandler : IRequestHandler<UpdateFeedbackCommand, Resu
             if (feedback == null)
             {
                 var errorMessage = $"Feedback with ID {request.FeedbackDto.FeedbackID} not found.";
-                _logger.LogWarning(errorMessage);
-                return new Result<Feedback>().WithError(ErrorCodes.FEEDBACK_NOT_FOUND.ToString());
+                return new Result<Feedback>().WithError(errorMessage);
             }
 
             _mapper.Map(request.FeedbackDto, feedback);

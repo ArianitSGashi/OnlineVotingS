@@ -1,12 +1,15 @@
-﻿using MediatR;
+﻿using FluentResults;
+using MediatR;
 using Microsoft.Extensions.Logging;
 using OnlineVotingS.Application.Services.Complaint.Requests.Queries;
 using OnlineVotingS.Domain.Entities;
 using OnlineVotingS.Domain.Interfaces;
+using OnlineVotingS.Domain.Errors;
+using static FluentResults.Result;
 
 namespace OnlineVotingS.Application.Services.Complaint.Handlers.Queries;
 
-public class GetComplaintsByIdHandler : IRequestHandler<GetComplaintsByIdCommand, Complaints>
+public class GetComplaintsByIdHandler : IRequestHandler<GetComplaintsByIdCommand, Result<Complaints>>
 {
     private readonly IComplaintRepository _complaintRepository;
     private readonly ILogger<GetComplaintsByIdHandler> _logger;
@@ -17,21 +20,21 @@ public class GetComplaintsByIdHandler : IRequestHandler<GetComplaintsByIdCommand
         _logger = logger;
     }
 
-    public async Task<Complaints> Handle(GetComplaintsByIdCommand request, CancellationToken cancellationToken)
+    public async Task<Result<Complaints>> Handle(GetComplaintsByIdCommand request, CancellationToken cancellationToken)
     {
         try
         {
-            var complaint =  await _complaintRepository.GetByIdAsync(request.ComplaintId);
+            var complaint = await _complaintRepository.GetByIdAsync(request.ComplaintId);
             if (complaint == null)
             {
-                throw new KeyNotFoundException($"Complaint with ID {request.ComplaintId} not found.");
+                return new Result<Complaints>().WithError(ErrorCodes.COMPLAIN_NOT_FOUND.ToString());
             }
-            return complaint;
+            return Ok(complaint);
         }
         catch (Exception ex)
         {
             _logger.LogError("An error occurred while fetching complaint with ComplaintId: {ComplaintId}: {ErrorMessage}", request.ComplaintId, ex.Message);
-            throw;
+            return new Result<Complaints>().WithError(ErrorCodes.COMPLAIN_NOT_FOUND.ToString());
         }
     }
 }

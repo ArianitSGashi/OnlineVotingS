@@ -1,11 +1,11 @@
 ﻿using MediatR;
 using FluentResults;
 using OnlineVotingS.Application.DTO.PostDTO;
-using OnlineVotingS.Domain.Entities;
+using ResultEntity = OnlineVotingS.Domain.Entities.Result;
 
 namespace OnlineVotingS.Application.Services.Results.Requests.Commands;
 
-public class CreateResultCommand : IRequest<FluentResults.Result<OnlineVotingS.Domain.Entities.Result>>
+public class CreateResultCommand : IRequest<Result<ResultEntity>>
 {
     public ResultPostDTO ResultDto { get; }
 

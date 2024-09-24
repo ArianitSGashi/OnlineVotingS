@@ -29,8 +29,6 @@ public class CreateFeedbackHandler : IRequestHandler<CreateFeedbackCommand, Resu
         {
             var feedback = _mapper.Map<Feedback>(request.FeedbackDto);
             await _feedbackRepository.AddAsync(feedback);
-
-            _logger.LogInformation("Feedback created successfully with ID: {FeedbackId}", feedback);
             return Ok(feedback);
         }
         catch (Exception ex)

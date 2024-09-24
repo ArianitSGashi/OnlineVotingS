@@ -28,17 +28,16 @@ public class DeleteVoteCommandHandler : IRequestHandler<DeleteVoteCommand, Resul
             if (!exists)
             {
                 var errorMessage = $"Vote with ID {request.VoteId} not found.";
-                _logger.LogWarning(errorMessage);
-                return Result.Fail(ErrorCodes.RESULT_NOT_FOUND.ToString());
+                return new Result<bool>().WithError(errorMessage);
             }
 
             await _votesRepository.DeleteAsync(request.VoteId);
-            return Result.Ok(true);
+            return Ok(true);
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "An error occurred while deleting the vote with ID {VoteId}: {ErrorMessage}", request.VoteId, ex.Message);
-            return Result.Fail(ErrorCodes.VOTE_DELETION_FAILED.ToString());
+            return new Result<bool>().WithError(ErrorCodes.VOTE_DELETION_FAILED.ToString());
         }
     }
 }

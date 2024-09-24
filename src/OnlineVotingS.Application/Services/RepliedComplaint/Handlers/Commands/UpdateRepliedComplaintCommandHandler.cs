@@ -31,8 +31,7 @@ public class UpdateRepliedComplaintCommandHandler : IRequestHandler<UpdateReplie
             if (repliedComplaint == null)
             {
                 var errorMessage = $"Replied complaint with ID {request.RepliedComplaint.RepliedComplaintID} not found.";
-                _logger.LogWarning(errorMessage);
-                return new Result<RepliedComplaints>().WithError(errorMessage); return Fail(ErrorCodes.REPLIED_COMPLAINT_NOT_FOUND.ToString());
+                return new Result<RepliedComplaints>().WithError(errorMessage);
             }
 
             _mapper.Map(request.RepliedComplaint, repliedComplaint);
@@ -42,7 +41,7 @@ public class UpdateRepliedComplaintCommandHandler : IRequestHandler<UpdateReplie
         catch (Exception ex)
         {
             _logger.LogError("An error occurred while updating the replied complaint with ID {RepliedComplaintId}: {ErrorMessage}", request.RepliedComplaint.RepliedComplaintID, ex.Message);
-            return new Result<RepliedComplaints>().WithError(ErrorCodes.FEEDBACK_UPDATE_FAILED.ToString());
+            return new Result<RepliedComplaints>().WithError(ErrorCodes.REPLIED_COMPLAINT_UPDATE_FAILED.ToString());
         }
     }
 }

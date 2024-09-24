@@ -4,16 +4,13 @@ using FluentResults;
 using MediatR;
 using Microsoft.Extensions.Logging;
 using OnlineVotingS.Application.Services.Results.Requests.Commands;
-using OnlineVotingS.Domain.Entities;
 using OnlineVotingS.Domain.Interfaces;
-using System;
-using System.Threading;
-using System.Threading.Tasks;
 using OnlineVotingS.Domain.Errors;
+using ResultEntity = OnlineVotingS.Domain.Entities.Result;
 
 namespace OnlineVotingS.Application.Services.Results.Handlers.Commands;
 
-public class UpdateResultHandler : IRequestHandler<UpdateResultCommand, Result<OnlineVotingS.Domain.Entities.Result>>
+public class UpdateResultHandler : IRequestHandler<UpdateResultCommand, Result<ResultEntity>>
 {
     private readonly IResultRepository _resultRepository;
     private readonly IMapper _mapper;
@@ -26,7 +23,7 @@ public class UpdateResultHandler : IRequestHandler<UpdateResultCommand, Result<O
         _logger = logger;
     }
 
-    public async Task<Result<OnlineVotingS.Domain.Entities.Result>> Handle(UpdateResultCommand request, CancellationToken cancellationToken)
+    public async Task<Result<ResultEntity>> Handle(UpdateResultCommand request, CancellationToken cancellationToken)
     {
         try
         {
@@ -34,8 +31,7 @@ public class UpdateResultHandler : IRequestHandler<UpdateResultCommand, Result<O
             if (existingResult == null)
             {
                 var errorMessage = $"Result with ID {request.ResultDto.ResultID} not found.";
-                _logger.LogWarning(errorMessage);
-                return new Result<OnlineVotingS.Domain.Entities.Result>().WithError(errorMessage);
+                return new Result<ResultEntity>().WithError(errorMessage);
             }
 
             _mapper.Map(request.ResultDto, existingResult);
@@ -45,7 +41,7 @@ public class UpdateResultHandler : IRequestHandler<UpdateResultCommand, Result<O
         catch (Exception ex)
         {
             _logger.LogError(ex, "An error occurred while updating the result with ID {ResultId}", request.ResultDto.ResultID);
-            return new Result<OnlineVotingS.Domain.Entities.Result>().WithError(ErrorCodes.RESULT_UPDATE_FAILED.ToString());
+            return new Result<ResultEntity>().WithError(ErrorCodes.RESULT_UPDATE_FAILED.ToString());
         }
     }
 }

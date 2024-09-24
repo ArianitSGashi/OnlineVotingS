@@ -1,9 +1,10 @@
-﻿using MediatR;
+﻿using FluentResults;
+using MediatR;
 using OnlineVotingS.Domain.Entities;
 
 namespace OnlineVotingS.Application.Services.Candidate.Requests.Queries;
 
-public class GetCandidateByIdQuery : IRequest<Candidates>
+public class GetCandidateByIdQuery : IRequest<Result<Candidates>>
 {
     public int CandidateId { get;}
 
