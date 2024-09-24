@@ -11,7 +11,6 @@ namespace OnlineVotingS.API.Controllers.TempControllers;
 
 public class GuestController : Controller
 {
-
     private readonly IMediator _mediator;
     private readonly UserManager<ApplicationUser> _userManager;
 
@@ -20,6 +19,7 @@ public class GuestController : Controller
         _mediator = mediator;
         _userManager = userManager;
     }
+
     public IActionResult GuestDashboard()
     {
         return View();
@@ -28,8 +28,13 @@ public class GuestController : Controller
     [HttpGet]
     public async Task<IActionResult> CandidatePage()
     {
-        var candidates = await _mediator.Send(new GetAllCandidatesQuery());
-        var viewModel = candidates.Select(c => new CandidateViewModel
+        var result = await _mediator.Send(new GetAllCandidatesQuery());
+        if (result.IsFailed)
+        {
+            return View("Error", result.Errors);
+        }
+
+        var viewModel = result.Value.Select(c => new CandidateViewModel
         {
             CandidateID = c.CandidateID,
             ElectionID = c.ElectionID,
@@ -46,14 +51,19 @@ public class GuestController : Controller
     [HttpGet]
     public async Task<IActionResult> ElectionPage()
     {
+        var electionsResult = await _mediator.Send(new GetAllElectionsQuery());
+        if (electionsResult.IsFailed)
+        {
+            return View("Error", electionsResult.Errors);
+        }
 
-        var elections = await _mediator.Send(new GetAllElectionsQuery());
         var userId = _userManager.GetUserId(User);
         var viewModel = new List<ElectionsViewModel>();
 
-        foreach (var election in elections)
+        foreach (var election in electionsResult.Value)
         {
-            var hasVoted = await _mediator.Send(new GetVotesByUserIDQuery(userId, election.ElectionID));
+            var hasVotedResult = await _mediator.Send(new GetVotesByUserIDQuery(userId, election.ElectionID));
+            var hasVoted = hasVotedResult.IsSuccess && hasVotedResult.Value;
 
             viewModel.Add(new ElectionsViewModel
             {
@@ -71,8 +81,6 @@ public class GuestController : Controller
 
         ViewBag.VoteMessage = TempData["VoteMessage"];
         ViewBag.VoteMessageType = TempData["VoteMessageType"];
-
         return View(viewModel);
-
     }
 }

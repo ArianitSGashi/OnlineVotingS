@@ -8,7 +8,7 @@ using OnlineVotingS.Application.DTO.PostDTO;
 using OnlineVotingS.Application.DTO.PutDTO;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
-namespace OnlineVotingS.API.TempControllers;
+namespace OnlineVotingS.API.Controllers.TempControllers;
 
 public class CandidateController : Controller
 {
@@ -26,7 +26,6 @@ public class CandidateController : Controller
 
         if (electionsResult.IsFailed)
         {
-            // Handle the error, perhaps log it and return an error view
             return View("Error", electionsResult.Errors);
         }
 
@@ -45,7 +44,6 @@ public class CandidateController : Controller
     [HttpPost]
     public async Task<IActionResult> AddCandidate(AddCandidateViewModel model)
     {
-       
         var candidateDto = new CandidatesPostDTO
         {
             ElectionID = model.ElectionID,
@@ -58,17 +56,30 @@ public class CandidateController : Controller
 
         var command = new CreateCandidateCommand(candidateDto);
         var result = await _mediator.Send(command);
+
+        if (result.IsFailed)
+        {
+            ModelState.AddModelError(string.Empty, "Failed to create candidate.");
+            return View("~/Views/Admin/Candidate/AddCandidate.cshtml", model);
+        }
+
         return RedirectToAction(nameof(ViewCandidates));
     }
 
     [HttpGet]
     public async Task<IActionResult> EditCandidate()
     {
-        var candidates = await _mediator.Send(new GetAllCandidatesQuery());
-        var elections = await _mediator.Send(new GetAllElectionsQuery());
+        var candidatesResult = await _mediator.Send(new GetAllCandidatesQuery());
+        var electionsResult = await _mediator.Send(new GetAllElectionsQuery());
+
+        if (candidatesResult.IsFailed || electionsResult.IsFailed)
+        {
+            return View("Error", candidatesResult.Errors.Concat(electionsResult.Errors));
+        }
+
         var model = new EditCandidateViewModel
         {
-            CandidateList = candidates.Select(c => new SelectListItem
+            CandidateList = candidatesResult.Value.Select(c => new SelectListItem
             {
                 Value = c.CandidateID.ToString(),
                 Text = $"{c.CandidateID} - {c.FullName}"
@@ -80,11 +91,14 @@ public class CandidateController : Controller
     [HttpGet]
     public async Task<IActionResult> GetCandidateDetails(int id)
     {
-        var candidate = await _mediator.Send(new GetCandidateByIdQuery(id));
-        if (candidate == null)
+        var candidateResult = await _mediator.Send(new GetCandidateByIdQuery(id));
+
+        if (candidateResult.IsFailed)
         {
             return NotFound();
         }
+
+        var candidate = candidateResult.Value;
         var candidateDetails = new
         {
             electionId = candidate.ElectionID,
@@ -114,7 +128,7 @@ public class CandidateController : Controller
             });
 
             var result = await _mediator.Send(command);
-            if (result != null)
+            if (result.IsSuccess)
             {
                 return RedirectToAction(nameof(ViewCandidates));
             }
@@ -122,9 +136,15 @@ public class CandidateController : Controller
         }
 
         // If we got this far, something failed; redisplay form
-        var candidates = await _mediator.Send(new GetAllCandidatesQuery());
-        var elections = await _mediator.Send(new GetAllElectionsQuery());
-        model.CandidateList = candidates.Select(c => new SelectListItem
+        var candidatesResult = await _mediator.Send(new GetAllCandidatesQuery());
+        var electionsResult = await _mediator.Send(new GetAllElectionsQuery());
+
+        if (candidatesResult.IsFailed || electionsResult.IsFailed)
+        {
+            return View("Error", candidatesResult.Errors.Concat(electionsResult.Errors));
+        }
+
+        model.CandidateList = candidatesResult.Value.Select(c => new SelectListItem
         {
             Value = c.CandidateID.ToString(),
             Text = $"{c.CandidateID} - {c.FullName}"
@@ -135,10 +155,16 @@ public class CandidateController : Controller
     [HttpGet]
     public async Task<IActionResult> DeleteCandidate()
     {
-        var candidates = await _mediator.Send(new GetAllCandidatesQuery());
+        var candidatesResult = await _mediator.Send(new GetAllCandidatesQuery());
+
+        if (candidatesResult.IsFailed)
+        {
+            return View("Error", candidatesResult.Errors);
+        }
+
         var viewModel = new DeleteCandidateViewModel
         {
-            AvailableCandidates = candidates.Select(c => new SelectListItem
+            AvailableCandidates = candidatesResult.Value.Select(c => new SelectListItem
             {
                 Value = c.CandidateID.ToString(),
                 Text = $"{c.CandidateID} - {c.FullName}"
@@ -153,13 +179,24 @@ public class CandidateController : Controller
         if (ModelState.IsValid)
         {
             var command = new DeleteCandidateCommand(model.CandidateID);
-            await _mediator.Send(command);
-            return RedirectToAction(nameof(ViewCandidates));
+            var result = await _mediator.Send(command);
+
+            if (result.IsSuccess)
+            {
+                return RedirectToAction(nameof(ViewCandidates));
+            }
+            ModelState.AddModelError(string.Empty, "Failed to delete candidate.");
         }
 
         // If we got this far, something failed; redisplay form
-        var candidates = await _mediator.Send(new GetAllCandidatesQuery());
-        model.AvailableCandidates = candidates.Select(c => new SelectListItem
+        var candidatesResult = await _mediator.Send(new GetAllCandidatesQuery());
+
+        if (candidatesResult.IsFailed)
+        {
+            return View("Error", candidatesResult.Errors);
+        }
+
+        model.AvailableCandidates = candidatesResult.Value.Select(c => new SelectListItem
         {
             Value = c.CandidateID.ToString(),
             Text = $"{c.CandidateID} - {c.FullName}"
@@ -170,8 +207,14 @@ public class CandidateController : Controller
     [HttpGet]
     public async Task<IActionResult> ViewCandidates()
     {
-        var candidates = await _mediator.Send(new GetAllCandidatesQuery());
-        var viewModel = candidates.Select(c => new ViewCandidatesViewModel
+        var candidatesResult = await _mediator.Send(new GetAllCandidatesQuery());
+
+        if (candidatesResult.IsFailed)
+        {
+            return View("Error", candidatesResult.Errors);
+        }
+
+        var viewModel = candidatesResult.Value.Select(c => new ViewCandidatesViewModel
         {
             CandidateID = c.CandidateID,
             ElectionID = c.ElectionID,

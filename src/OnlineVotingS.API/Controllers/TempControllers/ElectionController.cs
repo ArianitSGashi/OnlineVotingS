@@ -8,7 +8,7 @@ using OnlineVotingS.Application.DTO.PutDTO;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using OnlineVotingS.API.Validations;
 
-namespace OnlineVotingS.API.Controllers;
+namespace OnlineVotingS.API.Controllers.TempControllers;
 
 public class ElectionController : Controller
 {
@@ -50,17 +50,23 @@ public class ElectionController : Controller
         };
         var command = new CreateElectionsCommand(electionDto);
         var result = await _mediator.Send(command);
+        if (result.IsFailed)
+        {
+            ModelState.AddModelError("", "Failed to create election.");
+            return View("~/Views/Admin/Election/GenerateElection.cshtml", model);
+        }
         return RedirectToAction(nameof(ViewElection));
     }
 
     public async Task<IActionResult> GetElectionDetails(int id)
     {
-        var election = await _mediator.Send(new GetElectionsByIdQuery(id));
-        if (election == null)
+        var result = await _mediator.Send(new GetElectionsByIdQuery(id));
+        if (result.IsFailed)
         {
             return NotFound();
         }
 
+        var election = result.Value;
         return Json(new
         {
             title = election.Title,
@@ -75,8 +81,13 @@ public class ElectionController : Controller
 
     public async Task<IActionResult> ModifyElection()
     {
-        var elections = await _mediator.Send(new GetAllElectionsQuery());
-        var electionList = elections.Select(e => new SelectListItem
+        var result = await _mediator.Send(new GetAllElectionsQuery());
+        if (result.IsFailed)
+        {
+            return View("Error", result.Errors);
+        }
+
+        var electionList = result.Value.Select(e => new SelectListItem
         {
             Value = e.ElectionID.ToString(),
             Text = $"{e.ElectionID} - {e.Title}"
@@ -96,8 +107,11 @@ public class ElectionController : Controller
             {
                 ModelState.AddModelError("", error);
             }
-            var elections = await _mediator.Send(new GetAllElectionsQuery());
-            ViewBag.Elections = new SelectList(elections, "ElectionID", "Title");
+            var electionsResult = await _mediator.Send(new GetAllElectionsQuery());
+            if (electionsResult.IsSuccess)
+            {
+                ViewBag.Elections = new SelectList(electionsResult.Value, "ElectionID", "Title");
+            }
             return View("~/Views/Admin/Election/ModifyElection.cshtml", model);
         }
 
@@ -115,15 +129,25 @@ public class ElectionController : Controller
 
         var command = new UpdateElectionsCommand(electionDto);
         var result = await _mediator.Send(command);
+        if (result.IsFailed)
+        {
+            ModelState.AddModelError("", "Failed to update election.");
+            return View("~/Views/Admin/Election/ModifyElection.cshtml", model);
+        }
         return RedirectToAction(nameof(ViewElection));
     }
 
     public async Task<IActionResult> CompleteElection()
     {
-        var completableElections = await _mediator.Send(new GetCompletableElectionsQuery());
+        var result = await _mediator.Send(new GetCompletableElectionsQuery());
+        if (result.IsFailed)
+        {
+            return View("Error", result.Errors);
+        }
+
         var model = new CompleteElectionViewModel
         {
-            OngoingElections = completableElections
+            OngoingElections = result.Value
                 .Select(e => new SelectListItem { Value = e.Title, Text = e.Title })
                 .ToList()
         };
@@ -135,15 +159,25 @@ public class ElectionController : Controller
     {
         var command = new CompleteElectionCommand(model.SelectedTitle);
         var result = await _mediator.Send(command);
+        if (result.IsFailed)
+        {
+            ModelState.AddModelError("", "Failed to complete election.");
+            return View("~/Views/Admin/Election/CompleteElection.cshtml", model);
+        }
         return RedirectToAction(nameof(ViewElection));
     }
 
     public async Task<IActionResult> DeleteElection()
     {
-        var elections = await _mediator.Send(new GetAllElectionsQuery());
+        var result = await _mediator.Send(new GetAllElectionsQuery());
+        if (result.IsFailed)
+        {
+            return View("Error", result.Errors);
+        }
+
         var model = new DeleteElectionViewModel
         {
-            AvailableElections = elections.Select(e => new SelectListItem
+            AvailableElections = result.Value.Select(e => new SelectListItem
             {
                 Value = e.ElectionID.ToString(),
                 Text = $"{e.ElectionID} - {e.Title}"
@@ -157,13 +191,23 @@ public class ElectionController : Controller
     {
         var command = new DeleteElectionsCommand(model.SelectedElectionID);
         var result = await _mediator.Send(command);
+        if (result.IsFailed)
+        {
+            ModelState.AddModelError("", "Failed to delete election.");
+            return View("~/Views/Admin/Election/DeleteElection.cshtml", model);
+        }
         return RedirectToAction(nameof(ViewElection));
     }
 
     public async Task<IActionResult> ViewElection()
     {
-        var elections = await _mediator.Send(new GetAllElectionsQuery());
-        var model = elections.Select(e => new ViewElectionViewModel
+        var result = await _mediator.Send(new GetAllElectionsQuery());
+        if (result.IsFailed)
+        {
+            return View("Error", result.Errors);
+        }
+
+        var model = result.Value.Select(e => new ViewElectionViewModel
         {
             ElectionID = e.ElectionID,
             Title = e.Title,

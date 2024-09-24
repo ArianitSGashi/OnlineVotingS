@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using OnlineVotingS.API.Models.AdminViewModels.AdminVoterViewModels;
 using OnlineVotingS.Domain.Models;
 
-namespace OnlineVotingS.API.Controllers
+namespace OnlineVotingS.API.Controllers.TempControllers
 {
     [Authorize(Policy = "RequireAdminRole")]
     public class AdminVoterController : Controller
