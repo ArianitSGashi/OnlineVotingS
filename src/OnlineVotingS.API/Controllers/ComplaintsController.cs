@@ -57,13 +57,19 @@ public class ComplaintsController : ControllerBase
         var complaints = await _mediator.Send(query);
         return Ok(complaints);
     }
-
     [HttpPost]
     public async Task<IActionResult> CreateComplaintAsync([FromBody] ComplaintsPostDTO complaintDto)
     {
         var command = new CreateComplaintCommand(complaintDto);
-        var complaint = await _mediator.Send(command);
-        return CreatedAtAction(nameof(GetComplaintByIdAsync), new { id = complaint.ComplaintID }, complaint);
+        var result = await _mediator.Send(command);
+
+        if (result.IsSuccess)
+        {
+            var complaint = result.Value;
+            return CreatedAtAction(nameof(GetComplaintByIdAsync), new { id = complaint.ComplaintID }, complaint);
+        }
+
+        return BadRequest(result.Errors); // Handle failure case
     }
 
     [HttpPut]
@@ -81,7 +87,7 @@ public class ComplaintsController : ControllerBase
         var result = await _mediator.Send(command);
         return NoContent();
     }
-    // New endpoint for replying to a complaint
+
     [HttpPost("Reply")]
     public async Task<IActionResult> ReplyComplaintAsync([FromBody] RepliedComplaintsPostDTO repliedComplaintDto)
     {

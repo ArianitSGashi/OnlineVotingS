@@ -1,13 +1,16 @@
-﻿using AutoMapper;
+﻿using static FluentResults.Result;
+using AutoMapper;
+using FluentResults;
 using MediatR;
 using Microsoft.Extensions.Logging;
 using OnlineVotingS.Application.Services.Results.Requests.Commands;
-using OnlineVotingS.Domain.Entities;
 using OnlineVotingS.Domain.Interfaces;
+using OnlineVotingS.Domain.Errors;
+using ResultEntity = OnlineVotingS.Domain.Entities.Result;
 
 namespace OnlineVotingS.Application.Services.Results.Handlers.Commands;
 
-public class UpdateResultHandler : IRequestHandler<UpdateResultCommand, Result>
+public class UpdateResultHandler : IRequestHandler<UpdateResultCommand, Result<ResultEntity>>
 {
     private readonly IResultRepository _resultRepository;
     private readonly IMapper _mapper;
@@ -20,24 +23,25 @@ public class UpdateResultHandler : IRequestHandler<UpdateResultCommand, Result>
         _logger = logger;
     }
 
-    public async Task<Result> Handle(UpdateResultCommand request, CancellationToken cancellationToken)
+    public async Task<Result<ResultEntity>> Handle(UpdateResultCommand request, CancellationToken cancellationToken)
     {
         try
         {
-            var result = await _resultRepository.GetByIdAsync(request.ResultDto.ResultID);
-            if (result == null)
+            var existingResult = await _resultRepository.GetByIdAsync(request.ResultDto.ResultID);
+            if (existingResult == null)
             {
-                throw new KeyNotFoundException($"Result with ID {request.ResultDto.ResultID} not found.");
+                var errorMessage = $"Result with ID {request.ResultDto.ResultID} not found.";
+                return new Result<ResultEntity>().WithError(errorMessage);
             }
 
-            _mapper.Map(request.ResultDto, result);
-            await _resultRepository.UpdateAsync(result);
-            return result;
+            _mapper.Map(request.ResultDto, existingResult);
+            await _resultRepository.UpdateAsync(existingResult);
+            return Ok(existingResult);
         }
         catch (Exception ex)
         {
-            _logger.LogError("An error occurred while updating the result with ID {ResultId}: {ErrorMessage}", request.ResultDto.ResultID, ex.Message);
-            throw;
+            _logger.LogError(ex, "An error occurred while updating the result with ID {ResultId}", request.ResultDto.ResultID);
+            return new Result<ResultEntity>().WithError(ErrorCodes.RESULT_UPDATE_FAILED.ToString());
         }
     }
 }

@@ -1,9 +1,9 @@
 ﻿using MediatR;
-using OnlineVotingS.Domain.Entities;
+using FluentResults;
 
 namespace OnlineVotingS.Application.Services.Vote.Requests.Queries;
 
-public class GetVotesByUserIDQuery : IRequest<bool>
+public class GetVotesByUserIDQuery : IRequest<Result<bool>>
 {
     public string UserID { get; }
     public int ElectionID { get; }

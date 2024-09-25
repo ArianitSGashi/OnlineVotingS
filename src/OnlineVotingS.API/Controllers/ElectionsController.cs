@@ -62,9 +62,16 @@ public class ElectionsController : ControllerBase
     public async Task<IActionResult> CreateElectionsActionAsync([FromBody] ElectionsPostDTO electionDto)
     {
         var command = new CreateElectionsCommand(electionDto);
-        var election = await _mediator.Send(command);
-        return CreatedAtAction(nameof(GetElectionsByIdAsync), new { id = election.ElectionID }, election);
+        var result = await _mediator.Send(command);
+
+        if (result.IsSuccess)
+        {
+            var election = result.Value; 
+            return CreatedAtAction(nameof(GetElectionsByIdAsync), new { id = election.ElectionID }, election);
+        }
+        return BadRequest(result.Errors);
     }
+
 
     [HttpPut]
     public async Task<IActionResult> UpdateElectionsAsync([FromBody] ElectionsPutDTO electionDto)

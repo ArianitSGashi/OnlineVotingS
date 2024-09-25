@@ -1,14 +1,15 @@
-﻿using MediatR;
+﻿using FluentResults;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using OnlineVotingS.API.Models.AdminViewModels.ElectionViewModels;
-using OnlineVotingS.Application.Services.Election.Requests.Commands;
-using OnlineVotingS.Application.Services.Election.Requests.Queries;
+using OnlineVotingS.API.Validations;
 using OnlineVotingS.Application.DTO.PostDTO;
 using OnlineVotingS.Application.DTO.PutDTO;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using OnlineVotingS.API.Validations;
+using OnlineVotingS.Application.Services.Election.Requests.Commands;
+using OnlineVotingS.Application.Services.Election.Requests.Queries;
 
-namespace OnlineVotingS.API.Controllers;
+namespace OnlineVotingS.API.Controllers.TempControllers;
 
 public class ElectionController : Controller
 {
@@ -29,14 +30,10 @@ public class ElectionController : Controller
     [HttpPost]
     public async Task<IActionResult> GenerateElection(GenerateElectionViewModel model)
     {
-        var (isValid, errors) = await _electionValidation.ValidateElectionAsync(model);
-        if (!isValid)
+        var validationResult = await _electionValidation.ValidateElectionAsync(model);
+        if (validationResult.IsFailed)
         {
-            foreach (var error in errors)
-            {
-                ModelState.AddModelError("", error);
-            }
-            return View("~/Views/Admin/Election/GenerateElection.cshtml", model);
+            return HandleErrorResult(validationResult, model, "~/Views/Admin/Election/GenerateElection.cshtml");
         }
 
         var electionDto = new ElectionsPostDTO
@@ -50,17 +47,24 @@ public class ElectionController : Controller
         };
         var command = new CreateElectionsCommand(electionDto);
         var result = await _mediator.Send(command);
+
+        if (result.IsFailed)
+        {
+            return HandleErrorResult(result, model, "~/Views/Admin/Election/GenerateElection.cshtml");
+        }
+
         return RedirectToAction(nameof(ViewElection));
     }
 
     public async Task<IActionResult> GetElectionDetails(int id)
     {
-        var election = await _mediator.Send(new GetElectionsByIdQuery(id));
-        if (election == null)
+        var result = await _mediator.Send(new GetElectionsByIdQuery(id));
+        if (result.IsFailed)
         {
-            return NotFound();
+            return HandleErrorResult(result);
         }
 
+        var election = result.Value;
         return Json(new
         {
             title = election.Title,
@@ -75,8 +79,13 @@ public class ElectionController : Controller
 
     public async Task<IActionResult> ModifyElection()
     {
-        var elections = await _mediator.Send(new GetAllElectionsQuery());
-        var electionList = elections.Select(e => new SelectListItem
+        var result = await _mediator.Send(new GetAllElectionsQuery());
+        if (result.IsFailed)
+        {
+            return HandleErrorResult(result);
+        }
+
+        var electionList = result.Value.Select(e => new SelectListItem
         {
             Value = e.ElectionID.ToString(),
             Text = $"{e.ElectionID} - {e.Title}"
@@ -89,16 +98,10 @@ public class ElectionController : Controller
     [HttpPost]
     public async Task<IActionResult> ModifyElection(ModifyElectionViewModel model)
     {
-        var (isValid, errors) = await _electionValidation.ValidateElectionAsync(model);
-        if (!isValid)
+        var validationResult = await _electionValidation.ValidateElectionAsync(model);
+        if (validationResult.IsFailed)
         {
-            foreach (var error in errors)
-            {
-                ModelState.AddModelError("", error);
-            }
-            var elections = await _mediator.Send(new GetAllElectionsQuery());
-            ViewBag.Elections = new SelectList(elections, "ElectionID", "Title");
-            return View("~/Views/Admin/Election/ModifyElection.cshtml", model);
+            return HandleErrorResult(validationResult, model, "~/Views/Admin/Election/ModifyElection.cshtml");
         }
 
         var electionDto = new ElectionsPutDTO
@@ -115,15 +118,24 @@ public class ElectionController : Controller
 
         var command = new UpdateElectionsCommand(electionDto);
         var result = await _mediator.Send(command);
+        if (result.IsFailed)
+        {
+            return HandleErrorResult(result, model, "~/Views/Admin/Election/ModifyElection.cshtml");
+        }
         return RedirectToAction(nameof(ViewElection));
     }
 
     public async Task<IActionResult> CompleteElection()
     {
-        var completableElections = await _mediator.Send(new GetCompletableElectionsQuery());
+        var result = await _mediator.Send(new GetCompletableElectionsQuery());
+        if (result.IsFailed)
+        {
+            return HandleErrorResult(result);
+        }
+
         var model = new CompleteElectionViewModel
         {
-            OngoingElections = completableElections
+            OngoingElections = result.Value
                 .Select(e => new SelectListItem { Value = e.Title, Text = e.Title })
                 .ToList()
         };
@@ -135,15 +147,24 @@ public class ElectionController : Controller
     {
         var command = new CompleteElectionCommand(model.SelectedTitle);
         var result = await _mediator.Send(command);
+        if (result.IsFailed)
+        {
+            return HandleErrorResult(result, model, "~/Views/Admin/Election/CompleteElection.cshtml");
+        }
         return RedirectToAction(nameof(ViewElection));
     }
 
     public async Task<IActionResult> DeleteElection()
     {
-        var elections = await _mediator.Send(new GetAllElectionsQuery());
+        var result = await _mediator.Send(new GetAllElectionsQuery());
+        if (result.IsFailed)
+        {
+            return HandleErrorResult(result);
+        }
+
         var model = new DeleteElectionViewModel
         {
-            AvailableElections = elections.Select(e => new SelectListItem
+            AvailableElections = result.Value.Select(e => new SelectListItem
             {
                 Value = e.ElectionID.ToString(),
                 Text = $"{e.ElectionID} - {e.Title}"
@@ -157,13 +178,22 @@ public class ElectionController : Controller
     {
         var command = new DeleteElectionsCommand(model.SelectedElectionID);
         var result = await _mediator.Send(command);
+        if (result.IsFailed)
+        {
+            return HandleErrorResult(result, model, "~/Views/Admin/Election/DeleteElection.cshtml");
+        }
         return RedirectToAction(nameof(ViewElection));
     }
 
     public async Task<IActionResult> ViewElection()
     {
-        var elections = await _mediator.Send(new GetAllElectionsQuery());
-        var model = elections.Select(e => new ViewElectionViewModel
+        var result = await _mediator.Send(new GetAllElectionsQuery());
+        if (result.IsFailed)
+        {
+            return HandleErrorResult(result);
+        }
+
+        var model = result.Value.Select(e => new ViewElectionViewModel
         {
             ElectionID = e.ElectionID,
             Title = e.Title,
@@ -176,4 +206,33 @@ public class ElectionController : Controller
         }).ToList();
         return View("~/Views/Admin/Election/ViewElection.cshtml", model);
     }
+
+    private IActionResult HandleErrorResult(Result result, object? model = null, string? viewPath = null)
+    {
+        foreach (var error in result.Errors)
+        {
+            ModelState.AddModelError(string.Empty, error.Message);
+        }
+
+        if (model != null && viewPath != null)
+        {
+            return View(viewPath, model);
+        }
+        return View("Error");
+    }
+
+    private IActionResult HandleErrorResult<T>(Result<T> result, object? model = null, string? viewPath = null)
+    {
+        foreach (var error in result.Errors)
+        {
+            ModelState.AddModelError(string.Empty, error.Message);
+        }
+
+        if (model != null && viewPath != null)
+        {
+            return View(viewPath, model);
+        }
+        return View("Error");
+    }
+
 }

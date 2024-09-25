@@ -1,10 +1,11 @@
-﻿using MediatR;
+﻿using FluentResults;
+using MediatR;
 using OnlineVotingS.Application.DTO.PostDTO;
 using OnlineVotingS.Domain.Entities;
 
 namespace OnlineVotingS.Application.Services.Election.Requests.Commands;
 
-public class CreateElectionsCommand : IRequest<Elections>
+public class CreateElectionsCommand : IRequest<Result<Elections>>
 {
     public ElectionsPostDTO ElectionDto { get; }
 

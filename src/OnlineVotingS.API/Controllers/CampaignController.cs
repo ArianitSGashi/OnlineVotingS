@@ -22,56 +22,61 @@ public class CampaignController : ControllerBase
     public async Task<IActionResult> GetAllCampaignsAsync()
     {
         var query = new GetAllCampaignsQuery();
-        var campaigns = await _mediator.Send(query);
-        return Ok(campaigns);
+        var result = await _mediator.Send(query);
+        return result.IsSuccess ? Ok(result.Value) : BadRequest(result.Errors);
     }
 
     [HttpGet("{id}")]
     public async Task<IActionResult> GetCampaignByIdAsync(int id)
     {
         var query = new GetCampaignByIdQuery(id);
-        var campaign = await _mediator.Send(query);
-        return Ok(campaign);
+        var result = await _mediator.Send(query);
+        return result.IsSuccess ? Ok(result.Value) : NotFound(result.Errors);
     }
 
     [HttpGet("candidate/{candidateId}")]
     public async Task<IActionResult> GetCampaignsByCandidateIdAsync(int candidateId)
     {
         var query = new GetCampaignsByCandidateIdQuery(candidateId);
-        var campaigns = await _mediator.Send(query);
-        return Ok(campaigns);
+        var result = await _mediator.Send(query);
+        return result.IsSuccess ? Ok(result.Value) : BadRequest(result.Errors);
     }
 
     [HttpGet("election/{electionId}")]
     public async Task<IActionResult> GetCampaignsByElectionIdAsync(int electionId)
     {
         var query = new GetCampaignsByElectionIdQuery(electionId);
-        var campaigns = await _mediator.Send(query);
-        return Ok(campaigns);
+        var result = await _mediator.Send(query);
+        return result.IsSuccess ? Ok(result.Value) : BadRequest(result.Errors);
     }
 
     [HttpGet("active")]
     public async Task<IActionResult> GetActiveCampaignsAsync()
     {
         var query = new GetActiveCampaignsQuery();
-        var campaigns = await _mediator.Send(query);
-        return Ok(campaigns);
+        var result = await _mediator.Send(query);
+        return result.IsSuccess ? Ok(result.Value) : BadRequest(result.Errors);
     }
 
     [HttpPost]
     public async Task<IActionResult> CreateCampaignAsync([FromBody] CampaignPostDTO campaignDto)
     {
         var command = new CreateCampaignCommand(campaignDto);
-        var campaign = await _mediator.Send(command);
-        return CreatedAtAction(nameof(GetCampaignByIdAsync), new { id = campaign.CampaignID }, campaign);
+        var result = await _mediator.Send(command);
+        if (result.IsSuccess)
+        {
+            var campaign = result.Value;
+            return CreatedAtAction(nameof(GetCampaignByIdAsync), new { id = campaign.CampaignID }, campaign);
+        }
+        return BadRequest(result.Errors);
     }
 
     [HttpPut]
     public async Task<IActionResult> UpdateCampaignAsync([FromBody] CampaignPutDTO campaignDto)
     {
         var command = new UpdateCampaignCommand(campaignDto);
-        var updatedCampaign = await _mediator.Send(command);
-        return Ok(updatedCampaign);
+        var result = await _mediator.Send(command);
+        return result.IsSuccess ? Ok(result.Value) : BadRequest(result.Errors);
     }
 
     [HttpDelete("{id?}")]
@@ -79,6 +84,6 @@ public class CampaignController : ControllerBase
     {
         var command = new DeleteCampaignCommand(id);
         var result = await _mediator.Send(command);
-        return NoContent();
+        return result.IsSuccess ? NoContent() : BadRequest(result.Errors);
     }
 }

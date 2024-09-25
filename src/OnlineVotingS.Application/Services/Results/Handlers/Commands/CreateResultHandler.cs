@@ -1,13 +1,16 @@
-﻿using AutoMapper;
+﻿using static FluentResults.Result;
+using AutoMapper;
+using FluentResults;
 using MediatR;
 using Microsoft.Extensions.Logging;
 using OnlineVotingS.Application.Services.Results.Requests.Commands;
-using OnlineVotingS.Domain.Entities;
 using OnlineVotingS.Domain.Interfaces;
+using OnlineVotingS.Domain.Errors;
+using ResultEntity = OnlineVotingS.Domain.Entities.Result;
 
 namespace OnlineVotingS.Application.Services.Results.Handlers.Commands;
 
-public class CreateResultHandler : IRequestHandler<CreateResultCommand, Result>
+public class CreateResultHandler : IRequestHandler<CreateResultCommand, Result<ResultEntity>>
 {
     private readonly IResultRepository _resultRepository;
     private readonly IMapper _mapper;
@@ -20,18 +23,18 @@ public class CreateResultHandler : IRequestHandler<CreateResultCommand, Result>
         _logger = logger;
     }
 
-    public async Task<Result> Handle(CreateResultCommand request, CancellationToken cancellationToken)
+    public async Task<Result<ResultEntity>> Handle(CreateResultCommand request, CancellationToken cancellationToken)
     {
         try
         {
-            var result = _mapper.Map<Result>(request.ResultDto);
-            await _resultRepository.AddAsync(result);
-            return result;
+            var resultEntity = _mapper.Map<ResultEntity>(request.ResultDto);
+            await _resultRepository.AddAsync(resultEntity);
+            return Ok(resultEntity);
         }
         catch (Exception ex)
         {
             _logger.LogError("An error occurred while creating a result: {ErrorMessage}", ex.Message);
-            throw;
+            return new Result<ResultEntity>().WithError(ErrorCodes.RESULT_CREATION_FAILED.ToString());
         }
     }
 }

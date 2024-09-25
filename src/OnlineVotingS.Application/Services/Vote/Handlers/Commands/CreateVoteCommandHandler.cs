@@ -1,16 +1,16 @@
 ﻿using AutoMapper;
+using FluentResults;
 using MediatR;
 using Microsoft.Extensions.Logging;
 using OnlineVotingS.Application.Services.Vote.Requests.Commands;
 using OnlineVotingS.Domain.Entities;
 using OnlineVotingS.Domain.Interfaces;
-using OnlineVotingS.Domain.CostumExceptions;
-using Microsoft.Data.SqlClient;
-using Microsoft.EntityFrameworkCore;
+using OnlineVotingS.Domain.Errors;
+using static FluentResults.Result;
 
 namespace OnlineVotingS.Application.Services.Vote.Handlers.Commands;
 
-public class CreateVoteCommandHandler : IRequestHandler<CreateVoteCommand, Votes>
+public class CreateVoteCommandHandler : IRequestHandler<CreateVoteCommand, Result<Votes>>
 {
     private readonly IVotesRepository _votesRepository;
     private readonly ICandidateRepository _candidateRepository;
@@ -29,40 +29,29 @@ public class CreateVoteCommandHandler : IRequestHandler<CreateVoteCommand, Votes
         _logger = logger;
     }
 
-    public async Task<Votes> Handle(CreateVoteCommand request, CancellationToken cancellationToken)
+    public async Task<Result<Votes>> Handle(CreateVoteCommand request, CancellationToken cancellationToken)
     {
         try
         {
-            // Check if the user has already voted in this election
             if (await _votesRepository.HasUserVotedInElectionAsync(request.VoteDto.UserID, request.VoteDto.ElectionID))
             {
-                throw new InvalidVoteException("You have already cast your vote in this election.");
+                return new Result<Votes>().WithError(ErrorCodes.VOTE_ALREADY_CASTED_IN_THIS_ELECTION.ToString());
             }
-            // Check if the candidate belongs to the specified election
-            var candidateBelongsToElection = await _candidateRepository.CandidateBelongsToElectionAsync(request.VoteDto.CandidateID, request.VoteDto.ElectionID);
 
+            var candidateBelongsToElection = await _candidateRepository.CandidateBelongsToElectionAsync(request.VoteDto.CandidateID, request.VoteDto.ElectionID);
             if (!candidateBelongsToElection)
             {
-                throw new InvalidVoteException($"Candidate {request.VoteDto.CandidateID} does not belong to election {request.VoteDto.ElectionID}");
+                return new Result<Votes>().WithError(ErrorCodes.VOTE_NOT_FOUND.ToString());
             }
 
             var vote = _mapper.Map<Votes>(request.VoteDto);
             await _votesRepository.AddAsync(vote);
-            return vote;
-        }
-        catch (DbUpdateException ex) when (ex.InnerException is SqlException sqlEx && (sqlEx.Number == 2601 || sqlEx.Number == 2627))
-        {
-
-            throw new InvalidVoteException("You have already cast your vote in this election.");
-        }
-        catch (InvalidVoteException)
-        {
-            throw;
+            return Ok(vote);
         }
         catch (Exception ex)
         {
-            _logger.LogError("An error occurred while creating a vote: {ErrorMessage}", ex.Message);
-            throw;
+            _logger.LogError(ex, "An error occurred while creating a vote for user {UserId}: {ErrorMessage}", request.VoteDto.UserID, ex.Message);
+            return new Result<Votes>().WithError(ErrorCodes.VOTE_CREATION_FAILED.ToString());
         }
     }
 }

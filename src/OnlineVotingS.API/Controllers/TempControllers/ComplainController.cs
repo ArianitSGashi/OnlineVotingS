@@ -1,77 +1,88 @@
-﻿using MediatR;
+﻿using FluentResults;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using OnlineVotingS.API.Models.AdminViewModels.ComplaintViewModels;
 using OnlineVotingS.Application.DTO.PutDTO;
 using OnlineVotingS.Application.Services.Complaint.Requests.Commands;
 using OnlineVotingS.Application.Services.Complaint.Requests.Queries;
-using System.Linq;
-using System.Threading.Tasks;
 
-namespace OnlineVotingS.API.Controllers.TempControllers
+namespace OnlineVotingS.API.Controllers.TempControllers;
+
+public class ComplainController : Controller
 {
-    [ApiController]
-    [Route("[controller]")]
-    public class ComplainController : Controller
+    private readonly IMediator _mediator;
+
+    public ComplainController(IMediator mediator)
     {
-        private readonly IMediator _mediator;
+        _mediator = mediator;
+    }
 
-        public ComplainController(IMediator mediator)
+    [HttpGet]
+    public async Task<IActionResult> ViewComplain()
+    {
+        var query = new GetAllComplaintCommand();
+        var result = await _mediator.Send(query);
+        if (result.IsFailed)
         {
-            _mediator = mediator;
+            return HandleErrorResult(result);
         }
 
-        [HttpGet("ViewComplain")]
-        public async Task<IActionResult> ViewComplain()
+        var model = result.Value.Select(c => new ComplaintViewModel
         {
-            var query = new GetAllComplaintCommand(); // Make sure the query is correctly defined
-            var complaints = await _mediator.Send(query);
+            ComplaintID = c.ComplaintID,
+            UserID = c.UserID,
+            ElectionID = c.ElectionID,
+            ComplaintText = c.ComplaintText,
+            ComplaintDate = c.ComplaintDate
+        }).ToList();
 
-            var model = complaints.Select(c => new ComplaintViewModel
+        return View("~/Views/Admin/Complain/ViewComplain.cshtml", model);
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> ReplyComplain()
+    {
+        var query = new GetAllComplaintCommand();
+        var result = await _mediator.Send(query);
+        if (result.IsFailed)
+        {
+            return HandleErrorResult(result);
+        }
+
+        var model = new ReplyComplaintViewModel
+        {
+            Complaints = result.Value.Select(c => new SelectListItem
             {
-                ComplaintID = c.ComplaintID,
-                UserID = c.UserID,
-                ElectionID = c.ElectionID,
-                ComplaintText = c.ComplaintText,
-                ComplaintDate = c.ComplaintDate
-            }).ToList();
+                Value = c.ComplaintID.ToString(),
+                Text = c.ComplaintID.ToString()
+            }).ToList()
+        };
 
-            return View("~/Views/Admin/Complain/ViewComplain.cshtml", model);
-        }
+        return View("~/Views/Admin/Complain/ReplyComplain.cshtml", model);
+    }
 
+    [HttpPost("ReplyComplain")]
+    public async Task<IActionResult> ReplyComplain([FromBody] ComplaintsPutDTO complaintsPut)
+    {
+        var command = new UpdateComplaintCommand(complaintsPut);
+        var result = await _mediator.Send(command);
 
-        // Reply to Complaint (GET)
-        [HttpGet("ReplyComplain")]
-        public async Task<IActionResult> ReplyComplain()
+        if (result.IsFailed)
         {
-            var query = new GetAllComplaintCommand();
-            var complaints = await _mediator.Send(query);
-
-            var model = new ReplyComplaintViewModel
-            {
-                Complaints = complaints.Select(c => new SelectListItem
-                {
-                    Value = c.ComplaintID.ToString(),
-                    Text = c.ComplaintID.ToString()
-                }).ToList()
-            };
-
-            return View("~/Views/Admin/Complain/ReplyComplain.cshtml", model);
+            return HandleErrorResult(result);
         }
 
-        // Reply to Complaint (POST)
-        [HttpPost("ReplyComplain")]
-        public async Task<IActionResult> ReplyComplain([FromBody] ComplaintsPutDTO complaintsPut)
+        return Ok("Reply sent successfully.");
+    }
+
+    private IActionResult HandleErrorResult<T>(Result<T> result)
+    {
+        foreach (var error in result.Errors)
         {
-            var command = new UpdateComplaintCommand(complaintsPut);
-            var result = await _mediator.Send(command);
-
-            if (result == null)
-            {
-                return BadRequest("Failed to reply to the complaint.");
-            }
-
-            return Ok("Reply sent successfully.");
+            ModelState.AddModelError(string.Empty, error.Message);
         }
+
+        return View("Error");
     }
 }

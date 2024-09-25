@@ -1,9 +1,10 @@
 ﻿using MediatR;
-using OnlineVotingS.Domain.Entities;
+using FluentResults;
+using ResultEntity = OnlineVotingS.Domain.Entities.Result;
 
 namespace OnlineVotingS.Application.Services.Results.Requests.Queries;
 
-public class GetResultsByElectionIdQuery : IRequest<IEnumerable<Result>>
+public class GetResultsByElectionIdQuery : IRequest<Result<IEnumerable<ResultEntity>>>
 {
     public int ElectionId { get; }
 

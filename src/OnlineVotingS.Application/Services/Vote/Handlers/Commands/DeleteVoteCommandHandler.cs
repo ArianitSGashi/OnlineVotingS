@@ -1,11 +1,15 @@
-﻿using MediatR;
+﻿using FluentResults;
+using MediatR;
 using Microsoft.Extensions.Logging;
 using OnlineVotingS.Application.Services.Vote.Requests.Commands;
+using OnlineVotingS.Domain.Errors;
 using OnlineVotingS.Domain.Interfaces;
+using static FluentResults.Result;
+
 
 namespace OnlineVotingS.Application.Services.Vote.Handlers.Commands;
 
-public class DeleteVoteCommandHandler : IRequestHandler<DeleteVoteCommand, bool>
+public class DeleteVoteCommandHandler : IRequestHandler<DeleteVoteCommand, Result<bool>>
 {
     private readonly IVotesRepository _votesRepository;
     private readonly ILogger<DeleteVoteCommandHandler> _logger;
@@ -16,23 +20,24 @@ public class DeleteVoteCommandHandler : IRequestHandler<DeleteVoteCommand, bool>
         _logger = logger;
     }
 
-    public async Task<bool> Handle(DeleteVoteCommand request, CancellationToken cancellationToken)
+    public async Task<Result<bool>> Handle(DeleteVoteCommand request, CancellationToken cancellationToken)
     {
         try
         {
             var exists = await _votesRepository.ExistsAsync(request.VoteId);
             if (!exists)
             {
-                throw new KeyNotFoundException($"Vote with ID {request.VoteId} not found.");
+                var errorMessage = $"Vote with ID {request.VoteId} not found.";
+                return new Result<bool>().WithError(errorMessage);
             }
 
             await _votesRepository.DeleteAsync(request.VoteId);
-            return true;
+            return Ok(true);
         }
         catch (Exception ex)
         {
-            _logger.LogError("An error occurred while deleting the vote with ID {VoteId}: {ErrorMessage}", request.VoteId, ex.Message);
-            throw;
+            _logger.LogError(ex, "An error occurred while deleting the vote with ID {VoteId}: {ErrorMessage}", request.VoteId, ex.Message);
+            return new Result<bool>().WithError(ErrorCodes.VOTE_DELETION_FAILED.ToString());
         }
     }
 }

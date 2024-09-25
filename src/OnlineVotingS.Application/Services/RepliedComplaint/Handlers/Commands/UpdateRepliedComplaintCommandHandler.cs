@@ -1,13 +1,16 @@
-﻿using AutoMapper;
+﻿using static FluentResults.Result;
+using FluentResults;
+using AutoMapper;
 using MediatR;
 using Microsoft.Extensions.Logging;
 using OnlineVotingS.Application.Services.RepliedComplaint.Requests.Commands;
 using OnlineVotingS.Domain.Entities;
 using OnlineVotingS.Domain.Interfaces;
+using OnlineVotingS.Domain.Errors;
 
 namespace OnlineVotingS.Application.Services.RepliedComplaint.Handlers.Commands;
 
-public class UpdateRepliedComplaintCommandHandler : IRequestHandler<UpdateRepliedComplaintCommand, RepliedComplaints>
+public class UpdateRepliedComplaintCommandHandler : IRequestHandler<UpdateRepliedComplaintCommand, Result<RepliedComplaints>>
 {
     private readonly IRepliedComplaintsRepository _repliedComplaintsRepository;
     private readonly IMapper _mapper;
@@ -20,24 +23,25 @@ public class UpdateRepliedComplaintCommandHandler : IRequestHandler<UpdateReplie
         _logger = logger;
     }
 
-    public async Task<RepliedComplaints> Handle(UpdateRepliedComplaintCommand request, CancellationToken cancellationToken)
+    public async Task<Result<RepliedComplaints>> Handle(UpdateRepliedComplaintCommand request, CancellationToken cancellationToken)
     {
         try
         {
             var repliedComplaint = await _repliedComplaintsRepository.GetByIdAsync(request.RepliedComplaint.RepliedComplaintID);
             if (repliedComplaint == null)
             {
-                throw new KeyNotFoundException($"Replied complaint with ID {request.RepliedComplaint.RepliedComplaintID} not found.");
+                var errorMessage = $"Replied complaint with ID {request.RepliedComplaint.RepliedComplaintID} not found.";
+                return new Result<RepliedComplaints>().WithError(errorMessage);
             }
 
             _mapper.Map(request.RepliedComplaint, repliedComplaint);
             await _repliedComplaintsRepository.UpdateAsync(repliedComplaint);
-            return repliedComplaint;
+            return Ok(repliedComplaint);
         }
         catch (Exception ex)
         {
             _logger.LogError("An error occurred while updating the replied complaint with ID {RepliedComplaintId}: {ErrorMessage}", request.RepliedComplaint.RepliedComplaintID, ex.Message);
-            throw;
+            return new Result<RepliedComplaints>().WithError(ErrorCodes.REPLIED_COMPLAINT_UPDATE_FAILED.ToString());
         }
     }
 }

@@ -1,16 +1,15 @@
-﻿using MediatR;
+﻿using FluentResults;
+using MediatR;
 using Microsoft.Extensions.Logging;
 using OnlineVotingS.Application.Services.Election.Requests.Queries;
 using OnlineVotingS.Domain.Entities;
 using OnlineVotingS.Domain.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
+using OnlineVotingS.Domain.Errors;
+using static FluentResults.Result;
 
 namespace OnlineVotingS.Application.Services.Election.Handlers.Queries;
 
-public class GetCompletableElectionsQueryHandler : IRequestHandler<GetCompletableElectionsQuery, IEnumerable<Elections>>
+public class GetCompletableElectionsQueryHandler : IRequestHandler<GetCompletableElectionsQuery, Result<IEnumerable<Elections>>>
 {
     private readonly IElectionRepository _electionRepository;
     private readonly ILogger<GetCompletableElectionsQueryHandler> _logger;
@@ -21,17 +20,17 @@ public class GetCompletableElectionsQueryHandler : IRequestHandler<GetCompletabl
         _logger = logger;
     }
 
-    public async Task<IEnumerable<Elections>> Handle(GetCompletableElectionsQuery request, CancellationToken cancellationToken)
+    public async Task<Result<IEnumerable<Elections>>> Handle(GetCompletableElectionsQuery request, CancellationToken cancellationToken)
     {
         try
         {
             var completableElections = await _electionRepository.GetCompletableElectionsAsync();
-            return completableElections;
+            return Ok(completableElections);
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "An error occurred while fetching completable elections");
-            throw;
+            return new Result<IEnumerable<Elections>>().WithError(ErrorCodes.ELECTION_NOT_FOUND.ToString());
         }
     }
 }

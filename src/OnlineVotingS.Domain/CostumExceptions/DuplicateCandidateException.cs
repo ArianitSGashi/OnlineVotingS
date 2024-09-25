@@ -6,7 +6,7 @@ public class DuplicateCandidateException : Exception
     {
     }
     public DuplicateCandidateException(string fullName, int electionId, string party)
-        : base($"A candidate with the name '{fullName}' already exists in election {electionId} for party '{party}'.")
+        : base($"A candidate already exists in election {electionId} for party '{party}'.")
     {
     }
 }
