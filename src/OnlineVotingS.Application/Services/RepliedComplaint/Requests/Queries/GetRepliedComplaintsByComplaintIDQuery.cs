@@ -1,9 +1,10 @@
 ﻿using MediatR;
 using OnlineVotingS.Domain.Entities;
+using FluentResults;
 
 namespace OnlineVotingS.Application.Services.RepliedComplaint.Requests.Queries;
 
-public class GetRepliedComplaintsByComplaintIDQuery : IRequest<IEnumerable<RepliedComplaints>>
+public class GetRepliedComplaintsByComplaintIDQuery : IRequest<Result<IEnumerable<RepliedComplaints>>>
 {
     public int ComplaintID { get;}
 

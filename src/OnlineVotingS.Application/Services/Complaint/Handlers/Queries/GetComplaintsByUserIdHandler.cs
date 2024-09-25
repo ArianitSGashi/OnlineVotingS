@@ -1,12 +1,15 @@
-﻿using MediatR;
+﻿using FluentResults;
+using MediatR;
 using Microsoft.Extensions.Logging;
 using OnlineVotingS.Application.Services.Complaint.Requests.Queries;
 using OnlineVotingS.Domain.Entities;
 using OnlineVotingS.Domain.Interfaces;
+using OnlineVotingS.Domain.Errors;
+using static FluentResults.Result;
 
 namespace OnlineVotingS.Application.Services.Complaint.Handlers.Queries;
 
-public class GetComplaintsByUserIdHandler : IRequestHandler<GetComplaintsByUserIdCommand, IEnumerable<Complaints>>
+public class GetComplaintsByUserIdHandler : IRequestHandler<GetComplaintsByUserIdCommand, Result<IEnumerable<Complaints>>>
 {
     private readonly IComplaintRepository _complaintRepository;
     private readonly ILogger<GetComplaintsByUserIdHandler> _logger;
@@ -17,17 +20,17 @@ public class GetComplaintsByUserIdHandler : IRequestHandler<GetComplaintsByUserI
         _logger = logger;
     }
 
-    public async Task<IEnumerable<Complaints>> Handle(GetComplaintsByUserIdCommand request, CancellationToken cancellationToken)
+    public async Task<Result<IEnumerable<Complaints>>> Handle(GetComplaintsByUserIdCommand request, CancellationToken cancellationToken)
     {
         try
         {
-            return await _complaintRepository.GetByUserIdAsync(request.UserId);
+            var complaints = await _complaintRepository.GetByUserIdAsync(request.UserId);
+            return Ok(complaints);
         }
         catch (Exception ex)
         {
-
-            _logger.LogError("An error occurred while fetching campaigns for UserId: {UserId}: {ErrorMessage}", request.UserId, ex.Message); 
-            throw;
+            _logger.LogError("An error occurred while fetching complaints for UserId: {UserId}: {ErrorMessage}", request.UserId, ex.Message);
+            return new Result<IEnumerable<Complaints>>().WithError(ErrorCodes.COMPLAIN_NOT_FOUND.ToString());
         }
     }
 }

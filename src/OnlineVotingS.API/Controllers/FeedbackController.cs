@@ -62,8 +62,14 @@ public class FeedbackController : ControllerBase
     public async Task<IActionResult> CreateFeedbackAsync([FromBody] FeedbackPostDTO feedbackDto)
     {
         var command = new CreateFeedbackCommand(feedbackDto);
-        var feedback = await _mediator.Send(command);
-        return CreatedAtAction(nameof(GetFeedbackByIdAsync), new { id = feedback.FeedbackID }, feedback);
+        var result = await _mediator.Send(command);
+
+        if (result.IsSuccess)
+        {
+            var feedback = result.Value;
+            return CreatedAtAction(nameof(GetFeedbackByIdAsync), new { id = feedback.FeedbackID }, feedback);
+        }
+        return BadRequest(result.Errors); 
     }
 
     [HttpPut]

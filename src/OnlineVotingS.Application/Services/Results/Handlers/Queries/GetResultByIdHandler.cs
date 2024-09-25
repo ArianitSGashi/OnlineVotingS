@@ -1,15 +1,15 @@
-﻿using MediatR;
+﻿using FluentResults;
+using MediatR;
 using Microsoft.Extensions.Logging;
 using OnlineVotingS.Application.Services.Results.Requests.Queries;
-using OnlineVotingS.Domain.Entities;
 using OnlineVotingS.Domain.Interfaces;
-using System;
-using System.Threading;
-using System.Threading.Tasks;
+using OnlineVotingS.Domain.Errors;
+using ResultEntity = OnlineVotingS.Domain.Entities.Result;
+using static FluentResults.Result;
 
 namespace OnlineVotingS.Application.Services.Results.Handlers.Queries;
 
-public class GetResultByIdHandler : IRequestHandler<GetResultByIdQuery, Result>
+public class GetResultByIdHandler : IRequestHandler<GetResultByIdQuery, Result<ResultEntity>>
 {
     private readonly IResultRepository _resultRepository;
     private readonly ILogger<GetResultByIdHandler> _logger;
@@ -20,23 +20,21 @@ public class GetResultByIdHandler : IRequestHandler<GetResultByIdQuery, Result>
         _logger = logger;
     }
 
-    public async Task<Result> Handle(GetResultByIdQuery request, CancellationToken cancellationToken)
+    public async Task<Result<ResultEntity>> Handle(GetResultByIdQuery request, CancellationToken cancellationToken)
     {
         try
         {
             var result = await _resultRepository.GetByIdAsync(request.ResultId);
             if (result == null)
             {
-                throw new KeyNotFoundException($"Result with ID {request.ResultId} not found.");
+                return new Result<ResultEntity>().WithError(ErrorCodes.RESULT_NOT_FOUND.ToString());
             }
-
-            return result;
+            return Ok(result);
         }
         catch (Exception ex)
         {
             _logger.LogError("An error occurred while fetching the result with ID {ResultId}: {ErrorMessage}", request.ResultId, ex.Message);
-            throw;
+            return new Result<ResultEntity>().WithError(ErrorCodes.RESULT_NOT_FOUND.ToString());
         }
     }
 }
-

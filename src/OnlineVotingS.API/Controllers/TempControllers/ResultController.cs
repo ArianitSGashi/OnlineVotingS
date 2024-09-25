@@ -1,4 +1,5 @@
-﻿using MediatR;
+﻿using FluentResults;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using OnlineVotingS.API.Models.AdminViewModels.ResultViewModels;
 using OnlineVotingS.Application.Services.Candidate.Requests.Queries;
@@ -20,10 +21,15 @@ public class ResultController : Controller
     [HttpGet]
     public async Task<IActionResult> GenerateResult()
     {
-        var allElections = await _mediator.Send(new GetAllElectionsQuery());
+        var allElectionsResult = await _mediator.Send(new GetAllElectionsQuery());
+        if (allElectionsResult.IsFailed)
+        {
+            return HandleErrorResult(allElectionsResult);
+        }
+
         var model = new GenerateResultViewModel
         {
-            OngoingElections = allElections.ToList(),
+            OngoingElections = allElectionsResult.Value.ToList(),
         };
         return View("~/Views/Admin/Result/GenerateResult.cshtml", model);
     }
@@ -31,39 +37,66 @@ public class ResultController : Controller
     [HttpPost]
     public async Task<IActionResult> GenerateResult(int SelectedElectionID, int? CandidateId)
     {
-        await _mediator.Send(new GenerateOrUpdateResultsCommand(SelectedElectionID, CandidateId));
+        var result = await _mediator.Send(new GenerateOrUpdateResultsCommand(SelectedElectionID, CandidateId));
+        if (result.IsFailed)
+        {
+            return HandleErrorResult(result);
+        }
         return RedirectToAction("ViewResult");
     }
 
     [HttpGet]
     public async Task<IActionResult> GetCandidatesByElection(int electionId)
     {
-        var candidates = await _mediator.Send(new GetCandidatesByElectionIdQuery(electionId));
-
-        return Json(candidates);
+        var candidatesResult = await _mediator.Send(new GetCandidatesByElectionIdQuery(electionId));
+        if (candidatesResult.IsFailed)
+        {
+            return Json(new { error = "Failed to retrieve candidates", details = candidatesResult.Errors.Select(e => e.Message) });
+        }
+        return Json(candidatesResult.Value);
     }
 
     [HttpGet]
     public async Task<IActionResult> ViewResult()
     {
         var model = new List<ViewResultViewModel>();
-        var allResults = await _mediator.Send(new GetAllResultsQuery());
-
-        foreach (var item in allResults)
+        var allResultsResult = await _mediator.Send(new GetAllResultsQuery());
+        if (allResultsResult.IsFailed)
         {
-            var candidate = await _mediator.Send(new GetCandidateByIdQuery(item.CandidateID));
-            var election = await _mediator.Send(new GetElectionsByIdQuery(item.ElectionID));
+            return HandleErrorResult(allResultsResult);
+        }
+
+        foreach (var item in allResultsResult.Value)
+        {
+            var candidateResult = await _mediator.Send(new GetCandidateByIdQuery(item.CandidateID));
+            var electionResult = await _mediator.Send(new GetElectionsByIdQuery(item.ElectionID));
+
+            if (candidateResult.IsFailed || electionResult.IsFailed)
+            {
+                continue; 
+            }
+
             model.Add(new ViewResultViewModel
             {
                 ResultID = item.ResultID,
-                CandidateID = candidate.CandidateID,
-                CandidateName = candidate.FullName,
-                ElectionID = election.ElectionID,
-                ElectionTitle = election.Title,
+                CandidateID = candidateResult.Value.CandidateID,
+                CandidateName = candidateResult.Value.FullName,
+                ElectionID = electionResult.Value.ElectionID,
+                ElectionTitle = electionResult.Value.Title,
                 TotalVotes = item.TotalVotes
             });
         }
-        
+
         return View("~/Views/Admin/Result/ViewResult.cshtml", model);
+    }
+
+    private IActionResult HandleErrorResult<T>(Result<T> result)
+    {
+        foreach (var error in result.Errors)
+        {
+            ModelState.AddModelError(string.Empty, error.Message);
+        }
+
+        return View("Error");
     }
 }

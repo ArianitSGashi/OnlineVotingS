@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using OnlineVotingS.API.Models.AdminViewModels.AdminVoterViewModels;
 using OnlineVotingS.Domain.Models;
 
-namespace OnlineVotingS.API.Controllers
+namespace OnlineVotingS.API.Controllers.TempControllers
 {
     [Authorize(Policy = "RequireAdminRole")]
     public class AdminVoterController : Controller
@@ -18,13 +18,11 @@ namespace OnlineVotingS.API.Controllers
             _logger = logger;
         }
 
-        // GET: /AdminVoter/AddVoter
         public IActionResult AddVoter()
         {
             return View("~/Views/Admin/AdminVoter/AddVoter.cshtml");
         }
 
-        // POST: /AdminVoter/AddVoter
         [HttpPost]
         public async Task<IActionResult> AddVoter(AddVoterViewModel model)
         {

@@ -1,13 +1,16 @@
-﻿using AutoMapper;
+﻿using static FluentResults.Result;
+using AutoMapper;
+using FluentResults;
 using MediatR;
 using Microsoft.Extensions.Logging;
 using OnlineVotingS.Application.Services.Campaigns.Requests.Commands;
 using OnlineVotingS.Domain.Entities;
 using OnlineVotingS.Domain.Interfaces;
+using OnlineVotingS.Domain.Errors;
 
 namespace OnlineVotingS.Application.Services.Campaigns.Handlers.Commands;
 
-public class UpdateCampaignHandler : IRequestHandler<UpdateCampaignCommand, Campaign>
+public class UpdateCampaignHandler : IRequestHandler<UpdateCampaignCommand, Result<Campaign>>
 {
     private readonly ICampaignRepository _campaignRepository;
     private readonly IMapper _mapper;
@@ -20,24 +23,24 @@ public class UpdateCampaignHandler : IRequestHandler<UpdateCampaignCommand, Camp
         _logger = logger;
     }
 
-    public async Task<Campaign> Handle(UpdateCampaignCommand request, CancellationToken cancellationToken)
+    public async Task<Result<Campaign>> Handle(UpdateCampaignCommand request, CancellationToken cancellationToken)
     {
         try
         {
             var campaign = await _campaignRepository.GetByIdAsync(request.CampaignDto.CampaignID);
             if (campaign == null)
             {
-                throw new KeyNotFoundException($"Campaign with ID {request.CampaignDto.CampaignID} not found.");
+                return new Result<Campaign>().WithError(ErrorCodes.CAMPAIGN_NOT_FOUND.ToString());
             }
 
             _mapper.Map(request.CampaignDto, campaign);
             await _campaignRepository.UpdateAsync(campaign);
-            return campaign;
+            return Ok(campaign);
         }
         catch (Exception ex)
         {
             _logger.LogError("An error occurred while updating the campaign with ID {CampaignId}: {ErrorMessage}", request.CampaignDto.CampaignID, ex.Message);
-            throw;
+            return new Result<Campaign>().WithError(ErrorCodes.CAMPAIGN_UPDATE_FAILED.ToString());
         }
     }
 }

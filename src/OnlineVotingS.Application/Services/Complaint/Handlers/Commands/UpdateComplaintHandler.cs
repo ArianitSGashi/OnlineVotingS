@@ -1,13 +1,16 @@
-﻿using AutoMapper;
+﻿using FluentResults;
+using static FluentResults.Result;
+using AutoMapper;
 using MediatR;
 using Microsoft.Extensions.Logging;
 using OnlineVotingS.Application.Services.Complaint.Requests.Commands;
 using OnlineVotingS.Domain.Entities;
 using OnlineVotingS.Domain.Interfaces;
+using OnlineVotingS.Domain.Errors;
 
 namespace OnlineVotingS.Application.Services.Complaint.Handlers.Commands;
 
-public class UpdateComplaintHandler : IRequestHandler<UpdateComplaintCommand, Complaints>
+public class UpdateComplaintHandler : IRequestHandler<UpdateComplaintCommand, Result<Complaints>>
 {
     private readonly IComplaintRepository _complaintRepository;
     private readonly IMapper _mapper;
@@ -20,24 +23,24 @@ public class UpdateComplaintHandler : IRequestHandler<UpdateComplaintCommand, Co
         _logger = logger;
     }
 
-    public async Task<Complaints> Handle(UpdateComplaintCommand request, CancellationToken cancellationToken)
+    public async Task<Result<Complaints>> Handle(UpdateComplaintCommand request, CancellationToken cancellationToken)
     {
+        var complaint = await _complaintRepository.GetByIdAsync(request.ComplaintsPutDTO.ComplaintID);
+        if (complaint == null)
+        {
+            return new Result<Complaints>().WithError(ErrorCodes.COMPLAIN_NOT_FOUND.ToString());
+        }
+
         try
         {
-            var complaint = await _complaintRepository.GetByIdAsync(request.ComplaintsPutDTO.ComplaintID);
-            if (complaint == null)
-            {
-               throw new KeyNotFoundException($"Complaint with ID : {request.ComplaintsPutDTO.ComplaintID} not found.");
-            }
-
             _mapper.Map(request.ComplaintsPutDTO, complaint);
             await _complaintRepository.UpdateAsync(complaint);
-            return complaint;
+            return Ok(complaint);
         }
         catch (Exception ex)
         {
             _logger.LogError("An error occurred while updating the complaint with ComplaintID: {ComplaintId}: {ErrorMessage}", request.ComplaintsPutDTO.ComplaintID, ex.Message);
-            throw;
+            return new Result<Complaints>().WithError(ErrorCodes.COMPLAIN_UPDATE_FAILED.ToString());
         }
     }
 }

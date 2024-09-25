@@ -1,8 +1,9 @@
-﻿using MediatR;
+﻿using FluentResults;
+using MediatR;
 
 namespace OnlineVotingS.Application.Services.Results.Requests.Commands;
 
-public class DeleteResultCommand : IRequest<bool>
+public class DeleteResultCommand : IRequest<Result<bool>>
 {
     public int ResultId { get; }
 

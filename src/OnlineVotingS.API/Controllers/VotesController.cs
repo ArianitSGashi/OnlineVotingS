@@ -70,9 +70,19 @@ public class VotesController : ControllerBase
     public async Task<IActionResult> CreateVoteAsync([FromBody] VotesPostDTO voteDto)
     {
         var command = new CreateVoteCommand(voteDto);
-        var vote = await _mediator.Send(command);
-        return CreatedAtAction(nameof(GetVoteByIdAsync), new { id = vote.VoteID }, vote);
+        var result = await _mediator.Send(command);
+
+        if (result.IsSuccess)
+        {
+            var vote = result.Value;
+            return CreatedAtAction(nameof(GetVoteByIdAsync), new { id = vote.VoteID }, vote);
+        }
+        else
+        {
+            return BadRequest(result.Errors); 
+        }
     }
+
 
     [HttpPut]
     public async Task<IActionResult> UpdateVoteAsync([FromBody] VotesPutDTO voteDto)

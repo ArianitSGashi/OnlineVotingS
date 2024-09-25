@@ -1,9 +1,10 @@
 ﻿using MediatR;
 using OnlineVotingS.Domain.Entities;
+using FluentResults;
 
 namespace OnlineVotingS.Application.Services.RepliedComplaint.Requests.Queries;
 
-public class GetRecentRepliedComplaintsQuery : IRequest<IEnumerable<RepliedComplaints>>
+public class GetRecentRepliedComplaintsQuery : IRequest<Result<IEnumerable<RepliedComplaints>>>
 {
     public DateTime Date { get;}
 

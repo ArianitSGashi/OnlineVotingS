@@ -63,8 +63,15 @@ public class ResultController : ControllerBase
     {
         var command = new CreateResultCommand(resultDto);
         var result = await _mediator.Send(command);
-        return CreatedAtAction(nameof(GetResultByIdAsync), new { id = result.ResultID }, result);
+
+        if (result.IsSuccess)
+        {
+            var createdResult = result.Value;
+            return CreatedAtAction(nameof(GetResultByIdAsync), new { id = createdResult.ResultID }, createdResult);
+        }
+        return BadRequest(result.Errors);  
     }
+
 
     [HttpPut]
     public async Task<IActionResult> UpdateResultAsync([FromBody] ResultPutDTO resultDto)

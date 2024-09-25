@@ -1,14 +1,15 @@
+using FluentResults;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using OnlineVotingS.API.Models.AdminViewModels.CandidateViewModels;
 using OnlineVotingS.Application.Services.Candidate.Requests.Commands;
 using OnlineVotingS.Application.Services.Candidate.Requests.Queries;
 using OnlineVotingS.Application.Services.Election.Requests.Queries;
 using OnlineVotingS.Application.DTO.PostDTO;
 using OnlineVotingS.Application.DTO.PutDTO;
-using Microsoft.AspNetCore.Mvc.Rendering;
 
-namespace OnlineVotingS.API.TempControllers;
+namespace OnlineVotingS.API.Controllers.TempControllers;
 
 public class CandidateController : Controller
 {
@@ -22,22 +23,28 @@ public class CandidateController : Controller
     [HttpGet]
     public async Task<IActionResult> AddCandidate()
     {
-        var elections = await _mediator.Send(new GetAllElectionsQuery());
+        var electionsResult = await _mediator.Send(new GetAllElectionsQuery());
+
+        if (electionsResult.IsFailed)
+        {
+            return HandleErrorResult(electionsResult);
+        }
+
         var viewModel = new AddCandidateViewModel
         {
-            Elections = elections.Select(e => new SelectListItem
+            Elections = electionsResult.Value.Select(e => new SelectListItem
             {
                 Value = e.ElectionID.ToString(),
                 Text = e.Title
             }).ToList()
         };
+
         return View("~/Views/Admin/Candidate/AddCandidate.cshtml", viewModel);
     }
 
     [HttpPost]
     public async Task<IActionResult> AddCandidate(AddCandidateViewModel model)
     {
-       
         var candidateDto = new CandidatesPostDTO
         {
             ElectionID = model.ElectionID,
@@ -50,17 +57,29 @@ public class CandidateController : Controller
 
         var command = new CreateCandidateCommand(candidateDto);
         var result = await _mediator.Send(command);
+
+        if (result.IsFailed)
+        {
+            return HandleErrorResult(result, model, "~/Views/Admin/Candidate/AddCandidate.cshtml");
+        }
+
         return RedirectToAction(nameof(ViewCandidates));
     }
 
     [HttpGet]
     public async Task<IActionResult> EditCandidate()
     {
-        var candidates = await _mediator.Send(new GetAllCandidatesQuery());
-        var elections = await _mediator.Send(new GetAllElectionsQuery());
+        var candidatesResult = await _mediator.Send(new GetAllCandidatesQuery());
+        var electionsResult = await _mediator.Send(new GetAllElectionsQuery());
+
+        if (candidatesResult.IsFailed || electionsResult.IsFailed)
+        {
+            return HandleErrorResult(candidatesResult, electionsResult);
+        }
+
         var model = new EditCandidateViewModel
         {
-            CandidateList = candidates.Select(c => new SelectListItem
+            CandidateList = candidatesResult.Value.Select(c => new SelectListItem
             {
                 Value = c.CandidateID.ToString(),
                 Text = $"{c.CandidateID} - {c.FullName}"
@@ -72,11 +91,14 @@ public class CandidateController : Controller
     [HttpGet]
     public async Task<IActionResult> GetCandidateDetails(int id)
     {
-        var candidate = await _mediator.Send(new GetCandidateByIdQuery(id));
-        if (candidate == null)
+        var candidateResult = await _mediator.Send(new GetCandidateByIdQuery(id));
+
+        if (candidateResult.IsFailed)
         {
-            return NotFound();
+            return HandleErrorResult(candidateResult);
         }
+
+        var candidate = candidateResult.Value;
         var candidateDetails = new
         {
             electionId = candidate.ElectionID,
@@ -106,17 +128,22 @@ public class CandidateController : Controller
             });
 
             var result = await _mediator.Send(command);
-            if (result != null)
+            if (result.IsSuccess)
             {
                 return RedirectToAction(nameof(ViewCandidates));
             }
-            ModelState.AddModelError(string.Empty, "Failed to update candidate.");
+            return HandleErrorResult(result, model, "~/Views/Admin/Candidate/EditCandidate.cshtml");
         }
 
-        // If we got this far, something failed; redisplay form
-        var candidates = await _mediator.Send(new GetAllCandidatesQuery());
-        var elections = await _mediator.Send(new GetAllElectionsQuery());
-        model.CandidateList = candidates.Select(c => new SelectListItem
+        var candidatesResult = await _mediator.Send(new GetAllCandidatesQuery());
+        var electionsResult = await _mediator.Send(new GetAllElectionsQuery());
+
+        if (candidatesResult.IsFailed || electionsResult.IsFailed)
+        {
+            return HandleErrorResult(candidatesResult, electionsResult);
+        }
+
+        model.CandidateList = candidatesResult.Value.Select(c => new SelectListItem
         {
             Value = c.CandidateID.ToString(),
             Text = $"{c.CandidateID} - {c.FullName}"
@@ -127,10 +154,16 @@ public class CandidateController : Controller
     [HttpGet]
     public async Task<IActionResult> DeleteCandidate()
     {
-        var candidates = await _mediator.Send(new GetAllCandidatesQuery());
+        var candidatesResult = await _mediator.Send(new GetAllCandidatesQuery());
+
+        if (candidatesResult.IsFailed)
+        {
+            return HandleErrorResult(candidatesResult);
+        }
+
         var viewModel = new DeleteCandidateViewModel
         {
-            AvailableCandidates = candidates.Select(c => new SelectListItem
+            AvailableCandidates = candidatesResult.Value.Select(c => new SelectListItem
             {
                 Value = c.CandidateID.ToString(),
                 Text = $"{c.CandidateID} - {c.FullName}"
@@ -145,13 +178,23 @@ public class CandidateController : Controller
         if (ModelState.IsValid)
         {
             var command = new DeleteCandidateCommand(model.CandidateID);
-            await _mediator.Send(command);
-            return RedirectToAction(nameof(ViewCandidates));
+            var result = await _mediator.Send(command);
+
+            if (result.IsSuccess)
+            {
+                return RedirectToAction(nameof(ViewCandidates));
+            }
+            return HandleErrorResult(result, model, "~/Views/Admin/Candidate/DeleteCandidate.cshtml");
         }
 
-        // If we got this far, something failed; redisplay form
-        var candidates = await _mediator.Send(new GetAllCandidatesQuery());
-        model.AvailableCandidates = candidates.Select(c => new SelectListItem
+        var candidatesResult = await _mediator.Send(new GetAllCandidatesQuery());
+
+        if (candidatesResult.IsFailed)
+        {
+            return HandleErrorResult(candidatesResult);
+        }
+
+        model.AvailableCandidates = candidatesResult.Value.Select(c => new SelectListItem
         {
             Value = c.CandidateID.ToString(),
             Text = $"{c.CandidateID} - {c.FullName}"
@@ -162,8 +205,14 @@ public class CandidateController : Controller
     [HttpGet]
     public async Task<IActionResult> ViewCandidates()
     {
-        var candidates = await _mediator.Send(new GetAllCandidatesQuery());
-        var viewModel = candidates.Select(c => new ViewCandidatesViewModel
+        var candidatesResult = await _mediator.Send(new GetAllCandidatesQuery());
+
+        if (candidatesResult.IsFailed)
+        {
+            return HandleErrorResult(candidatesResult);
+        }
+
+        var viewModel = candidatesResult.Value.Select(c => new ViewCandidatesViewModel
         {
             CandidateID = c.CandidateID,
             ElectionID = c.ElectionID,
@@ -175,5 +224,19 @@ public class CandidateController : Controller
         }).ToList();
 
         return View("~/Views/Admin/Candidate/ViewCandidates.cshtml", viewModel);
+    }
+
+    private IActionResult HandleErrorResult<T>(Result<T> result, object? model = null, string? viewPath = null)
+    {
+        foreach (var error in result.Errors)
+        {
+            ModelState.AddModelError(string.Empty, error.Message);
+        }
+
+        if (model != null && viewPath != null)
+        {
+            return View(viewPath, model);
+        }
+        return View("Error");
     }
 }

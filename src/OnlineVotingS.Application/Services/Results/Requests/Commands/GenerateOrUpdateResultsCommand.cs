@@ -1,11 +1,12 @@
 ﻿using MediatR;
+using FluentResults;
 
 namespace OnlineVotingS.Application.Services.Results.Requests.Commands;
 
-public class GenerateOrUpdateResultsCommand : IRequest<Unit>
+public class GenerateOrUpdateResultsCommand : IRequest<Result<Unit>>
 {
-    public int ElectionID { get; set; }
-    public int? CandidateID { get; set; }
+    public int ElectionID { get; }
+    public int? CandidateID { get; }
 
     public GenerateOrUpdateResultsCommand(int electionId, int? candidateId = null)
     {

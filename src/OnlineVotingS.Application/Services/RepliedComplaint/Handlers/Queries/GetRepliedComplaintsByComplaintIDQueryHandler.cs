@@ -1,12 +1,15 @@
-﻿using MediatR;
+﻿using FluentResults;
+using MediatR;
 using Microsoft.Extensions.Logging;
 using OnlineVotingS.Application.Services.RepliedComplaint.Requests.Queries;
 using OnlineVotingS.Domain.Entities;
 using OnlineVotingS.Domain.Interfaces;
+using OnlineVotingS.Domain.Errors;
+using static FluentResults.Result;
 
 namespace OnlineVotingS.Application.Services.RepliedComplaint.Handlers.Queries;
 
-public class GetRepliedComplaintsByComplaintIDQueryHandler : IRequestHandler<GetRepliedComplaintsByComplaintIDQuery, IEnumerable<RepliedComplaints>>
+public class GetRepliedComplaintsByComplaintIDQueryHandler : IRequestHandler<GetRepliedComplaintsByComplaintIDQuery, Result<IEnumerable<RepliedComplaints>>>
 {
     private readonly IRepliedComplaintsRepository _repliedComplaintsRepository;
     private readonly ILogger<GetRepliedComplaintsByComplaintIDQueryHandler> _logger;
@@ -17,16 +20,17 @@ public class GetRepliedComplaintsByComplaintIDQueryHandler : IRequestHandler<Get
         _logger = logger;
     }
 
-    public async Task<IEnumerable<RepliedComplaints>> Handle(GetRepliedComplaintsByComplaintIDQuery request, CancellationToken cancellationToken)
+    public async Task<Result<IEnumerable<RepliedComplaints>>> Handle(GetRepliedComplaintsByComplaintIDQuery request, CancellationToken cancellationToken)
     {
         try
         {
-            return await _repliedComplaintsRepository.GetByComplaintIDAsync(request.ComplaintID);
+            var repliedComplaints = await _repliedComplaintsRepository.GetByComplaintIDAsync(request.ComplaintID);
+            return Ok(repliedComplaints);
         }
         catch (Exception ex)
         {
             _logger.LogError("An error occurred while retrieving replied complaints for complaint ID {ComplaintID}: {ErrorMessage}", request.ComplaintID, ex.Message);
-            throw;
+            return new Result<IEnumerable<RepliedComplaints>>().WithError(ErrorCodes.REPLIED_COMPLAINT_NOT_FOUND.ToString());
         }
     }
 }

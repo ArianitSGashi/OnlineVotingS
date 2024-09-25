@@ -1,11 +1,14 @@
-﻿using MediatR;
+﻿using static FluentResults.Result;
+using FluentResults;
+using MediatR;
 using Microsoft.Extensions.Logging;
 using OnlineVotingS.Application.Services.RepliedComplaint.Requests.Commands;
+using OnlineVotingS.Domain.Errors;
 using OnlineVotingS.Domain.Interfaces;
 
 namespace OnlineVotingS.Application.Services.RepliedComplaint.Handlers.Commands;
 
-public class DeleteRepliedComplaintCommandHandler : IRequestHandler<DeleteRepliedComplaintCommand, bool>
+public class DeleteRepliedComplaintCommandHandler : IRequestHandler<DeleteRepliedComplaintCommand, Result<bool>>
 {
     private readonly IRepliedComplaintsRepository _repliedComplaintsRepository;
     private readonly ILogger<DeleteRepliedComplaintCommandHandler> _logger;
@@ -16,23 +19,24 @@ public class DeleteRepliedComplaintCommandHandler : IRequestHandler<DeleteReplie
         _logger = logger;
     }
 
-    public async Task<bool> Handle(DeleteRepliedComplaintCommand request, CancellationToken cancellationToken)
+    public async Task<Result<bool>> Handle(DeleteRepliedComplaintCommand request, CancellationToken cancellationToken)
     {
         try
         {
             var exists = await _repliedComplaintsRepository.ExistsAsync(request.RepliedComplaintId);
             if (!exists)
             {
-                throw new KeyNotFoundException($"Replied complaint with ID {request.RepliedComplaintId} not found.");
+                var errorMessage = $"Replied complaint with ID {request.RepliedComplaintId} not found.";
+                return new Result<bool>().WithError(errorMessage);
             }
 
             await _repliedComplaintsRepository.DeleteAsync(request.RepliedComplaintId);
-            return true;
+            return Ok(true);
         }
         catch (Exception ex)
         {
-            _logger.LogError("An error occurred while deleting the replied complaint with ID {RepliedComplaintId}: {ErrorMessage}", request.RepliedComplaintId, ex.Message);
-            throw;
+            _logger.LogError(ex, "An error occurred while deleting the replied complaint with ID {RepliedComplaintId}", request.RepliedComplaintId);
+            return new Result<bool>().WithError(ErrorCodes.REPLIED_COMPLAINT_DELETION_FAILED.ToString());
         }
     }
 }

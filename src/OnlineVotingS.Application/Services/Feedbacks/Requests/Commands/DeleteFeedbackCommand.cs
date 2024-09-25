@@ -1,8 +1,9 @@
-﻿using MediatR;
+﻿using FluentResults;
+using MediatR;
 
 namespace OnlineVotingS.Application.Services.Feedbacks.Requests.Commands;
 
-public class DeleteFeedbackCommand : IRequest<bool>
+public class DeleteFeedbackCommand : IRequest<Result<bool>>
 {
     public int FeedbackId { get; }
 
