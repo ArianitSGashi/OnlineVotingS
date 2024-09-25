@@ -1,0 +1,86 @@
+﻿@model IEnumerable<OnlineVotingS.Domain.Entities.Elections>
+
+<div>
+    <h2>Select an Election to View Results</h2>
+    <form id="electionForm">
+        <label for="electionSelect">Select Election:</label>
+        <select id="electionSelect" class="form-control">
+            <option value="">-- Select Election --</option>
+            @foreach (var election in Model)
+            {
+                <option value="@election.ElectionID">@election.Title</option>
+            }
+        </select>
+    </form>
+
+    <div id="chartContainer" style="display:block;">
+        <h3>Election Results</h3>
+        <canvas id="resultsChart"></canvas>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        var ctx = document.getElementById('resultsChart').getContext('2d');
+        
+        // Function to generate random colors for the chart
+        function getRandomColors(numColors) {
+            var colors = [];
+            for (var i = 0; i < numColors; i++) {
+                var r = Math.floor(Math.random() * 255);
+                var g = Math.floor(Math.random() * 255);
+                var b = Math.floor(Math.random() * 255);
+                colors.push(`rgba(${r}, ${g}, ${b}, 0.5)`);
+            }
+            return colors;
+        }
+
+        // Initial chart with zero values
+        var chart = new Chart(ctx, {
+            type: 'pie',
+            data: {
+                labels: [], // Empty labels initially
+                datasets: [{
+                    label: 'Votes',
+                    data: [], // Empty data initially
+                    backgroundColor: [], // Empty colors initially
+                    borderColor: [], // Empty border colors initially
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        display: true,
+                        position: 'top',
+                    },
+                    tooltip: {
+                        enabled: true
+                    }
+                }
+            }
+        });
+
+        document.getElementById('electionSelect').addEventListener('change', function () {
+            var electionId = this.value;
+            if (electionId) {
+                // Fetch results based on the selected election
+                fetch(`/Voter/GetResultsForElection?electionId=${electionId}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        // Generate random colors for each candidate
+                        var candidateColors = getRandomColors(data.labels.length);
+
+                        // Update chart with new data
+                        chart.data.labels = data.labels; // Candidate names
+                        chart.data.datasets[0].data = data.votes; // Votes
+                        chart.data.datasets[0].backgroundColor = candidateColors; // Set random colors
+                        chart.data.datasets[0].borderColor = candidateColors.map(color => color.replace('0.5', '1')); // Stronger border colors
+                        chart.update();
+                    });
+            }
+        });
+    </script>
+}
