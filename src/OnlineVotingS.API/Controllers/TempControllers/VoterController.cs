@@ -16,6 +16,10 @@ using OnlineVotingS.Application.DTO.PostDTO;
 using OnlineVotingS.Domain.Models;
 using OnlineVotingS.Domain.Enums;
 using OnlineVotingS.Domain.CostumExceptions;
+using OnlineVotingS.API.Models;
+using System.Diagnostics;
+using OnlineVotingS.Application.DTO.GetDTO;
+using OnlineVotingS.Application.Services.Vote.Handlers.Queries;
 
 namespace OnlineVotingS.API.Controllers.TempControllers;
 
@@ -298,4 +302,29 @@ public class VoterController : Controller
 
         return View("Error");
     }
+
+    [HttpGet]
+    public async Task<IActionResult> ShowResults()
+    {
+        var allElections = await _mediator.Send(new GetAllElectionsQuery());
+        
+        return View("~/Views/Voter/ShowResults.cshtml", allElections);
+        
+    }
+    
+    [HttpGet]
+    public async Task<IActionResult> GetResultsForElection(int electionId)
+    {
+        var electionResults = await _mediator.Send(new FilterVotesByCandidateQuery(electionId));
+
+        var candidateVotesEnumerable = electionResults.ToList();
+        var resultData = new
+        {
+            labels = candidateVotesEnumerable.Select(r => r.CandidateFullName).ToArray(),
+            votes = candidateVotesEnumerable.Select(r => r.Votes).ToArray()
+        };
+
+        return Json(resultData);
+    }
+
 }

@@ -1,4 +1,5 @@
-﻿@{
+﻿@model FluentResults.Result<IEnumerable<OnlineVotingS.Domain.Entities.Elections>>
+@{
     Layout = null;
 }
 <!DOCTYPE html>
@@ -52,18 +53,25 @@
             opacity: 0.8;
         }
 
-            .close:hover {
-                color: white;
-                opacity: 1;
-            }
+        .close:hover {
+            color: white;
+            opacity: 1;
+        }
+        .chartCont {
+            border: 1px solid lightgrey;
+        }
+        .mainContent{
+            padding: 20px 20px;
+            color: cadetblue;
+        }
     </style>
 </head>
 
-<body>
+<body style="background-color: white !important;">
 <nav class="navbar navbar-expand-lg navbar-dark">
-        <a class="navbar-brand" href="@Url.Action("VoterDashboard", "Voter")">
-            <i class="fas fa-vote-yea"></i> Online Voting System
-        </a>
+    <a class="navbar-brand" href="@Url.Action("VoterDashboard", "Voter")">
+        <i class="fas fa-vote-yea"></i> Online Voting System
+    </a>
     <div class="collapse navbar-collapse">
         <ul class="navbar-nav ml-auto">
             <li class="nav-item">
@@ -89,75 +97,51 @@
                 <a class="nav-link" href="@Url.Action("ShowResults", "Voter")"><i class="fas fa-list-alt"></i>View Results</a>
             </li>
         </ul>
-            <form asp-controller="Auth" asp-action="Logout" method="post" class="d-flex">
-                <button type="submit" class="btn btn-outline-light">
-                    <i class="fas fa-sign-out-alt"></i> Logout
-                </button>
-            </form>
+        <form asp-controller="Auth" asp-action="Logout" method="post" class="d-flex">
+            <button type="submit" class="btn btn-outline-light">
+                <i class="fas fa-sign-out-alt"></i> Logout
+            </button>
+        </form>
     </div>
 </nav>
-<div class="hero-section text-center" style="height: auto !important;">
-    <div class="container">
-        <h1 class="display-4">Elections</h1>
-        <input type="text" id="electionSearch" class="form-control" placeholder="Search by Election ID, Title, or Description">
-        <button id="searchButton" class="btn btn-primary" type="button">
-            <i class="fas fa-search"></i> Search
-        </button>
+<div class="col-md-12 mainContent">
+    <div class="row">
+        <div class="col-md-2"></div>
+        <div class="col-md-3">
+            <h2>Select an Election to View Results</h2>
+            <form id="electionForm">
+                <label for="electionSelect">Select Election:</label>
+                <select id="electionSelect" class="form-control">
+                    <option value="">-- Select Election --</option>
+                    @foreach (var election in Model.Value)
+                    {
+                        <option value="@election.ElectionID">@election.Title</option>
+                    }
+                </select>
+            </form>
 
-        <div class="table-responsive mt-4" style="overflow-x: auto !important;">
-            <table class="table table-hover" id="electionTable">
-                <thead class="thead-dark">
-                    <tr>
-                        <th>ID</th>
-                        <th>Title</th>
-                        <th>Description</th>
-                        <th>Start Date</th>
-                        <th>Start Time</th>
-                        <th>End Date</th>
-                        <th>End Time</th>
-                        <th>Status</th>
-                        <th>Action</th>
-                    </tr>
+            <table id="resultsTable" class="table table-striped table-bordered mt-3" style="display: none;">
+                <thead>
+                <tr>
+                    <th>Candidate Name</th>
+                    <th>Votes</th>
+                </tr>
                 </thead>
                 <tbody>
-                    @foreach (var election in Model)
-                    {
-                        <tr>
-                            <td>@election.ElectionID</td>
-                            <td>@election.Title</td>
-                            <td>@election.Description</td>
-                            <td>@election.StartDate.ToString("d")</td>
-                            <td>@election.StartTime.ToString(@"hh\:mm")</td>
-                            <td>@election.EndDate.ToString("d")</td>
-                            <td>@election.EndTime.ToString(@"hh\:mm")</td>
-                            <td>
-                                <span class="badge @(election.Status == OnlineVotingS.Domain.Enums.ElectionStatus.Active ? "bg-success" : election.Status == OnlineVotingS.Domain.Enums.ElectionStatus.Completed ? "bg-danger" : "bg-secondary")">
-                                    @election.Status
-                                </span>
-                            </td>
-                                <td>
-                                    @if (election.Status == OnlineVotingS.Domain.Enums.ElectionStatus.Completed)
-                                    {
-                                        <button class="btn btn-sm btn-danger" disabled>Completed</button>
-                                    }
-                                    else if (election.Status == OnlineVotingS.Domain.Enums.ElectionStatus.Not_Active)
-                                    {
-                                        <button class="btn btn-sm btn-secondary" disabled>Not Active</button>
-                                    }
-                                    else if (election.Status == OnlineVotingS.Domain.Enums.ElectionStatus.Active)
-                                    {
-                                        <a href="@Url.Action("VotePage", "Voter", new { electionId = election.ElectionID })" class="btn btn-sm btn-primary">
-                                            <i class="fas fa-vote-yea"></i> Vote
-                                        </a>
-                                    }
-                                </td>
-                        </tr>
-                    }
+
                 </tbody>
             </table>
         </div>
+        <div class="col-md-2"></div>
+        <div class="col-md-3 chartCont">
+            <div id="chartContainer" style="display:block;">
+                <h3>Election Results</h3><canvas id="resultsChart"></canvas>
+            </div>
+        </div>
+        <div class="col-md-2"></div>
     </div>
 </div>
+            
     <footer class="footer">
         <div class="container">
             <div class="row">
@@ -216,43 +200,88 @@
 
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
-       $(document).ready(function () {
-    // Existing search functionality
-    $("#searchButton").on("click", function () {
-        var value = $("#electionSearch").val().toLowerCase();
-        $("#electionTable tbody tr").filter(function () {
-            $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
-        });
-    });
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+ <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+   <script>
+       var ctx = document.getElementById('resultsChart').getContext('2d');
+       
+       function getRandomColors(numColors) {
+           var colors = [];
+           for (var i = 0; i < numColors; i++) {
+               var r = Math.floor(Math.random() * 255);
+               var g = Math.floor(Math.random() * 255);
+               var b = Math.floor(Math.random() * 255);
+               colors.push(`rgba(${r}, ${g}, ${b}, 0.5)`);
+           }
+           return colors;
+       }
+   
+       var chart = new Chart(ctx, {
+           type: 'pie',
+           data: {
+               labels: [], 
+               datasets: [{
+                   label: 'Votes',
+                   data: [], 
+                   backgroundColor: [], 
+                   borderColor: [], 
+                   borderWidth: 1
+               }]
+           },
+           options: {
+               responsive: true,
+               plugins: {
+                   legend: {
+                       display: true,
+                       position: 'top',
+                   },
+                   tooltip: {
+                       enabled: true
+                   }
+               }
+           }
+       });
+   
+       document.getElementById('electionSelect').addEventListener('change', function () {
+           var electionId = this.value;
+           if (electionId) {
+               fetch(`/Voter/GetResultsForElection?electionId=${electionId}`)
+                   .then(response => response.json())
+                   .then(data => {
+                       var candidateColors = getRandomColors(data.labels.length);
+   
+                       chart.data.labels = data.labels; 
+                       chart.data.datasets[0].data = data.votes; 
+                       chart.data.datasets[0].backgroundColor = candidateColors; 
+                       chart.data.datasets[0].borderColor = candidateColors.map(color => color.replace('0.5', '1')); 
+                       chart.update();
 
-    $("#electionSearch").on("keyup", function (event) {
-        if (event.keyCode === 13) {
-            $("#searchButton").click();
-        }
-    });
+                       var tableBody = document.querySelector('#resultsTable tbody');
+                       tableBody.innerHTML = '';
 
-    // Modal functionality
-    var voteMessage = '@ViewBag.VoteMessage';
-    var voteMessageType = '@ViewBag.VoteMessageType';
-    if (voteMessage) {
-        $('#voteConfirmationMessage').text(voteMessage);
-        if (voteMessageType === 'success') {
-            $('#modalHeader').removeClass('bg-danger').addClass('bg-success');
-            $('#voteConfirmationModalLabel').text('Success');
-        } else {
-            $('#modalHeader').removeClass('bg-success').addClass('bg-danger');
-            $('#voteConfirmationModalLabel').text('Alert');
-        }
-        $('#voteConfirmationModal').modal('show');
-    }
+                       data.labels.forEach(function (candidateName, index) {
+                           var votes = data.votes[index];
 
-    // Add event listeners for modal close buttons
-    $('.modal .close, .modal .btn-secondary').on('click', function() {
-        $('#voteConfirmationModal').modal('hide');
-    });
-});
-    </script>
+                           var row = document.createElement('tr');
+
+                           var nameCell = document.createElement('td');
+                           var votesCell = document.createElement('td');
+
+                           nameCell.textContent = candidateName;
+                           votesCell.textContent = votes;
+
+                           row.appendChild(nameCell);
+                           row.appendChild(votesCell);
+   
+                           tableBody.appendChild(row);
+                       });
+   
+                       document.getElementById('resultsTable').style.display = 'table';
+                   });
+           } else {
+               document.getElementById('resultsTable').style.display = 'none';
+           }
+       });
+   </script>
 </body>
 </html>
