@@ -32,4 +32,7 @@ public class EditCandidateViewModel
 
     [Required(ErrorMessage = "Candidate list is required")]
     public IEnumerable<SelectListItem> CandidateList { get; set; } = new List<SelectListItem>();
+    public List<SelectListItem> Elections { get; set; } = new List<SelectListItem>();
+    public string SearchError { get; set; } = string.Empty;
+
 }

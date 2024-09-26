@@ -11,48 +11,52 @@
 </head>
 <body>
     @await Html.PartialAsync("_NewSidebar")
+
     <div class="container-with-sidebar bg-light p-4 rounded">
         <h4 class="mb-4">Edit Candidate</h4>
-        <form method="post" action="/Candidate/EditCandidate" class="form-container">
+        <div class="mb-3">
+            <label for="searchId" class="form-label">Enter Candidate ID</label>
+            <input id="searchId" class="form-control" required />
+            <span id="searchError" class="text-danger">@Model.SearchError</span>
+        </div>
+        <button id="searchButton" class="btn btn-secondary mt-2">Search</button>
+        <form id="editForm" method="post" action="/Candidate/EditCandidate" class="form-container" style="display:none;">
             @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+            <input asp-for="CandidateID" type="hidden" />
             <div class="mb-3">
-                <label asp-for="CandidateID" class="form-label">Select Candidate</label>
-                <select asp-for="CandidateID" asp-items="Model.CandidateList" class="form-control select-dropdown" id="candidateId" required>
-                    <option value="">Select a Candidate</option>
+                <label asp-for="ElectionID" class="form-label">Election</label>
+                <select asp-for="ElectionID" asp-items="Model.Elections" class="form-control select-dropdown" id="electionId" required>
+                    <option value="">Select an Election</option>
                 </select>
-                <span asp-validation-for="CandidateID" class="text-danger"></span>
-            </div>
-            <div class="mb-3">
-                <label asp-for="ElectionID" class="form-label">Election ID</label>
-                <input asp-for="ElectionID" class="form-control" id="electionId" readonly />
                 <span asp-validation-for="ElectionID" class="text-danger"></span>
+            
             </div>
             <div class="mb-3">
                 <label asp-for="FullName" class="form-label">Full Name</label>
-                <input asp-for="FullName" class="form-control" id="fullName" required />
+                <input asp-for="FullName" class="form-control" />
                 <span asp-validation-for="FullName" class="text-danger"></span>
             </div>
             <div class="mb-3">
                 <label asp-for="Party" class="form-label">Party</label>
-                <input asp-for="Party" class="form-control" id="party" required />
+                <input asp-for="Party" class="form-control" />
                 <span asp-validation-for="Party" class="text-danger"></span>
             </div>
             <div class="mb-3">
                 <label asp-for="Description" class="form-label">Description</label>
-                <textarea asp-for="Description" class="form-control" id="description"></textarea>
+                <textarea asp-for="Description" class="form-control"></textarea>
                 <span asp-validation-for="Description" class="text-danger"></span>
             </div>
             <div class="mb-3">
                 <label asp-for="Income" class="form-label">Income</label>
-                <input asp-for="Income" class="form-control" id="income" type="number" step="0.01" required />
+                <input asp-for="Income" class="form-control" type="number" step="0.01" />
                 <span asp-validation-for="Income" class="text-danger"></span>
             </div>
             <div class="mb-3">
                 <label asp-for="Works" class="form-label">Works</label>
-                <input asp-for="Works" class="form-control" id="works" required />
+                <input asp-for="Works" class="form-control" />
                 <span asp-validation-for="Works" class="text-danger"></span>
             </div>
-            <button type="submit" class="btn btn-primary">Update Candidate</button>
+            <button type="submit" class="btn btn-primary">Save Changes</button>
         </form>
     </div>
 
@@ -60,26 +64,33 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.3/jquery.validate.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/3.2.12/jquery.validate.unobtrusive.min.js"></script>
-
     <script>
         $(document).ready(function () {
-            $('#candidateId').change(function () {
-                var selectedId = $(this).val();
-                if (selectedId) {
+            $('#searchButton').click(function () {
+                var candidateId = $('#searchId').val();
+                if (candidateId) {
                     $.ajax({
                         url: '/Candidate/GetCandidateDetails',
                         type: 'GET',
-                        data: { id: selectedId },
+                        data: { id: candidateId },
                         success: function (data) {
-                            $('#electionId').val(data.electionId);
-                            $('#fullName').val(data.fullName);
-                            $('#party').val(data.party);
-                            $('#description').val(data.description);
-                            $('#income').val(data.income);
-                            $('#works').val(data.works);
+                            if (data.error) {
+                                $('#searchError').text(data.error);
+                                $('#editForm').hide();
+                            } else {
+                                $('#searchError').text('');
+                                $('#CandidateID').val(candidateId);
+                                $('#FullName').val(data.fullName);
+                                $('#Party').val(data.party);
+                                $('#Description').val(data.description);
+                                $('#Income').val(data.income);
+                                $('#Works').val(data.works);
+                                $('#editForm').show();
+                            }
                         },
                         error: function () {
-                            alert('Error fetching candidate details');
+                            $('#searchError').text('Error fetching candidate details');
+                            $('#editForm').hide();
                         }
                     });
                 }

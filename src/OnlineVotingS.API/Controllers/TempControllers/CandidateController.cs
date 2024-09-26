@@ -8,6 +8,7 @@ using OnlineVotingS.Application.Services.Candidate.Requests.Queries;
 using OnlineVotingS.Application.Services.Election.Requests.Queries;
 using OnlineVotingS.Application.DTO.PostDTO;
 using OnlineVotingS.Application.DTO.PutDTO;
+using OnlineVotingS.Domain.Entities;
 
 namespace OnlineVotingS.API.Controllers.TempControllers;
 
@@ -83,8 +84,15 @@ public class CandidateController : Controller
             {
                 Value = c.CandidateID.ToString(),
                 Text = $"{c.CandidateID} - {c.FullName}"
+            }).ToList(),
+
+            Elections = electionsResult.Value.Select(e => new SelectListItem
+            {
+                Value = e.ElectionID.ToString(),
+                Text = e.Title
             }).ToList()
         };
+
         return View("~/Views/Admin/Candidate/EditCandidate.cshtml", model);
     }
 

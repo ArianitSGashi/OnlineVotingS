@@ -13,13 +13,11 @@
     @await Html.PartialAsync("_NewSidebar")
     <div class="container-with-sidebar bg-light p-4 rounded">
         <h4 class="mb-4">Delete Candidate</h4>
-        <form method="post" action="/Candidate/DeleteCandidate" class="form-container">
+        <form method="post" action="@Url.Action("DeleteCandidate", "Candidate")" class="form-container">
             @Html.ValidationSummary(true, "", new { @class = "text-danger" })
             <div class="mb-3">
-                <label asp-for="CandidateID" class="form-label">Select Candidate to Delete</label>
-                <select asp-for="CandidateID" asp-items="Model.AvailableCandidates" class="form-control dropdown-small">
-                    <option value="">Select a Candidate</option>
-                </select>
+                <label asp-for="CandidateID" class="form-label">ID</label>
+                <input asp-for="CandidateID" class="form-control" required />
                 <span asp-validation-for="CandidateID" class="text-danger"></span>
             </div>
             <button type="submit" class="btn btn-danger">Delete Candidate</button>
