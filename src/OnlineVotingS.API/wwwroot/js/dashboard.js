@@ -42,15 +42,6 @@
             icon: 'fa-check-to-slot',
         },
         {
-            title: 'VOTING',
-            actions: [
-                { label: 'Start Voting', url: 'javascript:void(0)', onClick: toggleSidebar },
-                { label: 'Stop Voting', url: 'javascript:void(0)', onClick: toggleSidebar },
-                { label: 'View Results', url: 'javascript:void(0)', onClick: toggleSidebar }
-            ],
-            icon: 'fa-solid fa-check-to-slot',
-        },
-        {
             title: 'RESULT',
             actions: [
                 { label: 'Generate Results', url: '/Result/GenerateResult', onClick: () => navigateTo('/Result/GenerateResult') },

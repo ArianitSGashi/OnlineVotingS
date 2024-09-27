@@ -1,29 +1,69 @@
-﻿body {
-    background-color: #f8f9fa;
+﻿/* General Body Styling */
+body {
+    background: linear-gradient(to right, #f8f9fa, #e0eafc); /* Light gradient */
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+    padding: 0;
+    color: #333;
 }
 
+/* Navbar Branding */
+.navbar-brand span {
+    color: #0077b6;
+    font-weight: bold;
+}
+
+/* Icon Styling */
 .card-body .fa-icon {
     font-size: 4rem;
     color: #000;
+    transition: color 0.3s ease-in-out, transform 0.5s ease-in-out;
 }
 
+.fa-icon:hover {
+    color: #005f8c;
+    transform: rotate(360deg); /* Rotate icon on hover */
+}
+
+/* Card Titles */
 .card-title {
     font-weight: bold;
+    font-size: 1.75rem;
     margin-bottom: 20px;
+    color: #2F5F8A;
 }
 
-.navbar-brand span {
-    color: #0077b6;
-}
-
+/* Buttons */
 .btn-primary {
     width: 100%;
+    background-color: #0077b6;
+    border-color: #0077b6;
+    color: #fff;
+    transition: background-color 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
 }
 
+    .btn-primary:hover {
+        background-color: #005f8c;
+        box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    }
+
+@keyframes ripple {
+    from {
+        transform: scale(0);
+        opacity: 1;
+    }
+
+    to {
+        transform: scale(2);
+        opacity: 0;
+    }
+}
+
+/* Custom Card Styling */
 .custom-card {
-    background-color: #ffffff;
+    background-color: rgba(255, 255, 255, 0.9);
     border-radius: 15px;
-    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.15);
     transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
 }
 
@@ -32,21 +72,45 @@
         box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.2);
     }
 
+    /* Custom Card Body */
     .custom-card .card-body {
         padding: 20px;
     }
 
-    .custom-card .card-title {
-        font-size: 1.5rem;
-        color: #2F5F8A;
-    }
+/* Responsive Grid Layout */
+.row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+}
 
-    .custom-card .btn-primary {
-        background-color: #blue;
-        border-color: #28a745;
-    }
+.col {
+    flex: 1 1 100%;
+}
 
-        .custom-card .btn-primary:hover {
-            background-color: #5E8CAD;
-            border-color: #174978;
-        }
+@media (min-width: 768px) {
+    .col {
+        flex: 1 1 calc(50% - 20px);
+    }
+}
+
+@media (min-width: 1024px) {
+    .col {
+        flex: 1 1 calc(33.3333% - 20px);
+    }
+}
+
+/* Footer */
+footer {
+    text-align: center;
+    padding: 20px 0;
+    background-color: #f1f1f1;
+    color: #666;
+    margin-top: 20px;
+    border-top: 1px solid #ddd;
+}
+
+    footer p a {
+        margin: 0 10px;
+        color: #0077b6;
+    }
