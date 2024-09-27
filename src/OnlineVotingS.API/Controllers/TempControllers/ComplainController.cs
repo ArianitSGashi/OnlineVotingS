@@ -1,5 +1,6 @@
 ﻿using FluentResults;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using OnlineVotingS.API.Models.AdminViewModels.ComplaintViewModels;
@@ -9,6 +10,7 @@ using OnlineVotingS.Application.Services.Complaint.Requests.Queries;
 
 namespace OnlineVotingS.API.Controllers.TempControllers;
 
+[Authorize(Policy = "RequireAdminRole")]
 public class ComplainController : Controller
 {
     private readonly IMediator _mediator;

@@ -1,5 +1,6 @@
 ﻿using FluentResults;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using OnlineVotingS.API.Models.AdminViewModels.ElectionViewModels;
@@ -11,6 +12,7 @@ using OnlineVotingS.Application.Services.Election.Requests.Queries;
 
 namespace OnlineVotingS.API.Controllers.TempControllers;
 
+[Authorize(Policy = "RequireAdminRole")]
 public class ElectionController : Controller
 {
     private readonly IMediator _mediator;

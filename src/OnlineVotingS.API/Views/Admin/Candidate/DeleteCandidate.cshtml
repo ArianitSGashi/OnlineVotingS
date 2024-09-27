@@ -17,7 +17,7 @@
             @Html.ValidationSummary(true, "", new { @class = "text-danger" })
             <div class="mb-3">
                 <label asp-for="CandidateID" class="form-label">ID</label>
-                <input asp-for="CandidateID" class="form-control" required />
+                <input asp-for="CandidateID" class="form-control" required type="text" inputmode="numeric" pattern="\d*" />
                 <span asp-validation-for="CandidateID" class="text-danger"></span>
             </div>
             <button type="submit" class="btn btn-danger">Delete Candidate</button>

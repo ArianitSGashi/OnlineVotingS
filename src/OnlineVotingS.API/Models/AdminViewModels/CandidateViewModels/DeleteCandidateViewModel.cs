@@ -1,12 +1,10 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using Microsoft.AspNetCore.Mvc.Rendering;
 
-namespace OnlineVotingS.API.Models.AdminViewModels.CandidateViewModels
+namespace OnlineVotingS.API.Models.AdminViewModels.CandidateViewModels;
+
+public class DeleteCandidateViewModel
 {
-    public class DeleteCandidateViewModel
-    {
-        [Required(ErrorMessage = "Please select a candidate to delete")]
-        public int CandidateID { get; set; }
-        public List<SelectListItem> AvailableCandidates { get; set; } = new List<SelectListItem>();
-    }
+    [Required(ErrorMessage = "Please enter a candidate ID to delete")]
+    [Range(1, int.MaxValue, ErrorMessage = "Please enter a valid positive integer for the Candidate ID")]
+    public int CandidateID { get; set; }
 }
