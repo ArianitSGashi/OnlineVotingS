@@ -8,10 +8,11 @@ using OnlineVotingS.Application.Services.Candidate.Requests.Queries;
 using OnlineVotingS.Application.Services.Election.Requests.Queries;
 using OnlineVotingS.Application.DTO.PostDTO;
 using OnlineVotingS.Application.DTO.PutDTO;
-using OnlineVotingS.Domain.Entities;
+using Microsoft.AspNetCore.Authorization;
 
 namespace OnlineVotingS.API.Controllers.TempControllers;
 
+[Authorize(Policy = "RequireAdminRole")]
 public class CandidateController : Controller
 {
     private readonly IMediator _mediator;
@@ -89,7 +90,7 @@ public class CandidateController : Controller
             Elections = electionsResult.Value.Select(e => new SelectListItem
             {
                 Value = e.ElectionID.ToString(),
-                Text = e.Title
+                Text = $"{e.ElectionID} - {e.Title}"
             }).ToList()
         };
 
@@ -103,7 +104,7 @@ public class CandidateController : Controller
 
         if (candidateResult.IsFailed)
         {
-            return HandleErrorResult(candidateResult);
+            return Json(new { error = "Candidate not found" });
         }
 
         var candidate = candidateResult.Value;
@@ -160,24 +161,9 @@ public class CandidateController : Controller
     }
 
     [HttpGet]
-    public async Task<IActionResult> DeleteCandidate()
+    public IActionResult DeleteCandidate()
     {
-        var candidatesResult = await _mediator.Send(new GetAllCandidatesQuery());
-
-        if (candidatesResult.IsFailed)
-        {
-            return HandleErrorResult(candidatesResult);
-        }
-
-        var viewModel = new DeleteCandidateViewModel
-        {
-            AvailableCandidates = candidatesResult.Value.Select(c => new SelectListItem
-            {
-                Value = c.CandidateID.ToString(),
-                Text = $"{c.CandidateID} - {c.FullName}"
-            }).ToList()
-        };
-        return View("~/Views/Admin/Candidate/DeleteCandidate.cshtml", viewModel);
+        return View("~/Views/Admin/Candidate/DeleteCandidate.cshtml", new DeleteCandidateViewModel());
     }
 
     [HttpPost]
@@ -187,26 +173,12 @@ public class CandidateController : Controller
         {
             var command = new DeleteCandidateCommand(model.CandidateID);
             var result = await _mediator.Send(command);
-
             if (result.IsSuccess)
             {
                 return RedirectToAction(nameof(ViewCandidates));
             }
             return HandleErrorResult(result, model, "~/Views/Admin/Candidate/DeleteCandidate.cshtml");
         }
-
-        var candidatesResult = await _mediator.Send(new GetAllCandidatesQuery());
-
-        if (candidatesResult.IsFailed)
-        {
-            return HandleErrorResult(candidatesResult);
-        }
-
-        model.AvailableCandidates = candidatesResult.Value.Select(c => new SelectListItem
-        {
-            Value = c.CandidateID.ToString(),
-            Text = $"{c.CandidateID} - {c.FullName}"
-        }).ToList();
         return View("~/Views/Admin/Candidate/DeleteCandidate.cshtml", model);
     }
 

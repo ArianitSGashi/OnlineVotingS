@@ -25,11 +25,10 @@
             <input asp-for="CandidateID" type="hidden" />
             <div class="mb-3">
                 <label asp-for="ElectionID" class="form-label">Election</label>
-                <select asp-for="ElectionID" asp-items="Model.Elections" class="form-control select-dropdown" id="electionId" required>
+                <select asp-for="ElectionID" asp-items="Model.Elections" class="form-control select-dropdown" id="ElectionID" required>
                     <option value="">Select an Election</option>
                 </select>
                 <span asp-validation-for="ElectionID" class="text-danger"></span>
-            
             </div>
             <div class="mb-3">
                 <label asp-for="FullName" class="form-label">Full Name</label>
@@ -86,6 +85,9 @@
                                 $('#Income').val(data.income);
                                 $('#Works').val(data.works);
                                 $('#editForm').show();
+
+                                // Select the correct Election in the dropdown
+                                $('#ElectionID').val(data.electionId);
                             }
                         },
                         error: function () {
@@ -93,6 +95,9 @@
                             $('#editForm').hide();
                         }
                     });
+                } else {
+                    $('#searchError').text('Please enter a Candidate ID');
+                    $('#editForm').hide();
                 }
             });
         });
