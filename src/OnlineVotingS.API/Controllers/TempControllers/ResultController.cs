@@ -37,6 +37,7 @@ public class ResultController : Controller
     }
 
     [HttpPost]
+    [ValidateAntiForgeryToken]
     public async Task<IActionResult> GenerateResult(int SelectedElectionID, int? CandidateId)
     {
         var result = await _mediator.Send(new GenerateOrUpdateResultsCommand(SelectedElectionID, CandidateId));

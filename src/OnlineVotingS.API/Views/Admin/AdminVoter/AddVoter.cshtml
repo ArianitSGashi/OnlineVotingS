@@ -16,6 +16,7 @@
     <div class="container-with-sidebar bg-light p-4 rounded">
         <h4 class="mb-4">Add Voter</h4>
         <form method="post" action="/AdminVoter/AddVoter" class="form-container">
+            @Html.AntiForgeryToken()
             @Html.ValidationSummary(true, "", new { @class = "text-danger" })
             <div class="mb-3">
                 <label asp-for="Id" class="form-label">ID</label>

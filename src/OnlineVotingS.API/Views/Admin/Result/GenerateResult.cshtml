@@ -27,6 +27,7 @@
             </div>
         }
         <form method="post" action="@Url.Action("GenerateResult")" class="form-container">
+            @Html.AntiForgeryToken()
             <label for="SelectedElectionID" class="form-label">Select Election</label>
             @Html.DropDownListFor(model => model.SelectedElectionID,
                      new SelectList(Model.OngoingElections, "ElectionID", "Title"),

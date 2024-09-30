@@ -29,6 +29,7 @@
 <body>
     <div class="wrapper">
         <form asp-action="Register" asp-controller="Auth">
+            @Html.AntiForgeryToken()
             <h2>Register</h2>
 
             @Html.ValidationSummary(true, "", new { @class = "validation-summary" })

@@ -30,6 +30,7 @@ public class ElectionController : Controller
     }
 
     [HttpPost]
+    [ValidateAntiForgeryToken]
     public async Task<IActionResult> GenerateElection(GenerateElectionViewModel model)
     {
         var validationResult = await _electionValidation.ValidateElectionAsync(model);
@@ -98,6 +99,7 @@ public class ElectionController : Controller
     }
 
     [HttpPost]
+    [ValidateAntiForgeryToken]
     public async Task<IActionResult> ModifyElection(ModifyElectionViewModel model)
     {
         var validationResult = await _electionValidation.ValidateElectionAsync(model);
@@ -145,6 +147,7 @@ public class ElectionController : Controller
     }
 
     [HttpPost]
+    [ValidateAntiForgeryToken]
     public async Task<IActionResult> CompleteElection(CompleteElectionViewModel model)
     {
         var command = new CompleteElectionCommand(model.SelectedTitle);
@@ -176,6 +179,7 @@ public class ElectionController : Controller
     }
 
     [HttpPost]
+    [ValidateAntiForgeryToken]
     public async Task<IActionResult> DeleteElection(DeleteElectionViewModel model)
     {
         var command = new DeleteElectionsCommand(model.SelectedElectionID);

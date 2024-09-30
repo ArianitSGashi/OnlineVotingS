@@ -136,6 +136,7 @@ public class VoterController : Controller
     }
 
     [HttpPost]
+    [ValidateAntiForgeryToken]
     public async Task<IActionResult> CastVote(int candidateId, int electionId)
     {
         var userId = _userManager.GetUserId(User);
@@ -160,18 +161,19 @@ public class VoterController : Controller
             }
             else
             {
-                return HandleErrorResult(result);
+                TempData["VoteMessage"] = "You have voted in this election before!";
+                TempData["VoteMessageType"] = "error";
             }
         }
         catch (InvalidVoteException ex)
         {
-            ModelState.AddModelError("", ex.Message);
-            return View("Error");
+            TempData["VoteMessage"] = ex.Message;
+            TempData["VoteMessageType"] = "error";
         }
         catch (Exception)
         {
-            ModelState.AddModelError("", "An error occurred while casting your vote. Please try again.");
-            return View("Error");
+            TempData["VoteMessage"] = "An unexpected error occurred while casting your vote. Please try again.";
+            TempData["VoteMessageType"] = "error";
         }
 
         return RedirectToAction("ElectionPage");
@@ -203,6 +205,7 @@ public class VoterController : Controller
     }
 
     [HttpPost]
+    [ValidateAntiForgeryToken]
     public async Task<IActionResult> SubmitComplain(ComplainViewModel model)
     {
         if (!ModelState.IsValid)

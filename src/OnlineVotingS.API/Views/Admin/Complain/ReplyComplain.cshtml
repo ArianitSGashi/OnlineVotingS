@@ -16,6 +16,7 @@
     <div class="content-container p-4">
         <h4 class="mb-4 text-center">Reply to Complaint</h4>
         <form id="replyComplaintForm" class="form-container">
+            @Html.AntiForgeryToken()
             <div class="mb-3">
                 <label for="complaintId" class="form-label">Complaint ID</label>
                 @Html.DropDownListFor(m => m.ComplaintID, Model.Complaints, "Select complaint no.", new { @class = "form-control", id = "complaintId" })
