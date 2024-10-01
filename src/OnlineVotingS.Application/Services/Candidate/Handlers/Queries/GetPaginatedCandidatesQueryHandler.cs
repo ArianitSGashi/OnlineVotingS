@@ -20,10 +20,9 @@ namespace OnlineVotingS.Application.Services.Candidate.Handlers.Queries
         {
             var totalCandidates = await _candidateRepository.GetTotalCandidatesCountAsync();
             var totalPages = (int)Math.Ceiling(totalCandidates / (double)request.PageSize);
-
             var candidates = await _candidateRepository.GetCandidatesPaginatedAsync(request.PageNumber, request.PageSize);
 
-            return new PaginatedList<Candidates>(candidates.ToList(), request.PageNumber, totalPages);
+            return new PaginatedList<Candidates>(candidates.ToList(), request.PageNumber, totalPages, totalCandidates);
         }
     }
 }

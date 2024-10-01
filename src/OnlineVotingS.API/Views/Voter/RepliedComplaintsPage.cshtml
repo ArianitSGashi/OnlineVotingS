@@ -11,6 +11,15 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
     <link href="~/css/guest-election.css" rel="stylesheet">
+    <style>
+        .pagination {
+            margin-top: 10px; /* Adjust space between the table and pagination */
+        }
+
+        .pagination button {
+            margin-left: 10px; /* Space between buttons */
+        }
+    </style>
 </head>
 <body>
     <!-- Navbar -->
@@ -36,7 +45,7 @@
                     <a class="nav-link" href="@Url.Action("ComplainPage", "Voter")"><i class="fas fa-comment-alt"></i> Complain</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="@Url.Action("RepliedComplaintsPage", "Voter")"><i class="fas fa-reply"></i> Replied Complaints</a>
+                    <a class="nav-link active" href="@Url.Action("RepliedComplaintsPage", "Voter")"><i class="fas fa-reply"></i> Replied Complaints</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="@Url.Action("ShowResults", "Voter")"><i class="fas fa-list-alt"></i> View Results</a>
@@ -190,29 +199,17 @@
 
                 // Update pagination based on filtered rows
                 const filteredTotalRows = filteredRows.length;
-                const filteredTotalPages = Math.ceil(filteredTotalRows / rowsPerPage);
-                currentPage = 1; // Reset to first page
+                                const filteredTotalPages = Math.ceil(filteredTotalRows / rowsPerPage);
+                currentPage = 1; // Reset to the first page
+                showPage(currentPage);
 
-                if (filteredTotalRows === 0) {
-                    $('#currentPage').text('No results found');
-                } else {
-                    showPage(currentPage); // Show first page of filtered results
-                    $('#currentPage').text('Page ' + currentPage + ' of ' + filteredTotalPages);
-                }
-
+                // Update the pagination buttons based on filtered results
                 $('#prevPage').prop('disabled', currentPage === 1);
                 $('#nextPage').prop('disabled', currentPage === filteredTotalPages);
-            }, 300); // Delay search by 300ms
+            }, 300);
         });
-
-        $("#repliedComplaintSearch").on("keyup", function (event) {
-            if (event.keyCode === 13) { // Enter key pressed
-                $("#repliedComplaintSearch").trigger("input");
-            }
-        });
-
     });
-</script>
-
+    </script>
 </body>
 </html>
+  so i want pagination at repliedcomolaint ti look exactly like to elections

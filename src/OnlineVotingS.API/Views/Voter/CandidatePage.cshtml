@@ -12,6 +12,15 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
     <link href="~/css/guest-election.css" rel="stylesheet">
+    <style>
+        .pagination {
+            margin-top: 10px; /* Adjust space between the table and pagination */
+        }
+
+        .pagination button {
+            margin-left: 10px; /* Space between buttons */
+        }
+    </style>
 </head>
 <body>
     <!-- Navbar -->
@@ -77,16 +86,19 @@
                                 <td>@candidate.Works</td>
                             </tr>
                         }
+                        <tr>
+                            <td colspan="7" class="text-right">
+                                <div class="pagination d-inline-block">
+                                    <button id="prevPage" class="btn btn-secondary" disabled>Previous</button>
+                                    <span id="currentPage">Page 1</span>
+                                    <button id="nextPage" class="btn btn-secondary">Next</button>
+                                </div>
+                            </td>
+                        </tr>
                     </tbody>
                 </table>
             </div>
         </div>
-    </div>
-
-    <div class="pagination">
-        <button id="prevPage" class="btn btn-secondary" disabled>Previous</button>
-        <span id="currentPage">Page 1</span>
-        <button id="nextPage" class="btn btn-secondary">Next</button>
     </div>
 
     <!-- Footer -->
