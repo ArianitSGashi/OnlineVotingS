@@ -17,6 +17,27 @@ public class RepliedComplaintsController : ControllerBase
     {
         _mediator = mediator;
     }
+    [HttpGet("paginated")]
+    public async Task<IActionResult> GetPaginatedRepliedComplaintsAsync(int pageNumber = 1, int pageSize = 10)
+    {
+        var query = new GetPaginatedRepliedComplaintsQuery(pageNumber, pageSize);
+        var result = await _mediator.Send(query);
+
+        if (result.IsSuccess)
+        {
+            return Ok(new
+            {
+                RepliedComplaints = result.Value.Items,
+                result.Value.PageIndex,
+                result.Value.TotalPages,
+                result.Value.HasPreviousPage,
+                result.Value.HasNextPage
+            });
+        }
+
+        return BadRequest(result.Errors);
+    }
+
 
     [HttpGet]
     public async Task<IActionResult> GetAllRepliedComplaintsAsync()

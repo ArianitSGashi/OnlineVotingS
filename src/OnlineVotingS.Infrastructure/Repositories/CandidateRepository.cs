@@ -38,4 +38,20 @@ public class CandidateRepository : GenericRepository<Candidates>, ICandidateRepo
     {
         return await _dbSet.AnyAsync(c => c.CandidateID == candidateId && c.ElectionID == electionId);
     }
+    public async Task<IEnumerable<Candidates>> GetCandidatesPaginatedAsync(int pageNumber, int pageSize)
+    {
+        return await _context.Candidates
+            .OrderBy(c => c.CandidateID) // Ensure consistent ordering
+            .Skip((pageNumber - 1) * pageSize)
+            .Take(pageSize)
+            .ToListAsync();
+    }
+
+    public async Task<int> GetTotalCandidatesCountAsync()
+    {
+        return await _context.Candidates.CountAsync();
+    }
+
+
+
 }

@@ -11,7 +11,6 @@
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="~/css/guest-election.css" rel="stylesheet">
 </head>
 <body>
@@ -26,23 +25,13 @@
                     <a class="nav-link" href="@Url.Action("VoterDashboard", "Voter")"><i class="fas fa-home"></i> Home</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Profile</a>
-                </li>
-                <li class="nav-item">
                     <a class="nav-link" href="@Url.Action("CandidatePage", "Voter")"><i class="fas fa-users"></i> Candidates</a>
                 </li>
-
                 <li class="nav-item">
                     <a class="nav-link" href="@Url.Action("ElectionPage", "Voter")"><i class="fas fa-poll"></i> Elections</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="@Url.Action("ComplainPage", "Voter")"><i class="fas fa-comment-alt"></i> Complain</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="@Url.Action("RepliedComplaintsPage", "Voter")"><i class="fas fa-reply"></i> Replied Complaints</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="@Url.Action("ShowResults", "Voter")"><i class="fas fa-list-alt"></i>View Results</a>
                 </li>
             </ul>
             <form asp-controller="Auth" asp-action="Logout" method="post" class="d-flex">
@@ -54,7 +43,7 @@
     </nav>
 
     <!-- Candidate Table Section -->
-    <div class="hero-section text-center" style="height: auto !important;">
+    <div class="hero-section text-center">
         <div class="container">
             <h1 class="display-4">Candidates</h1>
             <input type="text" id="candidateSearch" placeholder="Search by Candidate ID, Full Name, or Party" class="form-control">
@@ -62,69 +51,47 @@
                 <i class="fas fa-search"></i> Search
             </button>
 
-          <div class="table-responsive mt-4" style="overflow-x: auto !important;">
-            <table class="table table-hover" id="candidateTable">
-                <thead class="thead-dark">
-                    <tr>
-                        <th>Candidate ID</th>
-                        <th>Election ID</th>
-                        <th>Full Name</th>
-                        <th>Party</th>
-                        <th>Description</th>
-                        <th>Income</th>
-                        <th>Works</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var candidate in Model)
-                    {
+            <div class="table-responsive mt-4" style="overflow-x: auto !important;">
+                <table class="table table-hover" id="candidateTable">
+                    <thead class="thead-dark">
                         <tr>
-                            <td>@candidate.CandidateID</td>
-                            <td>@candidate.ElectionID</td>
-                            <td>@candidate.FullName</td>
-                            <td>@candidate.Party</td>
-                            <td>@candidate.Description</td>
-                            <td>@candidate.Income</td>
-                            <td>@candidate.Works</td>
+                            <th>Candidate ID</th>
+                            <th>Election ID</th>
+                            <th>Full Name</th>
+                            <th>Party</th>
+                            <th>Description</th>
+                            <th>Income</th>
+                            <th>Works</th>
                         </tr>
-                    }
-                </tbody>
-            </table>
-          </div>
+                    </thead>
+                    <tbody>
+                        @foreach (var candidate in Model)
+                        {
+                            <tr class="candidate-row">
+                                <td>@candidate.CandidateID</td>
+                                <td>@candidate.ElectionID</td>
+                                <td>@candidate.FullName</td>
+                                <td>@candidate.Party</td>
+                                <td>@candidate.Description</td>
+                                <td>@candidate.Income</td>
+                                <td>@candidate.Works</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
         </div>
+    </div>
+
+    <div class="pagination">
+        <button id="prevPage" class="btn btn-secondary" disabled>Previous</button>
+        <span id="currentPage">Page 1</span>
+        <button id="nextPage" class="btn btn-secondary">Next</button>
     </div>
 
     <!-- Footer -->
     <footer class="footer">
         <div class="container">
-            <div class="row">
-                <div class="col-md-4">
-                    <h5>About Us</h5>
-                    <p>We are dedicated to providing a secure and transparent online voting platform for all citizens.</p>
-                </div>
-                <div class="col-md-4">
-                    <h5>Quick Links</h5>
-                    <ul class="list-unstyled">
-                        <li><a href="/"><i class="fas fa-home"></i> Home</a></li>
-                        <li><a href="#"><i class="fas fa-info-circle"></i> About Us</a></li>
-                        <li><a href="#"><i class="fas fa-cogs"></i> Services</a></li>
-                        <li><a href="#"><i class="fas fa-file-contract"></i> Terms of Service</a></li>
-                        <li><a href="#"><i class="fas fa-user-secret"></i> Privacy Policy</a></li>
-                    </ul>
-                </div>
-                <div class="col-md-4">
-                    <h5>Contact Us</h5>
-                    <p><i class="fas fa-envelope"></i> Email: info@onlinevoting.com</p>
-                    <p><i class="fas fa-phone"></i> Phone: +1 (123) 456-7890</p>
-                    <div class="social-icons">
-                        <a href="#"><i class="fab fa-twitter"></i></a>
-                        <a href="#"><i class="fab fa-facebook"></i></a>
-                        <a href="#"><i class="fab fa-instagram"></i></a>
-                        <a href="#"><i class="fab fa-linkedin"></i></a>
-                    </div>
-                </div>
-            </div>
-            <hr>
             <div class="row">
                 <div class="col-md-12 text-center">
                     <p>&copy; 2024 Online Voting System. All rights reserved.</p>
@@ -133,15 +100,50 @@
         </div>
     </footer>
 
-     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
 
-    <!-- Real-Time Search Script -->
+    <!-- Pagination and Search Script -->
     <script>
         $(document).ready(function () {
+            const rowsPerPage = 5; // Display 5 candidates per page
+            let currentPage = 1;
+            const $rows = $('#candidateTable tbody .candidate-row');
+            const totalRows = $rows.length;
+            const totalPages = Math.ceil(totalRows / rowsPerPage);
+
+            function showPage(page) {
+                $rows.hide();
+                const start = (page - 1) * rowsPerPage;
+                const end = start + rowsPerPage;
+                $rows.slice(start, end).show();
+
+                $('#currentPage').text('Page ' + page);
+
+                $('#prevPage').prop('disabled', page === 1);
+                $('#nextPage').prop('disabled', page === totalPages);
+            }
+
+            $('#prevPage').click(function () {
+                if (currentPage > 1) {
+                    currentPage--;
+                    showPage(currentPage);
+                }
+            });
+
+            $('#nextPage').click(function () {
+                if (currentPage < totalPages) {
+                    currentPage++;
+                    showPage(currentPage);
+                }
+            });
+
+            showPage(currentPage);  // Initialize the first page
+
+            // Real-Time Search Functionality
             $("#candidateSearch").on("input", function () {
-                var value = $(this).val().toLowerCase();
-                $("#candidateTable tbody tr").filter(function () {
+                const value = $(this).val().toLowerCase();
+                $rows.filter(function () {
                     $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
                 });
             });

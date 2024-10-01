@@ -11,6 +11,19 @@ public class ElectionRepository : GenericRepository<Elections>, IElectionReposit
     public ElectionRepository(ApplicationDbContext context) : base(context)
     {
     }
+    public async Task<int> GetTotalElectionsCountAsync()
+    {
+        return await _dbSet.CountAsync();
+    }
+
+    public async Task<IEnumerable<Elections>> GetElectionsPaginatedAsync(int pageNumber, int pageSize)
+    {
+        return await _dbSet
+            .OrderBy(e => e.ElectionID) // Ensure consistent ordering
+            .Skip((pageNumber - 1) * pageSize)
+            .Take(pageSize)
+            .ToListAsync();
+    }
 
     public async Task<IEnumerable<Elections>> GetActiveElectionsAsync()
     {

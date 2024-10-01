@@ -17,4 +17,5 @@ public class ViewCandidatesViewModel
     public decimal? Income { get; set; }
 
     public string? Works { get; set; } = string.Empty;
+
 }

@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using OnlineVotingS.Domain.Entities;
+using System.ComponentModel.DataAnnotations;
 
 namespace OnlineVotingS.API.Models.VoterViewModels;
 
@@ -17,5 +18,12 @@ public class CandidateViewModel
     public decimal? Income { get; set; }
 
     public string? Works { get; set; } = string.Empty;
+
+    public int CurrentPage { get; set; } = 1;
+    public int TotalCount { get; set; } = 0; // Total candidates count
+    public int PageSize { get; set; } = 10; // Number of items per page
+
+    public IEnumerable<Candidates> Candidates { get; set; } = new List<Candidates>();
+
 }
 
