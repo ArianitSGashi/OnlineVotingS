@@ -45,7 +45,7 @@ public class ElectionController : Controller
             Description = model.Description,
             StartDate = model.StartDate.GetValueOrDefault(),
             StartTime = model.StartTime.GetValueOrDefault(),
-            EndDate = model.StartDate.GetValueOrDefault(),
+            EndDate = model.EndDate.GetValueOrDefault(),
             EndTime = model.EndTime.GetValueOrDefault()
         };
         var command = new CreateElectionsCommand(electionDto);
