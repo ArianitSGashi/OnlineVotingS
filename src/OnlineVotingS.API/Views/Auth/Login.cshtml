@@ -30,6 +30,7 @@
     <div class="wrapper">
         @using (Html.BeginForm("Login", "Auth", FormMethod.Post))
         {
+            @Html.AntiForgeryToken()
             <h2>Login</h2>
             <div class="input-field">
                 @Html.TextBoxFor(model => model.UserName, new { @class = "input", placeholder = "Enter your UserName" })

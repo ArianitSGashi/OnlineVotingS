@@ -45,6 +45,7 @@ public class CandidateController : Controller
     }
 
     [HttpPost]
+    [ValidateAntiForgeryToken]
     public async Task<IActionResult> AddCandidate(AddCandidateViewModel model)
     {
         var candidateDto = new CandidatesPostDTO
@@ -121,6 +122,7 @@ public class CandidateController : Controller
     }
 
     [HttpPost]
+    [ValidateAntiForgeryToken]
     public async Task<IActionResult> EditCandidate(EditCandidateViewModel model)
     {
         if (ModelState.IsValid)
@@ -167,6 +169,7 @@ public class CandidateController : Controller
     }
 
     [HttpPost]
+    [ValidateAntiForgeryToken]
     public async Task<IActionResult> DeleteCandidate(DeleteCandidateViewModel model)
     {
         if (ModelState.IsValid)

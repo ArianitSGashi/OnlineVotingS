@@ -24,6 +24,7 @@ namespace OnlineVotingS.API.Controllers.TempControllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> AddVoter(AddVoterViewModel model)
         {
             if (!ModelState.IsValid)
@@ -110,6 +111,7 @@ namespace OnlineVotingS.API.Controllers.TempControllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> EditVoter(EditVoterViewModel model)
         {
             if (ModelState.IsValid)
@@ -149,6 +151,7 @@ namespace OnlineVotingS.API.Controllers.TempControllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteVoter(DeleteVoterViewModel model)
         {
             if (!ModelState.IsValid)

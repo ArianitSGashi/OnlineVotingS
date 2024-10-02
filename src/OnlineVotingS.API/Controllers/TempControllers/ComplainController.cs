@@ -65,6 +65,7 @@ public class ComplainController : Controller
     }
 
     [HttpPost("ReplyComplain")]
+    [ValidateAntiForgeryToken]
     public async Task<IActionResult> ReplyComplain([FromBody] ComplaintsPutDTO complaintsPut)
     {
         var command = new UpdateComplaintCommand(complaintsPut);

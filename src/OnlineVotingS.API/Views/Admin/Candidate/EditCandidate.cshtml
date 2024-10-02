@@ -21,6 +21,7 @@
         </div>
         <button id="searchButton" class="btn btn-secondary mt-2">Search</button>
         <form id="editForm" method="post" action="/Candidate/EditCandidate" class="form-container" style="display:none;">
+            @Html.AntiForgeryToken()
             @Html.ValidationSummary(true, "", new { @class = "text-danger" })
             <input asp-for="CandidateID" type="hidden" />
             <div class="mb-3">

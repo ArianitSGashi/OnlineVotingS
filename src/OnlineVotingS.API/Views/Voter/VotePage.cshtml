@@ -88,6 +88,7 @@
                             <td>@candidate.Works</td>
                             <td>
                                 <form method="post" action="@Url.Action("CastVote", "Voter")">
+                                        @Html.AntiForgeryToken()
                                     <input type="hidden" name="CandidateID" value="@candidate.CandidateID" />
                                     <input type="hidden" name="ElectionID" value="@candidate.ElectionID" />
                                     <button type="submit" class="btn btn-success">Vote</button>
