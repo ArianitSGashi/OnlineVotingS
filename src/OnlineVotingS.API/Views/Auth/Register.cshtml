@@ -1,5 +1,4 @@
-﻿@using OnlineVotingS.Domain.Enums;
-@model RegisterViewModel
+﻿@model OnlineVotingS.API.Models.RegisterViewModel
 @{
     Layout = null;
 }
@@ -13,18 +12,11 @@
     <link rel="stylesheet" href="/css/register.css">
     <style>
         .text-danger {
-            color: red;
+            color: #dc3545;
+            font-size: 14px;
         }
+
     </style>
-    <script>
-        // JavaScript to display an alert if registration failed
-        window.onload = function() {
-            var registerFailed = '@ViewBag.RegisterFailed';
-            if (registerFailed === 'True') {
-                alert('Registration failed. Please check the errors and try again.');
-            }
-        };
-    </script>
 </head>
 <body>
     <div class="wrapper">
@@ -32,85 +24,67 @@
             @Html.AntiForgeryToken()
             <h2>Register</h2>
 
-            @Html.ValidationSummary(true, "", new { @class = "validation-summary" })
-
             <div class="input-field">
-                @Html.TextBoxFor(model => model.Id, new { @class = "input-field", required = true })
-                @Html.LabelFor(model => model.Id)
-                @Html.ValidationMessageFor(model => model.Id, "", new { @class = "text-danger" })
+                <input asp-for="Id" placeholder="Personal Number" />
+                <span asp-validation-for="Id" class="text-danger"></span>
             </div>
 
             <div class="input-field">
-                @Html.TextBoxFor(model => model.UserName, new { @class = "input-field", required = true })
-                @Html.LabelFor(model => model.UserName)
-                @Html.ValidationMessageFor(model => model.UserName, "", new { @class = "text-danger" })
+                <input asp-for="UserName" placeholder="Username" />
+                <span asp-validation-for="UserName" class="text-danger"></span>
             </div>
 
             <div class="input-field">
-                @Html.TextBoxFor(model => model.Email, new { @class = "input-field", required = true })
-                @Html.LabelFor(model => model.Email)
-                @Html.ValidationMessageFor(model => model.Email, "", new { @class = "text-danger" })
+                <input asp-for="Email" type="email" placeholder="Email" />
+                <span asp-validation-for="Email" class="text-danger"></span>
             </div>
 
             <div class="input-field">
-                @Html.TextBoxFor(model => model.Name, new { @class = "input-field", required = true })
-                @Html.LabelFor(model => model.Name)
-                @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
+                <input asp-for="Name" placeholder="Name" />
+                <span asp-validation-for="Name" class="text-danger"></span>
             </div>
 
             <div class="input-field">
-                @Html.TextBoxFor(model => model.FathersName, new { @class = "input-field", required = true })
-                @Html.LabelFor(model => model.FathersName)
-                @Html.ValidationMessageFor(model => model.FathersName, "", new { @class = "text-danger" })
+                <input asp-for="FathersName" placeholder="Father's Name" />
+                <span asp-validation-for="FathersName" class="text-danger"></span>
             </div>
 
             <div class="input-field">
-                @Html.DropDownListFor(
-                    model => model.Gender,
-                    new SelectList(
-                        Enum.GetValues(typeof(Gender)).Cast<Gender>().Select(e => new { Value = e, Text = e.ToString() }),
-                        "Value",
-                        "Text"
-                    ),
-                    "Select Gender",
-                    new { @class = "input-field", required = true }
-                )
-                @Html.LabelFor(model => model.Gender)
+                <select asp-for="Gender" asp-items="Html.GetEnumSelectList<OnlineVotingS.Domain.Enums.Gender>()">
+                    <option value="">Select Gender</option>
+                </select>
+                <span asp-validation-for="Gender" class="text-danger"></span>
             </div>
 
             <div class="input-field">
-                @Html.TextBoxFor(model => model.DateOfBirth, new { @class = "input-field", type = "date", required = true })
-                @Html.LabelFor(model => model.DateOfBirth)
-                @Html.ValidationMessageFor(model => model.DateOfBirth, "", new { @class = "text-danger" })
+                <input asp-for="DateOfBirth" type="date" placeholder="Date of Birth" />
+                <span asp-validation-for="DateOfBirth" class="text-danger"></span>
             </div>
 
             <div class="input-field">
-                @Html.TextBoxFor(model => model.Address, new { @class = "input-field", required = true })
-                @Html.LabelFor(model => model.Address)
-                @Html.ValidationMessageFor(model => model.Address, "", new { @class = "text-danger" })
+                <input asp-for="Address" placeholder="Address" />
+                <span asp-validation-for="Address" class="text-danger"></span>
             </div>
 
             <div class="input-field">
-                @Html.TextBoxFor(model => model.MobileNumber, new { @class = "input-field", required = true })
-                @Html.LabelFor(model => model.MobileNumber)
-                @Html.ValidationMessageFor(model => model.MobileNumber, "", new { @class = "text-danger" })
+                <input asp-for="MobileNumber" placeholder="Mobile Number" />
+                <span asp-validation-for="MobileNumber" class="text-danger"></span>
             </div>
 
-           <div class="input-field">
-               @Html.PasswordFor(model => model.Password, new { @class = "input-field", required = true })
-               @Html.LabelFor(model => model.Password)
-               @Html.ValidationMessageFor(model => model.Password, "", new { @class = "text-danger" })
-           </div>
+            <div class="input-field">
+                <input asp-for="Password" type="password" placeholder="Password" />
+                <span asp-validation-for="Password" class="text-danger"></span>
+            </div>
 
-           <div class="input-field">
-               @Html.PasswordFor(model => model.ConfirmPassword, new { @class = "input-field", required = true })
-               @Html.LabelFor(model => model.ConfirmPassword)
-               @Html.ValidationMessageFor(model => model.ConfirmPassword, "", new { @class = "text-danger" })
-           </div>
+            <div class="input-field">
+                <input asp-for="ConfirmPassword" type="password" placeholder="Confirm Password" />
+                <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+            </div>
 
             <button type="submit">Register</button>
+
             <div class="register">
-                <p>Have an account? @Html.ActionLink("Login", "Login", "Auth")</p>
+                <p>Already have an account? <a asp-action="Login" asp-controller="Auth">Login</a></p>
             </div>
         </form>
     </div>

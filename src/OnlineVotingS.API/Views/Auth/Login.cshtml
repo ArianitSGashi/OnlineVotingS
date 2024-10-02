@@ -1,7 +1,8 @@
-﻿@model LoginViewModel
+﻿@model OnlineVotingS.API.Models.LoginViewModel
 @{
     Layout = null;
 }
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -9,45 +10,40 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login</title>
     <link rel="stylesheet" href="/css/login.css">
-    
     <style>
-            .text-danger {
-                color: red;
-            }
+        .text-danger {
+            color: #dc3545;
+            font-size: 14px;
+        }
+
     </style>
-    
-    <script>
-                debugger;
-                window.onload = function() {
-                    var loginFailed = '@ViewBag.LoginFailed';
-                    if (loginFailed === 'True') {
-                        alert('Login failed. Please check your UserName and Password.');
-                    }
-                };
-    </script>
 </head>
 <body>
     <div class="wrapper">
-        @using (Html.BeginForm("Login", "Auth", FormMethod.Post))
-        {
+        <form asp-action="Login" asp-controller="Auth">
             @Html.AntiForgeryToken()
             <h2>Login</h2>
+
             <div class="input-field">
-                @Html.TextBoxFor(model => model.UserName, new { @class = "input", placeholder = "Enter your UserName" })
-                 @Html.ValidationMessageFor(model => model.UserName, "", new { @class = "text-danger" })
+                <input asp-for="UserName" placeholder="Username" />
+                <span asp-validation-for="UserName" class="text-danger"></span>
             </div>
+
             <div class="input-field">
-                @Html.PasswordFor(model => model.Password, new { @class = "input", placeholder = "Enter your password" })
-                @Html.ValidationMessageFor(model => model.Password, "", new { @class = "text-danger" })
+                <input asp-for="Password" type="password" placeholder="Password" />
+                <span asp-validation-for="Password" class="text-danger"></span>
             </div>
+
             <div class="forget">
-                @Html.ActionLink("Forgot password?", "ForgotPassword", "Auth", null, new { @class = "forgot-link" })
+                <a asp-action="ForgotPassword" asp-controller="Auth">Forgot password?</a>
             </div>
+
             <button type="submit">Log In</button>
+
             <div class="register">
-                <p>Don't have an account? @Html.ActionLink("Register", "Register", "Auth")</p>
+                <p>Don't have an account? <a asp-action="Register" asp-controller="Auth">Register</a></p>
             </div>
-        }
+        </form>
     </div>
 </body>
 </html>
