@@ -1,4 +1,5 @@
-﻿@{
+﻿
+@{
     Layout = null;
 }
 <!DOCTYPE html>
@@ -12,13 +13,18 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
     <link href="~/css/guest-election.css" rel="stylesheet">
     <style>
-        .pagination {
-            margin-top: 10px; /* Adjust space between the table and pagination */
-        }
+     .pagination {
+    justify-content: flex-end; /* Align pagination to the right */
+}
 
-        .pagination button {
-            margin-left: 10px; /* Space between buttons */
-        }
+.pagination button {
+    margin-left: 10px; /* Space between buttons */
+}
+
+.table-responsive {
+    margin-bottom: 10px; /* Add space at the bottom for pagination */
+}
+
     </style>
 </head>
 <body>
@@ -56,63 +62,64 @@
             <h1 class="display-4">Elections</h1>
             <input type="text" id="electionSearch" class="form-control" placeholder="Search by Election ID, Title, or Description">
             <button id="searchButton" class="btn btn-primary" type="button"><i class="fas fa-search"></i> Search</button>
-
-            <div class="table-responsive mt-4" style="overflow-x: auto !important;">
-                <table class="table table-hover" id="electionTable">
-                    <thead class="thead-dark">
-                        <tr>
-                            <th>ID</th>
-                            <th>Title</th>
-                            <th>Description</th>
-                            <th>Start Date</th>
-                            <th>Start Time</th>
-                            <th>End Date</th>
-                            <th>End Time</th>
-                            <th>Status</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach (var election in Model)
+<div class="table-responsive mt-4" style="overflow-x: auto !important;">
+    <table class="table table-hover" id="electionTable">
+        <thead class="thead-dark">
+            <tr>
+                <th>ID</th>
+                <th>Title</th>
+                <th>Description</th>
+                <th>Start Date</th>
+                <th>Start Time</th>
+                <th>End Date</th>
+                <th>End Time</th>
+                <th>Status</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var election in Model)
+            {
+                <tr class="election-row">
+                    <td>@election.ElectionID</td>
+                    <td>@election.Title</td>
+                    <td>@election.Description</td>
+                    <td>@election.StartDate.ToString("d")</td>
+                    <td>@election.StartTime.ToString(@"hh\:mm")</td>
+                    <td>@election.EndDate.ToString("d")</td>
+                    <td>@election.EndTime.ToString(@"hh\:mm")</td>
+                    <td>
+                        <span class="badge @(election.Status == OnlineVotingS.Domain.Enums.ElectionStatus.Active ? "bg-success" : election.Status == OnlineVotingS.Domain.Enums.ElectionStatus.Completed ? "bg-danger" : "bg-secondary")">
+                            @election.Status
+                        </span>
+                    </td>
+                    <td>
+                        @if (election.Status == OnlineVotingS.Domain.Enums.ElectionStatus.Active)
                         {
-                            <tr class="election-row">
-                                <td>@election.ElectionID</td>
-                                <td>@election.Title</td>
-                                <td>@election.Description</td>
-                                <td>@election.StartDate.ToString("d")</td>
-                                <td>@election.StartTime.ToString(@"hh\:mm")</td>
-                                <td>@election.EndDate.ToString("d")</td>
-                                <td>@election.EndTime.ToString(@"hh\:mm")</td>
-                                <td>
-                                    <span class="badge @(election.Status == OnlineVotingS.Domain.Enums.ElectionStatus.Active ? "bg-success" : election.Status == OnlineVotingS.Domain.Enums.ElectionStatus.Completed ? "bg-danger" : "bg-secondary")">
-                                        @election.Status
-                                    </span>
-                                </td>
-                                <td>
-                                    @if (election.Status == OnlineVotingS.Domain.Enums.ElectionStatus.Active)
-                                    {
-                                        <a href="@Url.Action("VotePage", "Voter", new { electionId = election.ElectionID })" class="btn btn-sm btn-primary">
-                                            <i class="fas fa-vote-yea"></i> Vote
-                                        </a>
-                                    }
-                                    else
-                                    {
-                                        <button class="btn btn-sm btn-secondary" disabled>@election.Status</button>
-                                    }
-                                </td>
-                            </tr>
+                            <a href="@Url.Action("VotePage", "Voter", new { electionId = election.ElectionID })" class="btn btn-sm btn-primary">
+                                <i class="fas fa-vote-yea"></i> Vote
+                            </a>
                         }
-                        <tr>
-                            <td colspan="9" class="text-right">
-                                <div class="pagination d-inline-block">
-                                    <button id="prevPage" class="btn btn-secondary" disabled>Previous</button>
-                                    <span id="currentPage">Page 1</span>
-                                    <button id="nextPage" class="btn btn-secondary">Next</button>
-                                </div>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
+                        else
+                        {
+                            <button class="btn btn-sm btn-secondary" disabled>@election.Status</button>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<!-- Pagination -->
+<div class="d-flex justify-content-end mt-3">
+    <div class="pagination d-inline-block">
+        <button id="prevPage" class="btn btn-secondary" disabled>Previous</button>
+        <span id="currentPage">Page 1</span>
+        <button id="nextPage" class="btn btn-secondary">Next</button>
+    </div>
+</div>
+
             </div>
         </div>
     </div>

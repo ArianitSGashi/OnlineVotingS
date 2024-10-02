@@ -17,6 +17,7 @@ public class RepliedComplaintsController : ControllerBase
     {
         _mediator = mediator;
     }
+
     [HttpGet("paginated")]
     public async Task<IActionResult> GetPaginatedRepliedComplaintsAsync(int pageNumber = 1, int pageSize = 10)
     {
@@ -37,7 +38,6 @@ public class RepliedComplaintsController : ControllerBase
 
         return BadRequest(result.Errors);
     }
-
 
     [HttpGet]
     public async Task<IActionResult> GetAllRepliedComplaintsAsync()

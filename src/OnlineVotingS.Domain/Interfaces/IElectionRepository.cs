@@ -20,6 +20,7 @@ public interface IElectionRepository : IGenericRepository<Elections>
     Task<IEnumerable<Elections>> GetCompletableElectionsAsync();
 
     Task<int> GetTotalElectionsCountAsync();
+
     Task<IEnumerable<Elections>> GetElectionsPaginatedAsync(int pageNumber, int pageSize);
 
 }

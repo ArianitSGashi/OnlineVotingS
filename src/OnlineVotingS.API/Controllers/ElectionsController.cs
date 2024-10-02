@@ -17,6 +17,7 @@ public class ElectionsController : ControllerBase
     {
         _mediator = mediator;
     }
+
     [HttpGet("paginated")]
     public async Task<IActionResult> GetPaginatedElectionsAsync(int pageNumber = 1, int pageSize = 10)
     {

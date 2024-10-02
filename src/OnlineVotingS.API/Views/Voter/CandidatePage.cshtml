@@ -61,45 +61,45 @@
             </button>
 
             <div class="table-responsive mt-4" style="overflow-x: auto !important;">
-                <table class="table table-hover" id="candidateTable">
-                    <thead class="thead-dark">
-                        <tr>
-                            <th>Candidate ID</th>
-                            <th>Election ID</th>
-                            <th>Full Name</th>
-                            <th>Party</th>
-                            <th>Description</th>
-                            <th>Income</th>
-                            <th>Works</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach (var candidate in Model)
-                        {
-                            <tr class="candidate-row">
-                                <td>@candidate.CandidateID</td>
-                                <td>@candidate.ElectionID</td>
-                                <td>@candidate.FullName</td>
-                                <td>@candidate.Party</td>
-                                <td>@candidate.Description</td>
-                                <td>@candidate.Income</td>
-                                <td>@candidate.Works</td>
-                            </tr>
-                        }
-                        <tr>
-                            <td colspan="7" class="text-right">
-                                <div class="pagination d-inline-block">
-                                    <button id="prevPage" class="btn btn-secondary" disabled>Previous</button>
-                                    <span id="currentPage">Page 1</span>
-                                    <button id="nextPage" class="btn btn-secondary">Next</button>
-                                </div>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
+    <table class="table table-hover" id="candidateTable">
+        <thead class="thead-dark">
+            <tr>
+                <th>Candidate ID</th>
+                <th>Election ID</th>
+                <th>Full Name</th>
+                <th>Party</th>
+                <th>Description</th>
+                <th>Income</th>
+                <th>Works</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var candidate in Model)
+            {
+                <tr class="candidate-row">
+                    <td>@candidate.CandidateID</td>
+                    <td>@candidate.ElectionID</td>
+                    <td>@candidate.FullName</td>
+                    <td>@candidate.Party</td>
+                    <td>@candidate.Description</td>
+                    <td>@candidate.Income</td>
+                    <td>@candidate.Works</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<!-- Pagination aligned to the right -->
+<td colspan="7">
+    <div class="pagination d-inline-block float-right">
+        <button id="prevPage" class="btn btn-secondary" disabled>Previous</button>
+        <span id="currentPage">Page 1</span>
+        <button id="nextPage" class="btn btn-secondary">Next</button>
     </div>
+</td>
+</div>
+</div>
 
     <!-- Footer -->
     <footer class="footer">

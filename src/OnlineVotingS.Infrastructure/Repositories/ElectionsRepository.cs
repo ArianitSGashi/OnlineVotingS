@@ -19,7 +19,7 @@ public class ElectionRepository : GenericRepository<Elections>, IElectionReposit
     public async Task<IEnumerable<Elections>> GetElectionsPaginatedAsync(int pageNumber, int pageSize)
     {
         return await _dbSet
-            .OrderBy(e => e.ElectionID) // Ensure consistent ordering
+            .OrderBy(e => e.ElectionID) 
             .Skip((pageNumber - 1) * pageSize)
             .Take(pageSize)
             .ToListAsync();

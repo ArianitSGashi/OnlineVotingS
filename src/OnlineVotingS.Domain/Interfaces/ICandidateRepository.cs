@@ -20,6 +20,7 @@ public interface ICandidateRepository : IGenericRepository<Candidates>
     Task<bool> CandidateBelongsToElectionAsync(int candidateId, int electionId);
 
     Task<int> GetTotalCandidatesCountAsync();
+
     Task<IEnumerable<Candidates>> GetCandidatesPaginatedAsync(int pageNumber, int pageSize);
 
 }

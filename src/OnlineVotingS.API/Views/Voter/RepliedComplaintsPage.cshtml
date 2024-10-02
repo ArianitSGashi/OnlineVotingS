@@ -1,4 +1,5 @@
-﻿@{
+﻿
+@{
     Layout = null;
 }
 <!DOCTYPE html>
@@ -14,10 +15,16 @@
     <style>
         .pagination {
             margin-top: 10px; /* Adjust space between the table and pagination */
+            justify-content: flex-end; /* Align pagination to the right */
         }
 
         .pagination button {
             margin-left: 10px; /* Space between buttons */
+        }
+
+        /* Optional for better alignment */
+        .table-responsive {
+            margin-bottom: 20px; /* Add space at the bottom for pagination */
         }
     </style>
 </head>
@@ -31,9 +38,6 @@
             <ul class="navbar-nav ml-auto">
                 <li class="nav-item">
                     <a class="nav-link" href="@Url.Action("VoterDashboard", "Voter")"><i class="fas fa-home"></i> Home</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">Profile</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="@Url.Action("CandidatePage", "Voter")"><i class="fas fa-users"></i> Candidates</a>
@@ -68,7 +72,7 @@
                 <i class="fas fa-search"></i> Search
             </button>
 
-            <div class="table-responsive mt-4" style="overflow-x: auto !important;">
+            <div class="table-responsive mt-4">
                 <table class="table table-hover mt-4" id="repliedComplaintsTable">
                     <thead class="thead-dark">
                         <tr>
@@ -94,18 +98,18 @@
                         }
                     </tbody>
                 </table>
+
+                <!-- Move pagination here below the table -->
+                <div class="pagination mt-4 d-flex">
+                    <button id="prevPage" class="btn btn-secondary" disabled>Previous</button>
+                    <span id="currentPage">Page 1</span>
+                    <button id="nextPage" class="btn btn-secondary">Next</button>
+                </div>
             </div>
         </div>
     </div>
 
-    <!-- Pagination Section -->
-    <div class="pagination mt-4 text-center">
-        <button id="prevPage" class="btn btn-secondary" disabled>Previous</button>
-        <span id="currentPage">Page 1</span>
-        <button id="nextPage" class="btn btn-secondary">Next</button>
-    </div>
-
-    <!-- Footer -->
+    <!-- Footer (optional) -->
     <footer class="footer">
         <div class="container">
             <div class="row">
@@ -150,7 +154,7 @@
     <!-- Pagination and Search Script -->
     <script>
     $(document).ready(function () {
-        const rowsPerPage = 5; // Display 5 replies per page
+        const rowsPerPage = 5;
         let currentPage = 1;
         const $rows = $('#repliedComplaintsTable tbody tr');
         const totalRows = $rows.length;
@@ -163,7 +167,6 @@
             $rows.slice(start, end).show();
 
             $('#currentPage').text('Page ' + page);
-
             $('#prevPage').prop('disabled', page === 1);
             $('#nextPage').prop('disabled', page === totalPages);
         }
@@ -193,23 +196,11 @@
                 const filteredRows = $rows.filter(function () {
                     return $(this).text().toLowerCase().indexOf(value) > -1;
                 });
-
-                $rows.hide(); // Hide all rows initially
-                filteredRows.show(); // Show filtered rows
-
-                // Update pagination based on filtered rows
-                const filteredTotalRows = filteredRows.length;
-                                const filteredTotalPages = Math.ceil(filteredTotalRows / rowsPerPage);
-                currentPage = 1; // Reset to the first page
-                showPage(currentPage);
-
-                // Update the pagination buttons based on filtered results
-                $('#prevPage').prop('disabled', currentPage === 1);
-                $('#nextPage').prop('disabled', currentPage === filteredTotalPages);
-            }, 300);
+                $rows.hide();
+                filteredRows.show();
+            }, 300);  // Wait 300ms before filtering
         });
     });
     </script>
 </body>
 </html>
-  so i want pagination at repliedcomolaint ti look exactly like to elections
