@@ -20,6 +20,7 @@ using OnlineVotingS.API.Models;
 using System.Diagnostics;
 using OnlineVotingS.Application.DTO.GetDTO;
 using OnlineVotingS.Application.Services.Vote.Handlers.Queries;
+using System.Net;
 
 namespace OnlineVotingS.API.Controllers.TempControllers;
 
@@ -310,11 +311,11 @@ public class VoterController : Controller
     public async Task<IActionResult> ShowResults()
     {
         var allElections = await _mediator.Send(new GetAllElectionsQuery());
-        
+
         return View("~/Views/Voter/ShowResults.cshtml", allElections);
-        
+
     }
-    
+
     [HttpGet]
     public async Task<IActionResult> GetResultsForElection(int electionId)
     {
@@ -329,5 +330,37 @@ public class VoterController : Controller
 
         return Json(resultData);
     }
+
+    [HttpGet]
+    public async Task<IActionResult> ProfilePage()
+    {
+        // Fetch the current logged-in user
+        var user = await _userManager.GetUserAsync(User);
+
+        // Check if user is logged in
+        if (user == null)
+        {
+            return RedirectToAction("Login", "Account");
+        }
+
+        // Populate the ProfileViewModel with data from the user
+        var viewModel = new ProfileViewModel
+        {
+            Username = user.UserName,  // Fetch the Username
+            Email = user.Email,        // Fetch the Email
+            FathersName=user.FathersName,
+            DateOfBirth = user.DateOfBirth.ToString("yyyy-MM-dd"),  // Convert DateTime to string
+            Gender = user.Gender.ToString(),  // Convert enum to string
+            Address = user.Address.ToString(),
+            PhoneNumber= user.PhoneNumber,
+
+        };
+
+        // Pass the view model to the view
+        return View("~/Views/Voter/ProfilePage.cshtml", viewModel);
+    }
+
+
+
 
 }
