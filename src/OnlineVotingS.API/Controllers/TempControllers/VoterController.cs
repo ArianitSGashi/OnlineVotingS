@@ -334,33 +334,24 @@ public class VoterController : Controller
     [HttpGet]
     public async Task<IActionResult> ProfilePage()
     {
-        // Fetch the current logged-in user
         var user = await _userManager.GetUserAsync(User);
 
-        // Check if user is logged in
         if (user == null)
         {
             return RedirectToAction("Login", "Account");
         }
 
-        // Populate the ProfileViewModel with data from the user
         var viewModel = new ProfileViewModel
         {
-            Username = user.UserName,  // Fetch the Username
-            Email = user.Email,        // Fetch the Email
+            Username = user.UserName,  
+            Email = user.Email,        
             FathersName=user.FathersName,
-            DateOfBirth = user.DateOfBirth.ToString("yyyy-MM-dd"),  // Convert DateTime to string
-            Gender = user.Gender.ToString(),  // Convert enum to string
+            DateOfBirth = user.DateOfBirth.ToString("yyyy-MM-dd"),  
+            Gender = user.Gender.ToString(),  
             Address = user.Address.ToString(),
             PhoneNumber= user.PhoneNumber,
 
         };
-
-        // Pass the view model to the view
         return View("~/Views/Voter/ProfilePage.cshtml", viewModel);
     }
-
-
-
-
 }
