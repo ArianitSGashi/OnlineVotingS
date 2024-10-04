@@ -29,10 +29,10 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
         modelBuilder.ApplyConfiguration(new CandidatesConfiguration());
         modelBuilder.ApplyConfiguration(new VotesConfiguration());
         modelBuilder.ApplyConfiguration(new ResultConfiguration());
-        //modelBuilder.ApplyConfiguration(new ComplaintsConfiguration());
-        //modelBuilder.ApplyConfiguration(new CampaignConfiguration());
-        //modelBuilder.ApplyConfiguration(new FeedbackConfiguration());
-        //modelBuilder.ApplyConfiguration(new RepliedComplaintsConfiguration());
+        modelBuilder.ApplyConfiguration(new ComplaintsConfiguration());
+        modelBuilder.ApplyConfiguration(new CampaignConfiguration());
+        modelBuilder.ApplyConfiguration(new FeedbackConfiguration());
+        modelBuilder.ApplyConfiguration(new RepliedComplaintsConfiguration());
         modelBuilder.ApplyConfiguration(new ApplicationUserConfiguration());
 
         // Seed roles
