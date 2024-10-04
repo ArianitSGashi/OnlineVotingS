@@ -20,6 +20,7 @@ using OnlineVotingS.API.Models;
 using System.Diagnostics;
 using OnlineVotingS.Application.DTO.GetDTO;
 using OnlineVotingS.Application.Services.Vote.Handlers.Queries;
+using System.Net;
 
 namespace OnlineVotingS.API.Controllers.TempControllers;
 
@@ -310,11 +311,11 @@ public class VoterController : Controller
     public async Task<IActionResult> ShowResults()
     {
         var allElections = await _mediator.Send(new GetAllElectionsQuery());
-        
+
         return View("~/Views/Voter/ShowResults.cshtml", allElections);
-        
+
     }
-    
+
     [HttpGet]
     public async Task<IActionResult> GetResultsForElection(int electionId)
     {
@@ -330,4 +331,27 @@ public class VoterController : Controller
         return Json(resultData);
     }
 
+    [HttpGet]
+    public async Task<IActionResult> ProfilePage()
+    {
+        var user = await _userManager.GetUserAsync(User);
+
+        if (user == null)
+        {
+            return RedirectToAction("Login", "Account");
+        }
+
+        var viewModel = new ProfileViewModel
+        {
+            Username = user.UserName,  
+            Email = user.Email,        
+            FathersName=user.FathersName,
+            DateOfBirth = user.DateOfBirth.ToString("yyyy-MM-dd"),  
+            Gender = user.Gender.ToString(),  
+            Address = user.Address.ToString(),
+            PhoneNumber= user.PhoneNumber,
+
+        };
+        return View("~/Views/Voter/ProfilePage.cshtml", viewModel);
+    }
 }
