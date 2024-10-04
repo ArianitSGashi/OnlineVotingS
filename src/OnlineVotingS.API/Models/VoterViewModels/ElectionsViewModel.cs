@@ -1,4 +1,5 @@
-﻿using OnlineVotingS.Domain.Enums;
+﻿using OnlineVotingS.Domain.Entities;
+using OnlineVotingS.Domain.Enums;
 
 namespace OnlineVotingS.API.Models.VoterViewModels;
 
@@ -13,4 +14,9 @@ public class ElectionsViewModel
     public TimeSpan EndTime { get; set; }
     public ElectionStatus Status { get; set; }
     public bool UserHasVoted { get; set; }
+    public IEnumerable<Elections> Elections { get; set; } = new List<Elections>();
+    public int CurrentPage { get; set; } = 1;
+    public int TotalPages { get; set; } = 1;
+    public bool HasPreviousPage => CurrentPage > 1;
+    public bool HasNextPage => CurrentPage < TotalPages;
 }

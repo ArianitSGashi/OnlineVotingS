@@ -25,4 +25,18 @@ public class RepliedComplaintsRepository : GenericRepository<RepliedComplaints>,
     {
         return await _dbSet.Where(rc => rc.ReplyDate >= date).ToListAsync();
     }
+
+    public async Task<int> GetTotalRepliedComplaintsCountAsync()
+    {
+        return await _dbSet.CountAsync();
+    }
+
+    public async Task<IEnumerable<RepliedComplaints>> GetRepliedComplaintsPaginatedAsync(int pageNumber, int pageSize)
+    {
+        return await _dbSet
+            .OrderBy(rc => rc.RepliedComplaintID) 
+            .Skip((pageNumber - 1) * pageSize)
+            .Take(pageSize)
+            .ToListAsync();
+    }
 }

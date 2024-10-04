@@ -2,9 +2,12 @@
 using Microsoft.AspNetCore.Mvc;
 using OnlineVotingS.Application.DTO.PostDTO;
 using OnlineVotingS.Application.DTO.PutDTO;
+using OnlineVotingS.Application.Services.Candidate.Handlers.Queries;
 using OnlineVotingS.Application.Services.Candidate.Requests.Commands;
 using OnlineVotingS.Application.Services.Candidate.Requests.Queries;
 using OnlineVotingS.Domain.Errors;
+using OnlineVotingS.Domain.Interfaces; 
+using OnlineVotingS.Application; 
 
 namespace OnlineVotingS.API.Controllers;
 
@@ -17,6 +20,22 @@ public class CandidateController : ControllerBase
     public CandidateController(IMediator mediator)
     {
         _mediator = mediator;
+    }
+
+    [HttpGet("paginated")]
+    public async Task<IActionResult> GetPaginatedAsync(int pageNumber = 1, int pageSize = 10)
+    {
+        var query = new GetPaginatedCandidatesQuery(pageNumber, pageSize);
+        var result = await _mediator.Send(query);
+
+        return Ok(new
+        {
+            Candidates = result.Items,
+            result.PageIndex,
+            result.TotalPages,
+            result.HasPreviousPage,
+            result.HasNextPage
+        });
     }
 
     [HttpGet]

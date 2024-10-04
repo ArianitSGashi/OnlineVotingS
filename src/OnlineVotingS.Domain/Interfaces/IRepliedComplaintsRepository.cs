@@ -12,4 +12,9 @@ public interface IRepliedComplaintsRepository : IGenericRepository<RepliedCompla
     Task<IEnumerable<RepliedComplaints>> GetByReplyTextAsync(string replyText);
 
     Task<IEnumerable<RepliedComplaints>> GetRecentRepliesAsync(DateTime date);
+
+    Task<int> GetTotalRepliedComplaintsCountAsync(); 
+
+    Task<IEnumerable<RepliedComplaints>> GetRepliedComplaintsPaginatedAsync(int pageNumber, int pageSize); 
+
 }
