@@ -19,5 +19,4 @@ public class ElectionsViewModel
     public int TotalPages { get; set; } = 1;
     public bool HasPreviousPage => CurrentPage > 1;
     public bool HasNextPage => CurrentPage < TotalPages;
-
 }

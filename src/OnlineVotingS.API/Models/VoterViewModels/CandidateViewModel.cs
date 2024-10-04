@@ -20,6 +20,5 @@ public class CandidateViewModel
     public int TotalCount { get; set; } = 0; 
     public int PageSize { get; set; } = 10; 
     public IEnumerable<Candidates> Candidates { get; set; } = new List<Candidates>();
-
 }
 
