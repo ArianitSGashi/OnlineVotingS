@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using OnlineVotingS.Infrastructure.Persistence.Context;
 
@@ -11,9 +12,11 @@ using OnlineVotingS.Infrastructure.Persistence.Context;
 namespace OnlineVotingS.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241007090320_Update-feedback-entity")]
+    partial class Updatefeedbackentity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -207,7 +210,7 @@ namespace OnlineVotingS.Infrastructure.Migrations
 
                     b.HasIndex("ElectionID");
 
-                    b.ToTable("Campaigns", (string)null);
+                    b.ToTable("Campaigns");
                 });
 
             modelBuilder.Entity("OnlineVotingS.Domain.Entities.Candidates", b =>
@@ -247,7 +250,7 @@ namespace OnlineVotingS.Infrastructure.Migrations
                         .IsUnique()
                         .HasFilter("[Party] IS NOT NULL");
 
-                    b.ToTable("Candidates", (string)null);
+                    b.ToTable("Candidates");
                 });
 
             modelBuilder.Entity("OnlineVotingS.Domain.Entities.Complaints", b =>
@@ -279,7 +282,7 @@ namespace OnlineVotingS.Infrastructure.Migrations
 
                     b.HasIndex("UserID");
 
-                    b.ToTable("Complaints", (string)null);
+                    b.ToTable("Complaints");
                 });
 
             modelBuilder.Entity("OnlineVotingS.Domain.Entities.Elections", b =>
@@ -322,7 +325,7 @@ namespace OnlineVotingS.Infrastructure.Migrations
 
                     b.HasKey("ElectionID");
 
-                    b.ToTable("Elections", (string)null);
+                    b.ToTable("Elections");
                 });
 
             modelBuilder.Entity("OnlineVotingS.Domain.Entities.Feedback", b =>
@@ -351,7 +354,7 @@ namespace OnlineVotingS.Infrastructure.Migrations
 
                     b.HasIndex("ElectionsElectionID");
 
-                    b.ToTable("Feedbacks", (string)null);
+                    b.ToTable("Feedbacks");
                 });
 
             modelBuilder.Entity("OnlineVotingS.Domain.Entities.RepliedComplaints", b =>
@@ -377,7 +380,7 @@ namespace OnlineVotingS.Infrastructure.Migrations
 
                     b.HasIndex("ComplaintID");
 
-                    b.ToTable("RepliedComplaints", (string)null);
+                    b.ToTable("RepliedComplaints");
                 });
 
             modelBuilder.Entity("OnlineVotingS.Domain.Entities.Result", b =>
@@ -403,7 +406,7 @@ namespace OnlineVotingS.Infrastructure.Migrations
 
                     b.HasIndex("ElectionID");
 
-                    b.ToTable("Results", (string)null);
+                    b.ToTable("Results");
                 });
 
             modelBuilder.Entity("OnlineVotingS.Domain.Entities.Votes", b =>
@@ -436,7 +439,7 @@ namespace OnlineVotingS.Infrastructure.Migrations
                     b.HasIndex("UserID", "ElectionID")
                         .IsUnique();
 
-                    b.ToTable("Votes", (string)null);
+                    b.ToTable("Votes");
                 });
 
             modelBuilder.Entity("OnlineVotingS.Domain.Models.ApplicationUser", b =>

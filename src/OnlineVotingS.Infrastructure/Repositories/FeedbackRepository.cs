@@ -14,16 +14,6 @@ public class FeedbackRepository : GenericRepository<Feedback>, IFeedbackReposito
     {
     }
 
-    public async Task<IEnumerable<Feedback>> GetByUserIDAsync(string userID)
-    {
-        return await _dbSet.Where(f => f.UserID == userID).ToListAsync();
-    }
-
-    public async Task<IEnumerable<Feedback>> GetByElectionIDAsync(int electionID)
-    {
-        return await _dbSet.Where(f => f.ElectionID == electionID).ToListAsync();
-    }
-
     public async Task<IEnumerable<Feedback>> GetRecentFeedbacksAsync(DateTime date)
     {
         return await _dbSet.Where(f => f.FeedbackDate >= date).ToListAsync();

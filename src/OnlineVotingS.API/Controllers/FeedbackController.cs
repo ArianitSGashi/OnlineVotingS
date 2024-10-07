@@ -34,22 +34,6 @@ public class FeedbackController : ControllerBase
         return Ok(feedback);
     }
 
-    [HttpGet("user/{userId?}")]
-    public async Task<IActionResult> GetFeedbacksByUserIdAsync(string userId)
-    {
-        var query = new GetFeedbacksByUserIdQuery(userId);
-        var feedbacks = await _mediator.Send(query);
-        return Ok(feedbacks);
-    }
-
-    [HttpGet("election/{electionId}")]
-    public async Task<IActionResult> GetFeedbacksByElectionIdAsync(int electionId)
-    {
-        var query = new GetFeedbacksByElectionIdQuery(electionId);
-        var feedbacks = await _mediator.Send(query);
-        return Ok(feedbacks);
-    }
-
     [HttpGet("recent")]
     public async Task<IActionResult> GetRecentFeedbacksAsync([FromQuery] DateTime date)
     {
