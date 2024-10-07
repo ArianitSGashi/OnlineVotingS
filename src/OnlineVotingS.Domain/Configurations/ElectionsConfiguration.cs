@@ -36,10 +36,5 @@ public class ElectionsConfiguration : IEntityTypeConfiguration<Elections>
                .WithOne(c => c.Elections)
                .HasForeignKey(c => c.ElectionID)
                .OnDelete(DeleteBehavior.Restrict);
-
-        builder.HasMany(e => e.Feedbacks)
-               .WithOne(f => f.Elections)
-               .HasForeignKey(f => f.ElectionID)
-               .OnDelete(DeleteBehavior.Restrict);
     }
 }

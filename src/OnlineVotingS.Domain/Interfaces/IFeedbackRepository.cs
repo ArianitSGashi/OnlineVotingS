@@ -9,9 +9,5 @@ namespace OnlineVotingS.Domain.Interfaces;
 
 public interface IFeedbackRepository : IGenericRepository<Feedback>
 {
-    Task<IEnumerable<Feedback>> GetByUserIDAsync(string userID);
-
-    Task<IEnumerable<Feedback>> GetByElectionIDAsync(int electionID);
-
     Task<IEnumerable<Feedback>> GetRecentFeedbacksAsync(DateTime date);
 }
