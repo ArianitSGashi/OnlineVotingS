@@ -34,13 +34,23 @@
                     <a class="nav-link" href="@Url.Action("VoterDashboard", "Voter")"><i class="fas fa-home"></i> Home</a>
                 </li>
                 <li class="nav-item">
+                    <a class="nav-link" href="@Url.Action("ProfilePage", "Voter")"><i class="fas fa-user"></i> Profile</a>
+                </li>
+                <li class="nav-item">
                     <a class="nav-link" href="@Url.Action("CandidatePage", "Voter")"><i class="fas fa-users"></i> Candidates</a>
                 </li>
+
                 <li class="nav-item">
                     <a class="nav-link" href="@Url.Action("ElectionPage", "Voter")"><i class="fas fa-poll"></i> Elections</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="@Url.Action("ComplainPage", "Voter")"><i class="fas fa-comment-alt"></i> Complain</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="@Url.Action("RepliedComplaintsPage", "Voter")"><i class="fas fa-reply"></i> Replied Complaints</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="@Url.Action("ShowResults", "Voter")"><i class="fas fa-list-alt"></i>View Results</a>
                 </li>
             </ul>
             <form asp-controller="Auth" asp-action="Logout" method="post" class="d-flex">
@@ -104,6 +114,34 @@
     <!-- Footer -->
     <footer class="footer">
         <div class="container">
+            <div class="row">
+                <div class="col-md-4">
+                    <h5>About Us</h5>
+                    <p>We are dedicated to providing a secure and transparent online voting platform for all citizens.</p>
+                </div>
+                <div class="col-md-4">
+                    <h5>Quick Links</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="/"><i class="fas fa-home"></i> Home</a></li>
+                        <li><a href="#"><i class="fas fa-info-circle"></i> About Us</a></li>
+                        <li><a href="#"><i class="fas fa-cogs"></i> Services</a></li>
+                        <li><a href="#"><i class="fas fa-file-contract"></i> Terms of Service</a></li>
+                        <li><a href="#"><i class="fas fa-user-secret"></i> Privacy Policy</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-4">
+                    <h5>Contact Us</h5>
+                    <p><i class="fas fa-envelope"></i> Email: info@onlinevoting.com</p>
+                    <p><i class="fas fa-phone"></i> Phone: +1 (123) 456-7890</p>
+                    <div class="social-icons">
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-facebook"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-linkedin"></i></a>
+                    </div>
+                </div>
+            </div>
+            <hr>
             <div class="row">
                 <div class="col-md-12 text-center">
                     <p>&copy; 2024 Online Voting System. All rights reserved.</p>
