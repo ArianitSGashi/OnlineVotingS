@@ -1,3 +1,4 @@
+﻿@model OnlineVotingS.API.Models.VoterViewModels.FeedbackViewModel
 @{
     Layout = null;
 }
@@ -6,50 +7,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Voter Dashboard</title>
+    <title>Submit Your Complain</title>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="~/css/voterdashboard.css" rel="stylesheet">
-    <style>
-        .profile-header {
-            text-align: center;
-            margin-top: 20px;
-        }
-
-        .profile-header img {
-            width: 150px;
-            height: 150px;
-            border-radius: 50%;
-            border: 5px solid #fff;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-        }
-
-        .card-title {
-            font-size: 24px;
-            font-weight: bold;
-        }
-
-        .profile-buttons {
-            margin-top: 10px;
-        }
-
-        .profile-buttons .btn {
-            margin: 5px;
-        }
-
-        .profile-info {
-            padding: 20px;
-        }
-
-        .profile-info p {
-            font-size: 16px;
-            color: #333;
-        }
-
-
-    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.3/jquery.validate.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/3.2.12/jquery.validate.unobtrusive.min.js"></script>
+    <link href="~/css/voter-complain.css" rel="stylesheet">
 </head>
 <body>
     <!-- Navbar -->
@@ -95,55 +60,59 @@
         </div>
     </nav>
 
-<div class="container mt-5">
-    <div class="row justify-content-center">
-        <div class="col-md-8">
-            <div class="card shadow-lg">
-                <div class="profile-header">
-<a class="navbar-brand" href="@Url.Action("VoterDashboard", "Voter")" style="color: black;">
-    <i class="fas fa-vote-yea" style="color: black;"></i> Online Voting System
-</a>
+    <!-- Feedback Form Section -->
+    <div class="hero-section text-center">
+        <div class="container">
+            <h1 class="display-4">Submit Your Feedback</h1>
 
-                    <img src="https://cdn-icons-png.flaticon.com/512/711/711769.png" alt="User Avatar" />
+            @if (TempData["SuccessMessage"] != null)
+            {
+                <div class="alert alert-success">
+                    @TempData["SuccessMessage"]
                 </div>
-                <div class="card-body profile-info">
-                    <div class="row mb-3">
-                        <div class="col-md-6">
-                            <p><i class="fas fa-user"></i> <strong>Username:</strong> @Model.Username</p>
-                        </div>
-                        <div class="col-md-6">
-                            <p><i class="fas fa-envelope"></i> <strong>Email:</strong> @Model.Email</p>
-                        </div>
-                    </div>
+            }
 
-                    <div class="row mb-3">
-                        <div class="col-md-6">
-                            <p><i class="fas fa-user-friends"></i> <strong>Father's Name:</strong> @Model.FathersName</p>
-                        </div>
-                        <div class="col-md-6">
-                            <p><i class="fas fa-calendar-alt"></i> <strong>Date of Birth:</strong> @Model.DateOfBirth</p>
-                        </div>
-                    </div>
-
-                    <div class="row mb-3">
-                        <div class="col-md-6">
-                            <p><i class="fas fa-venus-mars"></i> <strong>Gender:</strong> @Model.Gender</p>
-                        </div>
-                        <div class="col-md-6">
-                            <p><i class="fas fa-map-marker-alt"></i> <strong>Address:</strong> @Model.Address</p>
-                        </div>
-                    </div>
-
-                    <div class="row mb-3">
-                        <div class="col-md-6">
-                            <p><i class="fas fa-phone"></i> <strong>Phone Number:</strong> @Model.PhoneNumber</p>
-                        </div>
-                    </div>
+            @if (TempData["ErrorMessage"] != null)
+            {
+                <div class="alert alert-danger">
+                    @TempData["ErrorMessage"]
                 </div>
+            }
+
+            <div class="form-container mt-4">
+                <form method="post" asp-action="SubmitFeedback" asp-controller="Voter" id="feedbackForm">
+                    @Html.AntiForgeryToken()
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                    <div class="form-group">
+                        <label asp-for="FeedbackCategory">Feedback Category</label>
+                        <select asp-for="FeedbackCategory" class="form-control">
+                        <option value="">-- Select Category --</option>
+
+                            @foreach (var category in Enum.GetValues(typeof(OnlineVotingS.Domain.Enums.FeedbackCategory)))
+                            {
+                                <option value="@category">@category</option>
+                            }
+                        </select>
+                        <span asp-validation-for="FeedbackCategory" class="text-danger"></span>
+                    </div>
+
+
+                    <div class="form-group">
+                        <label asp-for="FeedbackText">Your Feedback</label>
+                        <textarea asp-for="FeedbackText" class="form-control" rows="5" placeholder="Enter your feedback"></textarea>
+                        <span asp-validation-for="FeedbackText" class="text-danger"></span>
+                    </div>
+                    <!-- Anonymous Submission Note -->
+                    <div class="alert alert-info mt-4" role="alert">
+                        <strong>Note:</strong> Your feedback will be submitted anonymously. No personal information will be collected.
+                    </div>
+                 
+                    <button type="submit" class="btn btn-primary mt-3">Submit Feedback</button>
+                </form>
             </div>
         </div>
     </div>
-</div>
 
     <!-- Footer -->
     <footer class="footer">
@@ -184,7 +153,33 @@
         </div>
     </footer>
 
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $("#complainForm").validate({
+                rules: {
+                    ElectionID: {
+                        required: true
+                    },
+                    ComplaintText: {
+                        required: true,
+                        maxlength: 200
+                    }
+                },
+                messages: {
+                    ElectionID: {
+                        required: "Please select an election."
+                    },
+                    ComplaintText: {
+                        required: "Please enter your complaint.",
+                        maxlength: "The complaint must be at most 200 characters long."
+                    }
+                },
+                errorElement: "span",
+                errorClass: "text-danger"
+            });
+        });
+    </script>
 </body>
 </html>

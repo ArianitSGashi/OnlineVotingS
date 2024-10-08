@@ -28,12 +28,8 @@
                     <a class="nav-link" href="@Url.Action("VoterDashboard", "Voter")"><i class="fas fa-home"></i> Home</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="@Url.Action("ProfilePage", "Voter")"><i class="fas fa-user"></i> Profile</a>
-                </li>
-                <li class="nav-item">
                     <a class="nav-link" href="@Url.Action("CandidatePage", "Voter")"><i class="fas fa-users"></i> Candidates</a>
                 </li>
-
                 <li class="nav-item">
                     <a class="nav-link" href="@Url.Action("ElectionPage", "Voter")"><i class="fas fa-poll"></i> Elections</a>
                 </li>
@@ -44,7 +40,16 @@
                     <a class="nav-link" href="@Url.Action("RepliedComplaintsPage", "Voter")"><i class="fas fa-reply"></i> Replied Complaints</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="@Url.Action("ShowResults", "Voter")"><i class="fas fa-list-alt"></i>View Results</a>
+                    <a class="nav-link" href="@Url.Action("ShowResults", "Voter")"><i class="fas fa-list-alt"></i> View Results</a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="profileDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <i class="fas fa-user"></i> Account
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="profileDropdown">
+                        <a class="dropdown-item" href="@Url.Action("ProfilePage", "Voter")"><i class="fas fa-user"></i> Profile</a>
+                        <a class="dropdown-item" href="@Url.Action("FeedbackPage", "Voter")"><i class="fas fa-comment-dots"></i> Feedback</a>
+                    </div>
                 </li>
             </ul>
             <form asp-controller="Auth" asp-action="Logout" method="post" class="d-flex">
