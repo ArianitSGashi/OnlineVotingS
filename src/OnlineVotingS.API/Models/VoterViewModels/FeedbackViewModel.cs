@@ -1,8 +1,8 @@
 ﻿using OnlineVotingS.Domain.Enums;
 using System.ComponentModel.DataAnnotations;
 
-namespace OnlineVotingS.API.Models.VoterViewModels
-{
+namespace OnlineVotingS.API.Models.VoterViewModels;
+
     public class FeedbackViewModel
     {
         public int FeedbackID { get; set; }
@@ -16,4 +16,3 @@ namespace OnlineVotingS.API.Models.VoterViewModels
 
         public DateTime FeedbackDate { get; set; } = DateTime.UtcNow;
     }
-}
