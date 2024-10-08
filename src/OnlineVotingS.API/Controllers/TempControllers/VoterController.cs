@@ -21,6 +21,7 @@ using System.Diagnostics;
 using OnlineVotingS.Application.DTO.GetDTO;
 using OnlineVotingS.Application.Services.Vote.Handlers.Queries;
 using System.Net;
+using OnlineVotingS.Application.Services.Feedbacks.Requests.Commands;
 
 namespace OnlineVotingS.API.Controllers.TempControllers;
 
@@ -353,5 +354,59 @@ public class VoterController : Controller
 
         };
         return View("~/Views/Voter/ProfilePage.cshtml", viewModel);
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> FeedbackPage()
+    {
+        var feedbackViewModel = new FeedbackViewModel
+        {
+            FeedbackText = string.Empty,  
+            FeedbackCategory = 0,        
+            FeedbackDate = DateTime.UtcNow 
+        };
+
+        return View("~/Views/Voter/FeedbackPage.cshtml", feedbackViewModel);
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> SubmitFeedback(FeedbackViewModel model)
+    {
+        if (!ModelState.IsValid)
+        {
+            return View("FeedbackPage", model); 
+        }
+
+        // Ensure the user is authenticated
+        if (!User.Identity!.IsAuthenticated)
+        {
+            return RedirectToAction("Login", "Account");
+        }
+
+        var userId = _userManager.GetUserId(User);
+        if (string.IsNullOrEmpty(userId))
+        {
+            ModelState.AddModelError("", "Unable to process your request. Please try again later.");
+            return View("FeedbackPage", model);
+        }
+
+        var feedbackDto = new FeedbackPostDTO
+        {
+            FeedbackText = model.FeedbackText,
+            FeedbackDate = DateTime.UtcNow,
+            FeedbackCategory = model.FeedbackCategory
+        };
+
+        var command = new CreateFeedbackCommand(feedbackDto);
+        var result = await _mediator.Send(command);
+
+        if (result.IsFailed)
+        {
+            return HandleErrorResult(result, model, "FeedbackPage");
+        }
+
+        TempData["SuccessMessage"] = "Your feedback has been successfully submitted.";
+        return RedirectToAction("FeedbackPage");
     }
 }
