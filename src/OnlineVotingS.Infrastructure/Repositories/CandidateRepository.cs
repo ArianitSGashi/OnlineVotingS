@@ -5,6 +5,7 @@ using OnlineVotingS.Infrastructure.Persistence.Context;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using OnlineVotingS.Infrastructure.Utilities;
 
 namespace OnlineVotingS.Infrastructure.Repositories;
 
@@ -14,24 +15,98 @@ public class CandidateRepository : GenericRepository<Candidates>, ICandidateRepo
     {
     }
 
+    public override async Task AddAsync(Candidates entity)
+    {
+        entity.Party = AesEncryption.Encrypt(entity.Party);
+        entity.Works = AesEncryption.Encrypt(entity.Works);
+        await base.AddAsync(entity);
+    }
+
+    public override Task UpdateAsync(Candidates entity)
+    {
+        if (entity.Party != null)
+        {
+            AesEncryption.Encrypt(entity.Party);
+        }
+        if (entity.Works != null)
+        {
+            entity.Works = AesEncryption.Encrypt(entity.Works);
+        }
+
+        return base.UpdateAsync(entity);
+    }
+
+    public override async Task<IEnumerable<Candidates>> GetAllAsync()
+    {
+        var candidates = await _dbSet.ToListAsync();
+
+        foreach (var candidate in candidates)
+        {
+            candidate.Party = AesEncryption.Decrypt(candidate.Party);
+            candidate.Works = AesEncryption.Decrypt(candidate.Works);
+        }
+
+        return candidates;
+    }
+
+    public override async Task<Candidates> GetByIdAsync(int id)
+    {
+        var entity = await _dbSet.FirstOrDefaultAsync(x => x.CandidateID == id);
+        entity.Party = AesEncryption.Decrypt(entity.Party);
+        entity.Works = AesEncryption.Decrypt(entity.Works);
+        return entity;
+    }
+
     public async Task<IEnumerable<Candidates>> GetByElectionIdAsync(int electionId)
     {
-        return await _dbSet.Where(c => c.ElectionID == electionId).ToListAsync();
+        var candidates = await _dbSet.Where(c => c.ElectionID == electionId).ToListAsync();
+
+        foreach (var candidate in candidates)
+        {
+            candidate.Party = AesEncryption.Decrypt(candidate.Party);
+            candidate.Works = AesEncryption.Decrypt(candidate.Works);
+        }
+
+        return candidates;
     }
 
     public async Task<IEnumerable<Candidates>> GetByPartyAsync(string party)
     {
-        return await _dbSet.Where(c => c.Party == party).ToListAsync();
+        var candidates = await _dbSet.Where(c => c.Party == party).ToListAsync();;
+
+        foreach (var candidate in candidates)
+        {
+            candidate.Party = AesEncryption.Decrypt(candidate.Party);
+            candidate.Works = AesEncryption.Decrypt(candidate.Works);
+        }
+
+        return candidates;
     }
 
     public async Task<IEnumerable<Candidates>> GetByMinIncomeAsync(decimal minIncome)
     {
-        return await _dbSet.Where(c => c.Income >= minIncome).ToListAsync();
+        var candidates =  await _dbSet.Where(c => c.Income >= minIncome).ToListAsync();
+
+        foreach (var candidate in candidates)
+        {
+            candidate.Party = AesEncryption.Decrypt(candidate.Party);
+            candidate.Works = AesEncryption.Decrypt(candidate.Works);
+        }
+
+        return candidates;
     }
 
     public async Task<IEnumerable<Candidates>> GetByNameAsync(string name)
     {
-        return await _dbSet.Where(c => c.FullName.Contains(name)).ToListAsync();
+        var candidates =  await _dbSet.Where(c => c.FullName.Contains(name)).ToListAsync();
+
+        foreach (var candidate in candidates)
+        {
+            candidate.Party = AesEncryption.Decrypt(candidate.Party);
+            candidate.Works = AesEncryption.Decrypt(candidate.Works);
+        }
+
+        return candidates;
     }
 
     public async Task<bool> CandidateBelongsToElectionAsync(int candidateId, int electionId)
@@ -41,11 +116,19 @@ public class CandidateRepository : GenericRepository<Candidates>, ICandidateRepo
 
     public async Task<IEnumerable<Candidates>> GetCandidatesPaginatedAsync(int pageNumber, int pageSize)
     {
-        return await _context.Candidates
+        var candidates =  await _context.Candidates
             .OrderBy(c => c.CandidateID) 
             .Skip((pageNumber - 1) * pageSize)
             .Take(pageSize)
             .ToListAsync();
+
+        foreach (var candidate in candidates)
+        {
+            candidate.Party = AesEncryption.Decrypt(candidate.Party);
+            candidate.Works = AesEncryption.Decrypt(candidate.Works);
+        }
+
+        return candidates;
     }
 
     public async Task<int> GetTotalCandidatesCountAsync()
