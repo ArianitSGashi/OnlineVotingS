@@ -28,11 +28,11 @@ public class CandidateRepository : GenericRepository<Candidates>, ICandidateRepo
         {
             AesEncryption.Encrypt(entity.Party);
         }
-
         if (entity.Works != null)
         {
             entity.Works = AesEncryption.Encrypt(entity.Works);
         }
+
         return base.UpdateAsync(entity);
     }
 
