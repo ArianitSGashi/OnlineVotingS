@@ -10,17 +10,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login</title>
     <link rel="stylesheet" href="/css/login.css">
+    <meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate" />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
     <style>
         .text-danger {
             color: #dc3545;
             font-size: 14px;
         }
-
     </style>
 </head>
 <body>
     <div class="wrapper">
-        <form asp-action="Login" asp-controller="Auth">
+        <form asp-action="Login" asp-controller="Auth" method="post">
             @Html.AntiForgeryToken()
             <h2>Login</h2>
 
@@ -45,5 +47,10 @@
             </div>
         </form>
     </div>
+
+    <!-- Ensure client-side validation is included -->
+    <script src="https://ajax.aspnetcdn.com/ajax/jquery/jquery-3.6.0.min.js"></script>
+    <script src="https://ajax.aspnetcdn.com/ajax/jquery.validate/1.19.3/jquery.validate.min.js"></script>
+    <script src="https://ajax.aspnetcdn.com/ajax/mvc/5.2.6/jquery.validate.unobtrusive.min.js"></script>
 </body>
 </html>

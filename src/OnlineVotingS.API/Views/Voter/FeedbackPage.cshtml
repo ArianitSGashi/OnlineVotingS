@@ -53,6 +53,7 @@
                 </li>
             </ul>
             <form asp-controller="Auth" asp-action="Logout" method="post" class="d-flex">
+                @Html.AntiForgeryToken()
                 <button type="submit" class="btn btn-outline-light">
                     <i class="fas fa-sign-out-alt"></i> Logout
                 </button>
