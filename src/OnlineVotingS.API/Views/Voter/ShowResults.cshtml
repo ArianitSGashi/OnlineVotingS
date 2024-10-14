@@ -1,4 +1,4 @@
-﻿@model FluentResults.Result<IEnumerable<OnlineVotingS.Domain.Entities.Elections>>
+﻿@model IEnumerable<OnlineVotingS.Domain.Entities.Elections>
 @{
     Layout = null;
 }
@@ -118,7 +118,7 @@
                 <label for="electionSelect">Select Election:</label>
                 <select id="electionSelect" class="form-control">
                     <option value="">-- Select Election --</option>
-                    @foreach (var election in Model.Value)
+                    @foreach (var election in Model)
                     {
                         <option value="@election.ElectionID">@election.Title</option>
                     }

@@ -313,7 +313,9 @@ public class VoterController : Controller
     {
         var allElections = await _mediator.Send(new GetAllElectionsQuery());
 
-        return View("~/Views/Voter/ShowResults.cshtml", allElections);
+        var filteredElections = allElections.Value.Where(x => x.Status == ElectionStatus.Completed);
+
+        return View("~/Views/Voter/ShowResults.cshtml", filteredElections);
 
     }
 
