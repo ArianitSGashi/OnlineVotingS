@@ -1,0 +1,69 @@
+@model IEnumerable<OnlineVotingS.API.Models.VoterViewModels.FeedbackViewModel>
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View Feedbacks</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="~/css/new-sidebar.css" rel="stylesheet">
+    <link href="~/css/Feedback/view-feedbacks.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Sidebar Menu -->
+    @await Html.PartialAsync("_NewSidebar")
+
+    <div class="container-with-sidebar bg-light p-4 rounded">
+        <h4 class="mb-4">Feedbacks</h4>
+        <div class="input-group mb-4">
+            <input type="text" class="form-control" id="searchFeedback" placeholder="Search by Feedback ID or Text">
+            <div class="input-group-append">
+                <button class="btn btn-primary" type="button">Search</button>
+            </div>
+        </div>
+        <table class="table table-striped table-bordered">
+            <thead class="table-dark">
+                <tr>
+                    <th>Feedback ID</th>
+                    <th>Feedback Text</th>
+                    <th>Category</th>
+                    <th>Feedback Date</th>
+                </tr>
+            </thead>
+            <tbody id="feedbackTableBody">
+                @foreach (var feedback in Model)
+                {
+                    <tr>
+                        <td>@feedback.FeedbackID</td>
+                        <td>@feedback.FeedbackText</td>
+                        <td>@feedback.FeedbackCategory</td>
+                        <td>@feedback.FeedbackDate.ToString("g")</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/Feedback/ViewFeedbacks.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            $('#searchFeedback').on('keyup', function () {
+                var value = $(this).val().toLowerCase();
+                $('#feedbackTableBody tr').filter(function () {
+                    $(this).toggle(
+                        $(this).text().toLowerCase().indexOf(value) > -1
+                    );
+                });
+            });
+        });
+    </script>
+</body>
+</html>

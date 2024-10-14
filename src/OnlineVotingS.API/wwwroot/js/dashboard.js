@@ -54,6 +54,7 @@
             actions: [
                 { label: 'Reply Complaint', url: '/Complain/ReplyComplain', onClick: () => navigateTo('/Complain/ReplyComplain') },
                 { label: 'View Complaints', url: '/Complain/ViewComplain', onClick: () => navigateTo('/Complain/ViewComplain') },
+                { label: 'View Feedbacks', url: '/Feedback/ViewFeedbacks', onClick: () => navigateTo('/Feedback/ViewFeedbacks') },
             ],
             icon: 'fa-envelope',
         },
