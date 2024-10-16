@@ -151,8 +151,9 @@ namespace OnlineVotingS.API.Controllers
             if (changePasswordResult.Succeeded)
             {
                 await _signInManager.RefreshSignInAsync(user);
-                ViewBag.Message = "Your password has been changed.";
-                return View();
+                TempData["Message"] = "Your password has been changed.";
+
+                return RedirectToAction("VoterDashboard", "Voter");
             }
 
             foreach (var error in changePasswordResult.Errors)
