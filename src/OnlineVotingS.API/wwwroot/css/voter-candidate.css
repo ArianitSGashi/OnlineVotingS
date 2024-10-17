@@ -31,7 +31,7 @@ body {
 
 /* Hero Section */
 .hero-section {
-    background-image: url('/images/Election.jpg'); /* Replace with your image path */
+    background-image: url('/images/mainimage.png'); /* Replace with your image path */
     background-size: cover;
     background-position: center;
     height: 100vh;
