@@ -27,15 +27,24 @@ namespace OnlineVotingS.API.Controllers
         }
 
         [HttpGet]
+        [ResponseCache(NoStore = true, Location = ResponseCacheLocation.None)]
         public IActionResult Login(string? returnUrl = null)
         {
             ViewData["ReturnUrl"] = returnUrl;
+
+            // Sign out the user and clear session
             if (User.Identity?.IsAuthenticated == true)
             {
                 _signInManager.SignOutAsync().Wait();
+                foreach (var cookie in Request.Cookies.Keys)
+                {
+                    Response.Cookies.Delete(cookie);
+                }
             }
+
             return View();
         }
+
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -100,7 +109,7 @@ namespace OnlineVotingS.API.Controllers
                 {
                     await _userManager.AddToRoleAsync(user, "Voter");
                     await _signInManager.SignInAsync(user, isPersistent: false);
-                    return RedirectToAction("Login", "Auth");
+                    return RedirectToAction("VoterDashboard", "Voter");
                 }
 
                 foreach (var error in result.Errors)

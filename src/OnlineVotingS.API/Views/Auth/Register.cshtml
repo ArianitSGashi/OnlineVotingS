@@ -20,7 +20,7 @@
 </head>
 <body>
     <div class="wrapper">
-        <form asp-action="Register" asp-controller="Auth">
+        <form asp-action="Register" asp-controller="Auth" method="post">
             @Html.AntiForgeryToken()
             <h2>Register</h2>
 

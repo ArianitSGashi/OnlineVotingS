@@ -53,6 +53,7 @@
                 </li>
             </ul>
             <form asp-controller="Auth" asp-action="Logout" method="post" class="d-flex">
+                @Html.AntiForgeryToken()
                 <button type="submit" class="btn btn-outline-light">
                     <i class="fas fa-sign-out-alt"></i> Logout
                 </button>
@@ -103,44 +104,62 @@
     </div>
 
     <!-- Footer -->
-    <footer class="footer">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-4">
-                    <h5>About Us</h5>
-                    <p>We are dedicated to providing a secure and transparent online voting platform for all citizens.</p>
-                </div>
-                <div class="col-md-4">
-                    <h5>Quick Links</h5>
-                    <ul class="list-unstyled">
-                        <li><a href="/"><i class="fas fa-home"></i> Home</a></li>
-                        <li><a href="#"><i class="fas fa-info-circle"></i> About Us</a></li>
-                        <li><a href="#"><i class="fas fa-cogs"></i> Services</a></li>
-                        <li><a href="#"><i class="fas fa-file-contract"></i> Terms of Service</a></li>
-                        <li><a href="#"><i class="fas fa-user-secret"></i> Privacy Policy</a></li>
-                    </ul>
-                </div>
-                <div class="col-md-4">
-                    <h5>Contact Us</h5>
-                    <p><i class="fas fa-envelope"></i> Email: info@onlinevoting.com</p>
-                    <p><i class="fas fa-phone"></i> Phone: +1 (123) 456-7890</p>
-                    <div class="social-icons">
-                        <a href="#"><i class="fab fa-twitter"></i></a>
-                        <a href="#"><i class="fab fa-facebook"></i></a>
-                        <a href="#"><i class="fab fa-instagram"></i></a>
-                        <a href="#"><i class="fab fa-linkedin"></i></a>
+    <!-- Footer -->
+    <footer class="text-center text-lg-start text-grey" style="background-color: #0c0e1c;">
+        <div class="container p-4 pb-0">
+            <section class="">
+                <div class="row">
+                    <!-- About Us Section -->
+                    <div class="col-md-3 col-lg-3 col-xl-3 mx-auto mt-3">
+                        <h6 class="text-uppercase mb-4 font-weight-bold">About Us</h6>
+                        <p>
+                            We are dedicated to providing a secure and transparent online voting platform for all citizens.
+                        </p>
+                    </div>
+
+                    <!-- Quick Links Section -->
+                    <div class="col-md-2 col-lg-2 col-xl-2 mx-auto mt-3">
+                        <h6 class="text-uppercase mb-4 font-weight-bold">Quick Links</h6>
+                        <p><a href="/" class="text-white">Home</a></p>
+                        <p><a href="#" class="text-white">About Us</a></p>
+                        <p><a href="#" class="text-white">Services</a></p>
+                        <p><a href="#" class="text-white">Terms of Service</a></p>
+                    </div>
+
+                    <!-- Contact Us Section -->
+                    <div class="col-md-4 col-lg-3 col-xl-3 mx-auto mt-3">
+                        <h6 class="text-uppercase mb-4 font-weight-bold">Contact Us</h6>
+                        <p><i class="fas fa-envelope mr-3"></i> info@onlinevoting.com</p>
+                        <p><i class="fas fa-phone mr-3"></i> +1 (123) 456-7890</p>
+                    </div>
+
+                    <!-- Social Media Section -->
+                    <div class="col-md-3 col-lg-3 col-xl-2 mx-auto mt-3">
+                        <h6 class="text-uppercase mb-4 font-weight-bold">Follow Us</h6>
+                        <a class="btn btn-outline-light btn-floating m-1" role="button"><i class="fab fa-facebook-f"></i></a>
+                        <a class="btn btn-outline-light btn-floating m-1" role="button"><i class="fab fa-twitter"></i></a>
+                        <a class="btn btn-outline-light btn-floating m-1" role="button"><i class="fab fa-linkedin"></i></a>
                     </div>
                 </div>
-            </div>
-            <hr>
-            <div class="row">
-                <div class="col-md-12 text-center">
-                    <p>&copy; 2024 Online Voting System. All rights reserved.</p>
-                </div>
-            </div>
-        </div>
-    </footer>
+            </section>
 
+            <hr class="my-3">
+
+            <section class="p-3 pt-0">
+                <div class="row d-flex align-items-center">
+                    <div class="col-md-7 col-lg-8 text-center text-md-start">
+                        <div class="p-3">
+                            &copy; 2024 Online Voting System. All rights reserved.
+                        </div>
+                    </div>
+                    <div class="col-md-5 col-lg-4 ml-lg-0 text-center text-md-end">
+                        <a class="text-white" href="#">Privacy Policy</a>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+    </footer>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
     <script>
