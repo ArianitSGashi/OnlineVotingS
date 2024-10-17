@@ -75,7 +75,7 @@
                                 <td>@election.EndDate.ToString("d")</td>
                                 <td>@election.EndTime.ToString(@"hh\:mm")</td>
                                 <td>
-                                    <span class="badge @(election.Status == OnlineVotingS.Domain.Enums.ElectionStatus.Active ? "bg-success" : election.Status == OnlineVotingS.Domain.Enums.ElectionStatus.Completed ? "bg-danger" : "bg-secondary")">
+                                    <span>
                                         @election.Status
                                     </span>
                                 </td>

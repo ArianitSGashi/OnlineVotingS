@@ -1,4 +1,16 @@
-﻿<div id="new-sidebar" class="sidebar active">
+﻿<style>
+
+    #btnlogout{
+        width: 100%;
+        border-style: none;
+        background-color: #0077b6;
+        text-align: left;
+    }
+    #btnlogout:hover{
+        background-color: darkgrey;
+    }
+</style>
+<div style="background-color: #0077b6 !important" id="new-sidebar" class="sidebar active">
     <div class="sidebar-header">
         <h5>Menu</h5>
     </div>
@@ -16,16 +28,18 @@
             <a class="nav-link text-white" href="@Url.Action("GenerateElection", "Election")">Election</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link text-white" href="#">Voting</a>
-        </li>
-        <li class="nav-item">
             <a class="nav-link text-white" href="@Url.Action("ViewResult", "Result")">Results</a>
         </li>
         <li class="nav-item">
             <a class="nav-link text-white" href="@Url.Action("ReplyComplain", "Complain")">Complain</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link text-white" href="#">Logout</a>
+            <form asp-controller="Auth" asp-action="Logout" method="post">
+                @Html.AntiForgeryToken()
+                <button id="btnlogout" class="nav-link text-white" type="submit">
+                    Log out
+                </button>
+            </form>
         </li>
     </ul>
 </div>
