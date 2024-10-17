@@ -14,7 +14,7 @@ public class ComplainViewModel
 
     [Required(ErrorMessage = "Please enter your complaint.")]
     [StringLength(200, ErrorMessage = "The complaint must be at most 200 characters long.")]
-    [RegularExpression(@"[^+^\-^\/^\*^\(^\)]", ErrorMessage = "Special characters aren't allowed.")]
+    [RegularExpression(@"^[^+*/@]+$", ErrorMessage = "Special characters aren't allowed.")]
     public string ComplaintText { get; set; } = string.Empty;
 
     public DateTime ComplaintDate { get; set; }

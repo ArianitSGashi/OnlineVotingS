@@ -32,6 +32,7 @@
                     </a>
                     <div class="dropdown-menu" aria-labelledby="profileDropdown">
                         <a class="dropdown-item" href="#"><i class="fas fa-user"></i> Profile</a>
+                                <a class="dropdown-item" href="@Url.Action("ChangePassword", "Auth")"><i class="fas fa-user-lock"></i> Change Password</a>
                         <a class="dropdown-item" href="#"><i class="fas fa-comment-dots"></i> Settings</a>
                     </div>
                 </li>
@@ -39,7 +40,7 @@
             <form asp-controller="Auth" asp-action="Logout" method="post" class="d-flex">
                 @Html.AntiForgeryToken()
                 <button type="submit" class="btn btn-outline-light">
-                    <i class="fas fa-sign-out-alt"></i> Logout
+                    Log out
                 </button>
             </form>
         </div>

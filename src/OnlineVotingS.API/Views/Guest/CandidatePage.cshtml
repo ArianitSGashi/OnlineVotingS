@@ -143,18 +143,17 @@
     <script>
         $(document).ready(function () {
             $("#searchButton").on("click", function () {
-                var value = $("#electionSearch").val().toLowerCase();
-                $("#electionTable tbody tr").filter(function () {
+                var value = $("#candidateSearch").val().toLowerCase();
+                $("#candidateTable tbody tr").filter(function () {
                     $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
                 });
             });
 
-            $("#electionSearch").on("keyup", function (event) {
+            $("#candidateSearch").on("keyup", function (event) {
                 if (event.keyCode === 13) { // 13 is the Enter key
                     $("#searchButton").click();
                 }
             });
-        });
     </script>
 </body>
 </html>
